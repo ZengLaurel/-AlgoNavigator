@@ -14,7 +14,7 @@ The platform combines three pillars:
 ## 2. Goals
 
 - Help a student with little/no programming background understand what an
-  array, linked list, stack, and queue *are* and *how their operations work*,
+  array, linked list, stack, and queue _are_ and _how their operations work_,
   before and while writing real Python code.
 - Let the AI tutor adapt explanations to the student's pace, answer free-form
   questions, and nudge them through a fixed curriculum without giving away
@@ -37,10 +37,10 @@ The platform combines three pillars:
 
 ## 4. Target Users
 
-| User | Description | Needs |
-|---|---|---|
-| Student | Grade 4–6, basic keyboard/typing skill, no prior coding experience | Simple UI, immediate visual feedback, non-judgmental AI tone, short sessions (~15–20 min) |
-| Parent/Teacher (secondary) | Supervises sessions | Visibility into what the AI says to the child (safety), optional way to review session transcript |
+| User                       | Description                                                        | Needs                                                                                             |
+| -------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Student                    | Grade 4–6, basic keyboard/typing skill, no prior coding experience | Simple UI, immediate visual feedback, non-judgmental AI tone, short sessions (~15–20 min)         |
+| Parent/Teacher (secondary) | Supervises sessions                                                | Visibility into what the AI says to the child (safety), optional way to review session transcript |
 
 ## 5. Curriculum Scope (MVP)
 
@@ -52,6 +52,7 @@ Four data structures, each following the same lesson template:
 4. Queue (队列)
 
 ### Lesson template (per structure)
+
 1. **Hook** — a short real-world analogy (e.g., stack = stack of plates).
 2. **Animation walkthrough** — operation-by-operation visualization
    (insert/delete/access/traverse) with play/pause/step controls, synced to
@@ -67,6 +68,7 @@ Four data structures, each following the same lesson template:
 ## 6. Functional Requirements
 
 ### 6.1 Animation Module
+
 - FR-1: Render step-by-step visualizations for core operations of each of
   the 4 structures (e.g., array: index access, insert, delete, resize;
   linked list: insert/delete at head/tail/middle, traversal; stack:
@@ -80,6 +82,7 @@ Four data structures, each following the same lesson template:
   the visualization, not just a scripted demo).
 
 ### 6.2 Code Execution Module
+
 - FR-5: Provide an in-browser Python code editor (syntax highlighting, line
   numbers, basic error squiggles) scoped to each exercise.
 - FR-6: Execute student code **client-side via Pyodide (WASM)** — no
@@ -92,6 +95,7 @@ Four data structures, each following the same lesson template:
   tracebacks) for common mistakes.
 
 ### 6.3 AI Tutoring Module
+
 - FR-9: Integrate a real LLM API for free-form conversational Q&A, scoped to
   the current lesson's topic and the student's code/animation state (the AI
   receives lesson context + student's current code as context, not the
@@ -112,6 +116,7 @@ Four data structures, each following the same lesson template:
   see what happens visually?").
 
 ### 6.4 Progress & Navigation
+
 - FR-14: Linear lesson flow per structure (hook → animation → code → AI →
   challenge) with a simple progress indicator.
 - FR-15: Session progress persists in browser local storage (no login
@@ -139,16 +144,16 @@ Four data structures, each following the same lesson template:
 
 ## 8. Proposed Tech Stack
 
-| Layer | Choice | Notes |
-|---|---|---|
-| Frontend framework | React (+ TypeScript) | Pairs naturally with animation libs below |
-| Animation | D3.js for data-bound structure diagrams, Framer Motion for transitions/polish | D3 drives element enter/update/exit tied to actual data state; Framer Motion handles easing/micro-interactions |
-| Code editor | CodeMirror or Monaco (lightweight preferred for load time) | — |
-| Python runtime | Pyodide (WASM), run in a Web Worker to keep UI thread responsive | Avoids backend sandbox complexity for MVP |
-| AI backend | Thin API proxy (serverless function) → LLM API | Proxy needed to keep API keys off the client; also where moderation/rate-limiting is enforced |
-| Content moderation | LLM provider's moderation endpoint (if available) or a dedicated moderation API, applied to both user input and AI output | — |
-| Persistence (MVP) | Browser localStorage | No database required for MVP |
-| Hosting | Static frontend hosting (e.g., Vercel/Netlify) + serverless function for the AI proxy | Minimal ops overhead for a pilot |
+| Layer              | Choice                                                                                                                    | Notes                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Frontend framework | React (+ TypeScript)                                                                                                      | Pairs naturally with animation libs below                                                                      |
+| Animation          | D3.js for data-bound structure diagrams, Framer Motion for transitions/polish                                             | D3 drives element enter/update/exit tied to actual data state; Framer Motion handles easing/micro-interactions |
+| Code editor        | CodeMirror or Monaco (lightweight preferred for load time)                                                                | —                                                                                                              |
+| Python runtime     | Pyodide (WASM), run in a Web Worker to keep UI thread responsive                                                          | Avoids backend sandbox complexity for MVP                                                                      |
+| AI backend         | Thin API proxy (serverless function) → LLM API                                                                            | Proxy needed to keep API keys off the client; also where moderation/rate-limiting is enforced                  |
+| Content moderation | LLM provider's moderation endpoint (if available) or a dedicated moderation API, applied to both user input and AI output | —                                                                                                              |
+| Persistence (MVP)  | Browser localStorage                                                                                                      | No database required for MVP                                                                                   |
+| Hosting            | Static frontend hosting (e.g., Vercel/Netlify) + serverless function for the AI proxy                                     | Minimal ops overhead for a pilot                                                                               |
 
 **Open decision:** specific LLM provider/model for the tutoring API is not
 yet chosen — needs a decision on cost per session, context window, and

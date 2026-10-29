@@ -9,12 +9,12 @@ technical design. It is the reference for implementation decisions; the
 The requirements doc left 4 questions open. To unblock implementation, the
 following defaults are adopted for the MVP (revisit after pilot feedback):
 
-| Open question | MVP decision |
-|---|---|
-| LLM provider/model | Anthropic Claude API (small/fast model, e.g. Haiku-class) via a serverless proxy — low cost per turn, strong instruction-following for the Socratic/hint-first system prompt |
-| Parent/teacher transcript viewer | Not built in MVP; transcripts are stored in `localStorage` and can be inspected via a simple "Export session log" button (JSON download) instead of a dedicated UI |
-| Challenge authoring | Hand-authored, fixed challenge set per structure (deterministic auto-grading); no AI-generated challenges in MVP |
-| hello-algo asset reuse | Do not copy hello-algo's code or diagrams directly (keep `hello-algo/` untouched per project convention); use it only as a conceptual/pedagogical reference. All animations and content are built fresh for this project |
+| Open question                    | MVP decision                                                                                                                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| LLM provider/model               | Anthropic Claude API (small/fast model, e.g. Haiku-class) via a serverless proxy — low cost per turn, strong instruction-following for the Socratic/hint-first system prompt                                             |
+| Parent/teacher transcript viewer | Not built in MVP; transcripts are stored in `localStorage` and can be inspected via a simple "Export session log" button (JSON download) instead of a dedicated UI                                                       |
+| Challenge authoring              | Hand-authored, fixed challenge set per structure (deterministic auto-grading); no AI-generated challenges in MVP                                                                                                         |
+| hello-algo asset reuse           | Do not copy hello-algo's code or diagrams directly (keep `hello-algo/` untouched per project convention); use it only as a conceptual/pedagogical reference. All animations and content are built fresh for this project |
 
 ## 2. System Architecture
 
@@ -50,6 +50,7 @@ executable code side effects — just text context for the tutor.
 ## 3. Frontend Architecture
 
 ### 3.1 Stack
+
 - React 18 + TypeScript, built with Vite.
 - State management: React Context + `useReducer` per lesson (no need for
   Redux/Zustand at MVP scale — one active lesson at a time).
@@ -103,38 +104,41 @@ Proposed TypeScript shape:
 
 ```ts
 interface Lesson {
-  id: "array" | "linked-list" | "stack" | "queue";
-  title: string;
-  hook: { analogy: string; imageOrAnimationId?: string };
-  animationSteps: AnimationStep[];
-  exercise: Exercise;
-  challenge: Challenge;
+  id: 'array' | 'linked-list' | 'stack' | 'queue'
+  title: string
+  hook: { analogy: string; imageOrAnimationId?: string }
+  animationSteps: AnimationStep[]
+  exercise: Exercise
+  challenge: Challenge
 }
 
 interface AnimationStep {
-  operation: string;          // e.g. "push", "insertAtHead"
-  description: string;        // plain-language caption
-  beforeState: StructureState;
-  afterState: StructureState;
+  operation: string // e.g. "push", "insertAtHead"
+  description: string // plain-language caption
+  beforeState: StructureState
+  afterState: StructureState
 }
 
 // Generic structure snapshot the animation engine renders.
 // Shape varies slightly per structure (e.g. linked list has `next` refs).
 type StructureState = {
-  elements: Array<{ id: string; value: number | string; highlighted?: boolean }>;
-  pointers?: Record<string, string>; // e.g. { head: "node-1", tail: "node-3" }
-};
+  elements: Array<{ id: string; value: number | string; highlighted?: boolean }>
+  pointers?: Record<string, string> // e.g. { head: "node-1", tail: "node-3" }
+}
 
 interface Exercise {
-  starterCode: string;
-  solutionCheck: (stdout: string, finalState: unknown) => boolean;
-  hints: string[];             // revealed progressively by the AI tutor
+  starterCode: string
+  solutionCheck: (stdout: string, finalState: unknown) => boolean
+  hints: string[] // revealed progressively by the AI tutor
 }
 
 interface Challenge {
-  prompt: string;
-  starterCode: string;
-  autoGrade: (stdout: string, finalState: unknown) => { pass: boolean; feedback: string };
+  prompt: string
+  starterCode: string
+  autoGrade: (
+    stdout: string,
+    finalState: unknown,
+  ) => { pass: boolean; feedback: string }
 }
 ```
 
@@ -216,6 +220,7 @@ interface Challenge {
 
 Stored as `api/prompts/tutor-system-prompt.v1.md`, not exposed to or
 editable by the client. Must encode (per FR-10):
+
 - Reading level: grade 4–6.
 - Socratic/hint-first behavior; only give a direct answer after
   `hintsUsedThisExercise >= 2`.

@@ -27,14 +27,14 @@ MVP curriculum covers 4 structures: **Array, Linked List, Stack, Queue**.
 
 ## Tech stack
 
-| Layer | Choice |
-|---|---|
-| Frontend | React + TypeScript (Vite) |
-| Animation | D3.js + Framer Motion |
-| Code editor | CodeMirror 6 |
-| Python execution | Pyodide (WASM), sandboxed in a Web Worker — all student code runs client-side |
-| AI tutoring | Serverless API proxy → LLM API, with a versioned Socratic system prompt and input/output moderation |
-| Persistence (MVP) | Browser `localStorage` (no accounts/backend database) |
+| Layer             | Choice                                                                                              |
+| ----------------- | --------------------------------------------------------------------------------------------------- |
+| Frontend          | React + TypeScript (Vite)                                                                           |
+| Animation         | D3.js + Framer Motion                                                                               |
+| Code editor       | CodeMirror 6                                                                                        |
+| Python execution  | Pyodide (WASM), sandboxed in a Web Worker — all student code runs client-side                       |
+| AI tutoring       | Serverless API proxy → LLM API, with a versioned Socratic system prompt and input/output moderation |
+| Persistence (MVP) | Browser `localStorage` (no accounts/backend database)                                               |
 
 See [docs/SPECIFICATION.md](./docs/SPECIFICATION.md) for full architecture
 details.
@@ -42,6 +42,7 @@ details.
 ## Project status
 
 Pre-implementation. See:
+
 - [docs/REQUIREMENTS.md](./docs/REQUIREMENTS.md) — product requirements and scope.
 - [docs/SPECIFICATION.md](./docs/SPECIFICATION.md) — technical design.
 - [docs/ROADMAP.md](./docs/ROADMAP.md) — phased build plan. **Development

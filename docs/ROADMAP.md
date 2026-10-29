@@ -5,6 +5,7 @@ Each phase has a goal, deliverables, and an exit criterion that must be met
 before moving to the next phase. Work proceeds phase by phase, in order.
 
 ## Phase 0 — Project Scaffolding
+
 **Goal:** a running empty shell to build into.
 
 - Initialize Vite + React + TypeScript project at repo root (`D:\AIgoNavigator`).
@@ -19,6 +20,7 @@ before moving to the next phase. Work proceeds phase by phase, in order.
 lint + test commands run clean.
 
 ## Phase 1 — Animation Engine Core (single structure: Stack)
+
 **Goal:** prove the core visualization pattern before replicating it 3x.
 
 - Implement `StructureState` type and the Stack renderer (D3 data-join +
@@ -32,6 +34,7 @@ lint + test commands run clean.
 for Stack with working playback controls.
 
 ## Phase 2 — Code Execution Integration (Stack)
+
 **Goal:** connect real student Python code to the Stack animation.
 
 - Stand up `PyodideProvider` + Web Worker per SPEC §6 (lazy load, loading
@@ -48,6 +51,7 @@ Run, and see the Stack animation update to match their code's real
 behavior; infinite loops are caught and recoverable without a page reload.
 
 ## Phase 3 — AI Tutor Integration (Stack lesson only)
+
 **Goal:** working end-to-end tutoring loop for one lesson.
 
 - Build serverless `/api/tutor` proxy (SPEC §7.1), versioned system prompt
@@ -64,6 +68,7 @@ code/animation state, and moderation correctly intercepts an off-topic/
 unsafe test message.
 
 ## Phase 4 — Full Lesson Loop (Stack)
+
 **Goal:** complete the 5-step lesson template end-to-end for one structure.
 
 - Add `HookPanel` (analogy intro) and `ChallengePanel` (hand-authored
@@ -77,6 +82,7 @@ a test user with no prior coding experience, unassisted, per the MVP
 success metric in REQUIREMENTS.md §10.
 
 ## Phase 5 — Replicate for Remaining Structures
+
 **Goal:** Array, Linked List, Queue reach the same bar as Stack.
 
 - Implement each structure's renderer (array cells, linked-list
@@ -90,6 +96,7 @@ success metric in REQUIREMENTS.md §10.
 independently.
 
 ## Phase 6 — Pilot Hardening
+
 **Goal:** de-risk before putting this in front of real children.
 
 - Cross-browser check (latest Chrome/Edge/Firefox) per NFR-5.
@@ -105,6 +112,7 @@ independently.
 pass; sign-off to run the pilot.
 
 ## Phase 7 — Small-Scale Pilot & Feedback
+
 **Goal:** validate with real students per REQUIREMENTS.md §10 success
 metrics.
 
