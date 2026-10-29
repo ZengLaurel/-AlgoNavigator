@@ -1,0 +1,22 @@
+# Reference project kept out of this repo's history
+/hello-algo/
+
+# JetBrains IDE local config
+.idea/
+
+# Node / frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
