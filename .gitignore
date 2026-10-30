@@ -8,6 +8,8 @@
 node_modules/
 dist/
 dist-ssr/
+# Generated Pyodide runtime assets
+/public/pyodide/
 *.local
 .env
 .env.*
