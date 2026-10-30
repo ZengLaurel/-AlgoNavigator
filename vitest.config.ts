@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config'
 // `test` config into the same defineConfig() call breaks type-checking.
 export default defineConfig({
   test: {
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
   },
 })

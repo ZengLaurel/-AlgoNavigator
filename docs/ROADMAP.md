@@ -15,6 +15,8 @@ before moving to the next phase. Work proceeds phase by phase, in order.
   `api/`).
 - Add `.gitignore` entries for `node_modules`, build artifacts, `.env`.
 - Confirm `hello-algo/` and `Data-Structure/` remain untouched.
+- Automated tests: none yet beyond the Vitest pipeline canary
+  (`smoke.test.ts`) — there's no application logic to test until Phase 1.
 
 **Exit criterion:** `npm run dev` serves a blank React app; CI (or local)
 lint + test commands run clean.
@@ -28,7 +30,11 @@ lint + test commands run clean.
 - Build `AnimationStage` with play/pause/step/speed controls.
 - Author scripted `animationSteps` for Stack push/pop/peek, driven by
   hand-written `StructureState` fixtures (no Pyodide yet).
-- Unit tests for the Stack renderer's state-transform logic.
+- Automated tests (see SPEC §9 table): layout-math unit tests, a
+  controller-logic test for `AnimationStage`'s stepping/play/pause (using
+  a trivial render prop, no Stack/Framer-Motion coupling), a structural
+  render test for `StackRenderer` (Framer Motion mocked — animation
+  timing stays manual-only), and an end-to-end `App` render smoke test.
 
 **Exit criterion:** a student can watch a scripted push/pop/peek animation
 for Stack with working playback controls.
@@ -45,6 +51,11 @@ for Stack with working playback controls.
 - Wire worker output into the same Stack renderer from Phase 1 (FR-4: live
   code drives the same visualization as the scripted demo).
 - Kid-friendly error message mapping for common Python exceptions.
+- Automated tests (see SPEC §9 table): the `pyodide` npm package runs in
+  Node, so the exec-bridge logic (stdout capture, exception mapping,
+  loop/step-guard triggering) gets tested directly without a browser
+  Worker. The Worker respawn-on-hang logic gets its own unit test with a
+  mock Worker here, not deferred to Phase 6.
 
 **Exit criterion:** a student can write `push`/`pop` code in-browser, click
 Run, and see the Stack animation update to match their code's real
@@ -61,6 +72,10 @@ behavior; infinite loops are caught and recoverable without a page reload.
 - Verify Socratic/hint-first behavior manually against a scripted set of
   test questions (including attempts to go off-topic or extract direct
   answers).
+- Automated tests (see SPEC §9 table): mock the LLM client and unit-test
+  the proxy handler directly — moderation-triggered canned response,
+  system-prompt context assembly. No live API calls in CI; actual
+  response tone/quality stays a manual check.
 
 **Exit criterion:** a student can ask free-form questions during the Stack
 lesson, get age-appropriate Socratic responses referencing their current
@@ -76,6 +91,10 @@ unsafe test message.
 - Add `ProgressBar` / lesson progress persisted to `localStorage`.
 - Full manual run-through: hook → animation → guided code → AI Q&A →
   challenge, on Chromebook-class hardware, checking NFR-3 load-time target.
+- Automated tests (see SPEC §9 table): `Exercise.solutionCheck`/
+  `Challenge.autoGrade` are pure functions → unit test directly;
+  `localStorage` progress persistence → unit test. NFR-3 hardware timing
+  stays manual-only.
 
 **Exit criterion:** the entire Stack lesson is playable start to finish by
 a test user with no prior coding experience, unassisted, per the MVP
@@ -91,6 +110,9 @@ success metric in REQUIREMENTS.md §10.
   each.
 - Extend the tutor system prompt's scope to cover all 4 topics; re-test
   Socratic/moderation behavior per structure.
+- Automated tests: repeat the Phase 1 four-test pattern (layout math /
+  controller logic / renderer structure / lesson smoke test) for each of
+  Array, Linked List, and Queue.
 
 **Exit criterion:** all 4 lessons meet the Phase 4 exit criterion
 independently.
@@ -107,6 +129,9 @@ independently.
   completions (REQUIREMENTS.md §9).
 - Reliability pass: forced Pyodide worker crashes/hangs on all 4 exercises,
   confirm recovery without progress loss (NFR-6).
+- Automated tests: none new here — the respawn-on-hang logic's unit test
+  was written in Phase 2; this phase's job is the real cross-browser,
+  in-browser verification that automated coverage can't substitute for.
 
 **Exit criterion:** no open safety or reliability issues from the hardening
 pass; sign-off to run the pilot.

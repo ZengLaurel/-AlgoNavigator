@@ -20,5 +20,15 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // Lets destructuring-to-discard (e.g. stripping framer-motion-only
+      // props before spreading the rest onto a DOM element in test mocks)
+      // name the discarded bindings with a leading underscore instead of
+      // needing a suppression comment per name.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
   },
 ])
