@@ -258,6 +258,103 @@ h2 {
   background: #fff0f1;
 }
 
+.tutor-messages {
+  margin: 18px 0 0;
+  border: 1px solid #e3e8f2;
+  border-radius: 12px;
+  padding: 14px;
+  max-height: 320px;
+  overflow-y: auto;
+  list-style: none;
+  background: #fbfcfe;
+}
+
+.tutor-empty {
+  margin: 0;
+  color: #7a8699;
+}
+
+.tutor-message {
+  margin: 0 0 14px;
+}
+
+.tutor-message:last-child {
+  margin-bottom: 0;
+}
+
+.tutor-message p {
+  margin: 4px 0 0;
+  border-radius: 12px;
+  padding: 10px 13px;
+  white-space: pre-wrap;
+}
+
+.tutor-role {
+  color: #596780;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tutor-student p {
+  color: #1f3a6b;
+  background: #e9efff;
+}
+
+.tutor-tutor p {
+  color: #2c4a38;
+  background: #e9f6ed;
+}
+
+.tutor-pending p {
+  color: #6b7a8c;
+  background: #f1f4f8;
+}
+
+.tutor-controls {
+  margin-top: 16px;
+}
+
+.tutor-input-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #596780;
+  font-size: 0.92rem;
+}
+
+.tutor-controls input {
+  width: 100%;
+  border: 1px solid #cbd5e8;
+  border-radius: 10px;
+  padding: 11px 13px;
+  color: #243047;
+  font: inherit;
+  font-size: 0.97rem;
+  background: #fff;
+}
+
+.tutor-controls input:focus-visible {
+  outline: 3px solid #f4b942;
+  outline-offset: 2px;
+}
+
+.tutor-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tutor-secondary {
+  color: #3157d5;
+  background: #e9efff;
+}
+
+.tutor-secondary:hover:not(:disabled) {
+  background: #d8e3ff;
+}
+
 @media (max-width: 520px) {
   #root {
     padding: 20px 12px 40px;

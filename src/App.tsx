@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimationStage } from './components/AnimationStage'
 import { CodeEditorPanel } from './components/CodeEditorPanel'
 import { StackRenderer } from './components/StackRenderer'
+import { TutorChatPanel } from './components/TutorChatPanel'
 import { stackAnimationSteps } from './content/stackAnimationSteps'
 import { stackExercise } from './content/stackExercise'
 import { PyodideProvider } from './engine/pyodide/PyodideProvider'
@@ -9,6 +10,7 @@ import type { ExecResult } from './engine/pyodide/types'
 
 function AppContent() {
   const [result, setResult] = useState<ExecResult | null>(null)
+  const [currentCode, setCurrentCode] = useState(stackExercise.starterCode)
   const liveState = result?.finalState ?? { elements: [] }
   const output = result?.stdout.trim()
 
@@ -50,6 +52,7 @@ function AppContent() {
         <CodeEditorPanel
           starterCode={stackExercise.starterCode}
           onResult={setResult}
+          onCodeChange={setCurrentCode}
         />
       </section>
 
@@ -82,6 +85,16 @@ function AppContent() {
           </p>
         )}
       </section>
+
+      <TutorChatPanel
+        context={{
+          currentCode,
+          lastRunResult: result
+            ? { stdout: result.stdout, error: result.error }
+            : null,
+          hintsUsedThisExercise: 0,
+        }}
+      />
     </main>
   )
 }

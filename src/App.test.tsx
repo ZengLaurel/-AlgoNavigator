@@ -59,6 +59,14 @@ vi.mock('./components/CodeEditorPanel', () => ({
   ),
 }))
 
+vi.mock('./tutor/tutorClient', () => ({
+  askTutor: vi.fn(async () => ({
+    ok: true as const,
+    reply: 'What do you think goes on top?',
+    moderationFlag: false,
+  })),
+}))
+
 describe('App', () => {
   it('renders the Stack lesson with no output before the first run', () => {
     render(<App />)
@@ -72,6 +80,16 @@ describe('App', () => {
     expect(screen.getByText('Starting point')).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Step forward' })).toBeTruthy()
     expect(screen.queryByText('Program output')).toBeNull()
+  })
+
+  it('includes the tutor panel in the lesson', () => {
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: 'Ask the tutor' })).toBeTruthy()
+    expect(screen.getByLabelText('Your question')).toBeTruthy()
+    // The earlier lesson steps are still present alongside it.
+    expect(screen.getByRole('button', { name: 'Step forward' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Run' })).toBeTruthy()
   })
 
   it('shows an explanatory output panel after Python runs', async () => {

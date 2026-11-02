@@ -10,11 +10,14 @@ import type { ExecResult } from '../engine/pyodide/types'
 interface CodeEditorPanelProps {
   starterCode: string
   onResult: (result: ExecResult) => void
+  /** Lets the lesson share the student's current code with the tutor panel. */
+  onCodeChange?: (code: string) => void
 }
 
 export function CodeEditorPanel({
   starterCode,
   onResult,
+  onCodeChange,
 }: CodeEditorPanelProps) {
   const editorParentRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
@@ -44,6 +47,10 @@ export function CodeEditorPanel({
       viewRef.current = null
     }
   }, [starterCode])
+
+  useEffect(() => {
+    onCodeChange?.(code)
+  }, [code, onCodeChange])
 
   const reset = () => {
     const view = viewRef.current
