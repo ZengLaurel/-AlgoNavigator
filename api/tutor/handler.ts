@@ -174,7 +174,10 @@ export async function handleTutorRequest(
         body: { reply: SAFE_REDIRECT_REPLY, moderationFlag: true },
       }
     }
-    // Provider/network detail is deliberately not surfaced to a child.
+    // Provider/network detail is deliberately not surfaced to a child, but
+    // must still be visible to whoever is running the server — otherwise a
+    // real auth/network/model failure looks identical to "nothing happened".
+    console.error('[tutor] askModel failed:', error)
     return {
       status: 502,
       body: { reply: SERVICE_UNAVAILABLE_REPLY, moderationFlag: false },

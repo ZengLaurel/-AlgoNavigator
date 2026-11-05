@@ -82,74 +82,180 @@ lesson, get age-appropriate Socratic responses referencing their current
 code/animation state, and moderation correctly intercepts an off-topic/
 unsafe test message.
 
-## Phase 4 — Full Lesson Loop (Stack)
+> **Status note (2026-11-05):** Phase 3 shipped and its tests pass, but the
+> tutor is not wired into the game shell built in Phases 4–6 below. It
+> remains in the repo, untouched, pending a future decision on how (or
+> whether) to re-integrate it into the game. Do not extend tutor scope
+> until that decision is made — see SPECIFICATION.md §11.4.
 
-**Goal:** complete the 5-step lesson template end-to-end for one structure.
+---
 
-- Add `HookPanel` (analogy intro) and `ChallengePanel` (hand-authored
-  challenge + auto-grade) for Stack.
-- Add `ProgressBar` / lesson progress persisted to `localStorage`.
-- Full manual run-through: hook → animation → guided code → AI Q&A →
-  challenge, on Chromebook-class hardware, checking NFR-3 load-time target.
-- Automated tests (see SPEC §9 table): `Exercise.solutionCheck`/
-  `Challenge.autoGrade` are pure functions → unit test directly;
-  `localStorage` progress persistence → unit test. NFR-3 hardware timing
-  stays manual-only.
+**Pivot (2026-11-05):** the remaining phases below were re-planned when the
+project shifted from a lesson-page format to a small underground-ruins
+game, "Stack Ruins." See SPECIFICATION.md §11 for the full game design.
+Phases 4–6 replace what was previously a single "Phase 4 — Full Lesson
+Loop"; former Phases 5–7 are renumbered to 7–9 and their scope is narrowed
+per the notes below. Work still proceeds phase by phase — do not start
+Phase 5 before Phase 4's exit criterion is met, etc.
 
-**Exit criterion:** the entire Stack lesson is playable start to finish by
-a test user with no prior coding experience, unassisted, per the MVP
-success metric in REQUIREMENTS.md §10.
+## Phase 4 — Stone Trial & Asset Foundation
 
-## Phase 5 — Replicate for Remaining Structures
+**Goal:** the game shell renders, the first (non-interactive) room is
+playable, and every sprite-driven component is built against a swappable
+asset index so missing art never blocks logic work.
 
-**Goal:** Array, Linked List, Queue reach the same bar as Stack.
+- Build `src/assets/index.ts`: a single module mapping logical asset names
+  (`stone-door-closed`, `sprite-idle`, `block-moon`, ...) to file paths,
+  per SPECIFICATION.md §11.6. Until final art lands, logical names resolve
+  to placeholder SVGs at the exact final dimensions/aspect ratios from
+  `docs/picture_summary.md` — never a rewrite when real art is swapped in.
+- Extend `StructureState` (SPEC §11.4) with an optional `glyph` field;
+  confirm the existing `computeStackLayout` pure function needs no changes.
+- Build `StoneStackRenderer` replacing the plain-rectangle `StackRenderer`
+  for in-game use (SPEC §11.4) — reuses layout math, swaps the visual
+  mapping only.
+- Build the reusable sprite components: `RuinsDoor`, `RuinsSwitch`,
+  `Sprite` (idle/guide/thinking/happy poses), `MagicStairs` — each a pure
+  state→asset mapping component per `docs/prompt.md` §2.4, no business
+  logic.
+- Build the `GameStage` shell: room routing, ruins-hall background,
+  game-theme CSS palette (SPECIFICATION.md §11.8), replacing the old
+  lesson-page card layout.
+- Implement **Trial of Stones** (SPEC §11.5.1): scripted push/pop/peek
+  sequence reusing the existing `AnimationStage` controller unchanged,
+  sprite `guide`→`happy` pose transition on completion.
+- Automated tests: `StoneStackRenderer` structural render test (same
+  pattern as the retired `StackRenderer.test.tsx`, Framer Motion mocked);
+  asset-index resolution test (every logical name used by a built
+  component actually resolves to something, placeholder or real); Trial of
+  Stones completion-state test reusing `AnimationStage.test.tsx`'s
+  approach.
 
-- Implement each structure's renderer (array cells, linked-list
-  boxes+arrows, queue) reusing the Phase 1–4 pattern.
-- Author hook analogies, animation steps, exercises, and challenges for
-  each.
-- Extend the tutor system prompt's scope to cover all 4 topics; re-test
-  Socratic/moderation behavior per structure.
-- Automated tests: repeat the Phase 1 four-test pattern (layout math /
-  controller logic / renderer structure / lesson smoke test) for each of
-  Array, Linked List, and Queue.
+**Exit criterion:** the game opens to the ruins hall, a student can play
+through the Trial of Stones scripted sequence with working playback
+controls, and every visual slot (door, switch, sprite, stones) renders a
+placeholder or real asset with no missing-asset errors.
 
-**Exit criterion:** all 4 lessons meet the Phase 4 exit criterion
-independently.
+## Phase 5 — Stairway Repair (Stack Gameplay)
 
-## Phase 6 — Pilot Hardening
+**Goal:** the student writes real Python to solve a stack-matching puzzle
+and sees the game world react.
+
+- Author the Stairway Repair exercise content (target glyph pattern +
+  starter code against the existing `MyStack` harness, extended with a
+  `glyph` parameter per SPEC §11.5.2) — reuses Phase 2's Pyodide
+  execution, error mapping, and `CodeEditorPanel` entirely unchanged.
+- Implement `Exercise.solutionCheck` for this level: compare final
+  `StructureState.elements[].glyph` against the target array
+  (deterministic, hand-authored per SPEC §1's existing MVP decision).
+- Wire success → `RuinsDoor`/`RuinsSwitch`/`MagicStairs` state changes and
+  a position-tween "climb" (Framer Motion, no frame-by-frame sprite
+  animation per the asset brief).
+- Wire runtime errors → `Sprite` `thinking` pose + existing kid-friendly
+  error panel (Phase 2), without resetting game state.
+- Automated tests: `solutionCheck` pure-function tests (target match, extra
+  stone, wrong order, wrong glyph); an integration test driving the real
+  exec bridge (Node-testable per the existing Phase 2 pattern) through a
+  correct and an incorrect solution end to end.
+
+**Exit criterion:** a student can edit Python to match the target stone
+pattern, click Run, and see the door open and stairway appear; an
+incorrect or erroring solution leaves the room state unchanged with a
+friendly error shown.
+
+## Phase 6 — Forked Path (Stack as Backtracking)
+
+**Goal:** a second, independent application of the stack concept — path
+backtracking through a generated maze — ships as its own level.
+
+- Implement the `RoomNode`/`PathState` model (SPEC §11.5.3) as pure,
+  renderer-independent functions: map generation (connected graph, exactly
+  one `exit`, at least one `deadEnd`, every node reachable from
+  `entrance`), and push/pop-on-backtrack transitions.
+- Render the map as SVG nodes/edges computed from `PathState` — positions
+  and connections are never baked into the background image
+  (`ruins-map-bg` is a plain board only), per SPECIFICATION.md §11.8.
+- Render the `pathStack` sidebar using the same stone-stack visual
+  language as Stairway Repair, to make the stack-as-backtracking
+  abstraction explicit to the student.
+- Animate node-to-node movement as a position tween along the connecting
+  edge (same technique as the stairway climb in Phase 5).
+- Automated tests (per the original SPEC §9 testing philosophy — this is
+  genuinely new logic, not a reskin, so it gets full coverage): map
+  generator validity properties (reachability, exactly one exit, at least
+  one dead end) across repeated random generations; push-on-enter/
+  pop-on-backtrack state machine tests; a rendered-SVG structural test
+  (node/edge count matches `PathState`, Framer Motion mocked).
+
+**Exit criterion:** a student can navigate a generated maze, back out of
+dead ends via the visible path stack, and reach the exit to complete the
+Stack Ruins game end to end (Trial of Stones → Stairway Repair → Forked
+Path).
+
+## Phase 7 — Asset Finalization & Polish
+
+**Goal:** swap every placeholder for final art and add the non-blocking
+polish layer.
+
+- Replace placeholders in `src/assets/index.ts` with final assets per
+  `docs/picture_summary.md`, re-cropped/re-generated to spec: transparent
+  `stone-door-closed/open` and `switch-inactive/active` at their target
+  dimensions (current files are opaque full-frame renders — see
+  SPECIFICATION.md §11.6), the 5 glyph stones, 4 sprite poses,
+  `magic-stairs`, and the 5 map node icons.
+- Add the non-blocking third-batch assets (badge, code book, scroll,
+  glow/sparkle/dust effects) per `docs/prompt.md` §6's "Phase 3
+  beautification" batch.
+- Compress/convert per `docs/prompt.md` §7: backgrounds to WebP, sprite
+  PNGs size-optimized; lazy-load map/reward/fx assets per level rather
+  than on initial load.
+- Accessibility pass: alt text for every asset, non-color-reliant state
+  indication (door/switch/stack-top state must not rely on color alone),
+  captions alongside all sprite dialogue.
+- Automated tests: none new — this phase is asset/perf work, verified by
+  the existing structural render tests still passing against real (not
+  placeholder) assets, plus manual visual QA.
+
+**Exit criterion:** no placeholder assets remain in a normal playthrough;
+load-time and accessibility checks pass per SPECIFICATION.md §11.8 and
+NFR-3/NFR-4.
+
+## Phase 8 — Pilot Hardening
 
 **Goal:** de-risk before putting this in front of real children.
 
 - Cross-browser check (latest Chrome/Edge/Firefox) per NFR-5.
-- Accessibility pass (color contrast, non-color-reliant state indication,
-  captions) per SPEC §8.
-- Manual transcript review process dry-run: sample AI conversations across
-  all 4 lessons, specifically probing for prompt injection and unsafe
-  completions (REQUIREMENTS.md §9).
-- Reliability pass: forced Pyodide worker crashes/hangs on all 4 exercises,
-  confirm recovery without progress loss (NFR-6).
-- Automated tests: none new here — the respawn-on-hang logic's unit test
-  was written in Phase 2; this phase's job is the real cross-browser,
-  in-browser verification that automated coverage can't substitute for.
+- Manual transcript review process dry-run **only if** the tutor is
+  re-integrated before this phase (see the Phase 3 status note above) —
+  otherwise skip, since no AI conversation exists in the shipped game.
+- Reliability pass: forced Pyodide worker crashes/hangs during Stairway
+  Repair, confirm recovery without progress loss (NFR-6) — reuses Phase
+  2's respawn-on-hang logic and its existing test, verified in-browser.
+- Full playthrough QA: Trial of Stones → Stairway Repair → Forked Path,
+  on Chromebook-class hardware, checking NFR-3 load-time target.
 
-**Exit criterion:** no open safety or reliability issues from the hardening
-pass; sign-off to run the pilot.
+**Exit criterion:** no open safety or reliability issues from the
+hardening pass; sign-off to run the pilot.
 
-## Phase 7 — Small-Scale Pilot & Feedback
+## Phase 9 — Small-Scale Pilot & Feedback
 
 **Goal:** validate with real students per REQUIREMENTS.md §10 success
-metrics.
+metrics, adapted to the game format.
 
 - Run with a small group (single classroom or a handful of students).
-- Collect: completion rate per lesson, hint-first adherence (via sampled
-  transcripts), any crashes/hangs requiring reload.
-- Write up findings and decide next-phase scope (post-MVP content: trees/
-  hashing/sorting, accounts/progress sync, teacher dashboard, etc. — see
-  REQUIREMENTS.md §3 Non-Goals as the candidate backlog).
+- Collect: completion rate per room, time-to-complete Stairway Repair
+  without hints, any crashes/hangs requiring reload, qualitative feedback
+  on whether the game framing improved engagement versus the original
+  lesson-page format.
+- Write up findings and decide next-phase scope: Array/LinkedList/Queue
+  game rooms (previously "Phase 5 — Replicate for Remaining Structures"),
+  tutor re-integration, and/or further polish — see REQUIREMENTS.md §3
+  Non-Goals as the candidate backlog, now alongside the game-specific
+  options above.
 
-**Exit criterion:** success metrics from REQUIREMENTS.md §10 are measured
-and documented; go/no-go decision made for post-MVP investment.
+**Exit criterion:** success metrics are measured and documented; go/no-go
+decision made for post-MVP investment, including whether to extend the
+game format to the remaining three structures.
 
 ---
 
