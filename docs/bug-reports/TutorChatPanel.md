@@ -46,4 +46,5 @@ key.
 
 ## Status
 
-Last verified: 2026-11-02 — 7/7 passing (`npm test`)
+Last verified: 2026-11-06 — 7/7 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

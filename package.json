@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "test:report": "node scripts/test-report.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

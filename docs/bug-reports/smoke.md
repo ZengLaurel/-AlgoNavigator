@@ -25,4 +25,5 @@ exiting with a false "0 passed" success.
 
 ## Status
 
-Last verified: 2026-10-30 — 1/1 passing (`npm test`)
+Last verified: 2026-11-06 — 1/1 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

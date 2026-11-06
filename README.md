@@ -41,9 +41,12 @@ details.
 
 ## Project status
 
-Phase 2 is in progress. The Stack lesson now includes the scripted
-animation, a CodeMirror Python editor, Pyodide execution in a Web Worker,
-and a live Stack result panel. See:
+Phase 4 now opens **Stack Ruins — Trial of Stones**, a ruins-themed
+push/peek/pop demonstration with a guide, gate, completion reward, and replay.
+Artwork is currently inline SVG/CSS placeholders. The Python editor and tutor
+remain in the repository but are not mounted in the game; Stairway Repair
+and Forked Path are future rooms. No new dependencies are needed for Phase 4.
+See:
 
 - [docs/REQUIREMENTS.md](./docs/REQUIREMENTS.md) — product requirements and scope.
 - [docs/SPECIFICATION.md](./docs/SPECIFICATION.md) — technical design.
@@ -128,13 +131,31 @@ npm run format:check
 The production build is written to `dist/`, which is generated output and
 is not committed.
 
+### Test records
+
+Two documents record testing, for different readers:
+
+- [`docs/TEST-RESULTS.md`](docs/TEST-RESULTS.md) — every test case by
+  name, whether it passed, how long it took, and the failure output if
+  anything broke. It is generated from a real run, never hand-edited:
+
+  ```bat
+  npm run test:report
+  ```
+
+- [`docs/bug-reports/`](docs/bug-reports/README.md) — one report per test
+  file explaining _why_ each test exists, what regression it guards
+  against, and what it deliberately does not cover.
+
+Re-run `npm run test:report` after changing tests and commit the
+regenerated `docs/TEST-RESULTS.md` with the change.
+
 ### Current phase
 
-Phase 2 is in progress. The Stack lesson includes the scripted animation
-and a Python editor backed by Pyodide in a Web Worker. The first Python run
-may take a few seconds while the Pyodide runtime loads. If the page reports
-that Python took too long, reset the exercise and run again; the worker is
-replaced automatically.
+Use Play or Step forward to place the base, moon, and star stones, peek at
+the top, then remove them in reverse order. Completing the sequence awakens
+the gate and changes the guide to a celebrating pose. Replay restarts the
+room. This observation room does not call the tutor API or load Pyodide.
 
 ### Stop and restart
 

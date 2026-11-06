@@ -44,4 +44,5 @@ testing animation itself — see Known gaps.
 
 ## Status
 
-Last verified: 2026-10-30 — 2/2 passing (`npm test`)
+Last verified: 2026-11-06 — 2/2 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

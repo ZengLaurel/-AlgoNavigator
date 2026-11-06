@@ -56,4 +56,5 @@ top element animating. `AnimationStage` now always passes a shared
 
 ## Status
 
-Last verified: 2026-10-30 — 4/4 passing (`npm test`)
+Last verified: 2026-11-06 — 4/4 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

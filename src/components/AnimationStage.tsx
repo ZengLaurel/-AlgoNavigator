@@ -4,6 +4,7 @@ import type { AnimationStep, StructureState } from '../engine/structures/types'
 interface AnimationStageProps {
   steps: AnimationStep[]
   render: (state: StructureState, maxSlotCount: number) => React.ReactNode
+  onFrameChange?: (frameIndex: number, isLastFrame: boolean) => void
 }
 
 const SPEEDS = [0.5, 1, 2] as const
@@ -16,7 +17,11 @@ const BASE_INTERVAL_MS = 1200
  * injected via `render` so this same controller drives Stack now and
  * Array/LinkedList/Queue in later roadmap phases.
  */
-export function AnimationStage({ steps, render }: AnimationStageProps) {
+export function AnimationStage({
+  steps,
+  render,
+  onFrameChange,
+}: AnimationStageProps) {
   const frames = useMemo(
     () => [
       steps[0]?.beforeState ?? { elements: [] },
@@ -39,6 +44,10 @@ export function AnimationStage({ steps, render }: AnimationStageProps) {
 
   const atStart = frameIndex === 0
   const atEnd = frameIndex === frames.length - 1
+
+  useEffect(() => {
+    onFrameChange?.(frameIndex, atEnd)
+  }, [frameIndex, atEnd, onFrameChange])
 
   useEffect(() => {
     if (!isPlaying || atEnd) return

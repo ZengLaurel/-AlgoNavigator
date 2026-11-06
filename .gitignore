@@ -10,6 +10,8 @@ dist/
 dist-ssr/
 # Generated Pyodide runtime assets
 /public/pyodide/
+# Vitest JSON used by `npm run test:report`
+.test-results.json
 *.local
 .env
 .env.*

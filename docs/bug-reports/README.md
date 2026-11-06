@@ -32,3 +32,22 @@ Last verified: <date> — N/N passing (`npm test`)
 
 Add a new report here whenever a new `*.test.ts`/`*.test.tsx` file is
 added; update the "Status" line whenever the suite is re-verified.
+
+## Where the actual test-case results live
+
+These reports explain _why_ each test exists. The concrete test-case names,
+per-case pass/fail, durations, and failure messages are generated into
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md):
+
+```bash
+npm run test:report
+```
+
+That command runs the full suite with Vitest's JSON reporter and rewrites
+`docs/TEST-RESULTS.md` from the real run — do not edit that file by hand.
+Commit it alongside the code change so the repository always carries a
+record of what was last run and what passed.
+
+Name mismatches to be aware of: `api/tutor/handler.test.ts` →
+`tutorHandler.md` and `src/assets/index.test.ts` → `assets.md` (avoid
+generic names like `handler.md`/`index.md`).

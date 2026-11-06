@@ -52,7 +52,7 @@ select:focus-visible,
 }
 
 #root {
-  max-width: 860px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 32px 20px 64px;
 }
@@ -355,7 +355,275 @@ h2 {
   background: #d8e3ff;
 }
 
+.game-root {
+  --ruins-ink: #f5ead8;
+  --ruins-cyan: #4dd0e1;
+  color: var(--ruins-ink);
+  background: #1a2438;
+  border-radius: 24px;
+  padding: clamp(16px, 4vw, 40px);
+  box-shadow: 0 24px 80px #10172555;
+}
+
+.game-header h1 {
+  margin: 14px 0;
+  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  line-height: 1.1;
+  font-family: Georgia, serif;
+  color: #f2c265;
+}
+
+.game-kicker {
+  color: #8ce4ed;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+.game-header > p:last-child {
+  color: #d7dfeb;
+  margin-bottom: 28px;
+}
+.room-trail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  padding: 16px 0;
+  border-block: 1px solid #61738a;
+  font-size: 0.8rem;
+  color: #c4cede;
+}
+.room-trail [aria-current] {
+  color: #f2c265;
+  font-weight: 700;
+}
+.trial-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+.game-root h2 {
+  color: var(--ruins-ink);
+  margin-top: 8px;
+  font-family: Georgia, serif;
+}
+.trial-status {
+  border: 1px solid #61738a;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #a8eced;
+  font-size: 0.8rem;
+}
+.trial-intro {
+  color: #d7dfeb;
+  max-width: 650px;
+}
+.ruins-scene {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  height: 340px;
+  border: 1px solid #61738a;
+  border-radius: 16px;
+  background: radial-gradient(ellipse at 60% 20%, #3b4a63, #101b2d 75%);
+}
+.ruins-arch {
+  position: absolute;
+  z-index: -1;
+  top: 24px;
+  width: 150px;
+  height: 280px;
+  border: 20px solid #3b4a63;
+  border-radius: 90px 90px 0 0;
+  box-shadow: 0 0 0 3px #61738a55;
+}
+.ruins-arch-left {
+  left: -65px;
+}
+.ruins-arch-right {
+  right: -65px;
+}
+.ruins-floor {
+  position: absolute;
+  inset: 78% 0 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 28px, #61738a44 29px 30px),
+    repeating-linear-gradient(90deg, #27344a 0 80px, #61738a44 81px 82px);
+}
+.scene-inscription {
+  position: absolute;
+  left: 42%;
+  top: 30px;
+  color: #9aabc1;
+  letter-spacing: 0.4em;
+}
+.stone-pedestal {
+  position: absolute;
+  bottom: 44px;
+  left: 28%;
+  width: 210px;
+}
+.stone-pedestal > svg {
+  display: block;
+}
+.scene-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #d7dfeb;
+}
+.stone-pedestal > .scene-label {
+  margin-bottom: 8px;
+}
+.pedestal-base {
+  display: block;
+  width: 136px;
+  height: 16px;
+  border-radius: 4px;
+  background: #63748b;
+  box-shadow: 0 6px 0 #101b2d;
+}
+.scene-guide {
+  position: absolute;
+  left: 6%;
+  bottom: 60px;
+}
+.scene-guide::after {
+  content: '';
+  display: block;
+  width: 70px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(#0008, transparent 70%);
+}
+.scene-gate {
+  position: absolute;
+  right: 8%;
+  bottom: 56px;
+  text-align: center;
+}
+.scene-gate > .scene-label {
+  margin-top: 8px;
+}
+.scene-switch {
+  position: absolute;
+  right: 9%;
+  bottom: 10px;
+}
+.scene-stairs {
+  position: absolute;
+  right: 20%;
+  bottom: 20px;
+  transform: scale(0.65);
+  transform-origin: bottom right;
+  pointer-events: none;
+}
+.stone-trial > div > p[aria-live] {
+  min-height: 60px;
+  padding: 16px;
+  margin: 16px 0;
+  border-left: 3px solid var(--ruins-cyan);
+  border-radius: 8px;
+  background: #27344a;
+}
+.stone-trial > div > div:last-child:not(.ruins-scene) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.game-root button {
+  min-height: 44px;
+  background: #4dd0e1;
+  color: #102339;
+}
+.game-root button:hover:not(:disabled) {
+  background: #91e4ec;
+}
+.game-root button:disabled {
+  opacity: 0.55;
+}
+.game-root select {
+  margin-left: 8px;
+  padding: 10px;
+  background: #27344a;
+  color: #f5ead8;
+  border: 1px solid #61738a;
+  border-radius: 8px;
+}
+.guide-dialogue {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid #61738a;
+  border-radius: 12px;
+  background: #223047;
+}
+.guide-name {
+  color: #f2c265;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.guide-dialogue p {
+  margin: 6px 0 0;
+}
+.trial-completion {
+  padding: 20px;
+  margin-top: 18px;
+  background: #2d403f;
+  border: 1px solid #8dc5ad;
+  border-radius: 12px;
+}
+.trial-completion h3 {
+  margin: 0;
+  color: #f2c265;
+}
+.game-art-note {
+  color: #b8c5d8;
+  font-size: 0.75rem;
+  margin: 24px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-root *,
+  .game-root *::before,
+  .game-root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 @media (max-width: 520px) {
+  .ruins-scene {
+    height: 330px;
+  }
+  .stone-pedestal {
+    left: 8%;
+    bottom: 48px;
+  }
+  .scene-guide {
+    left: 1%;
+    bottom: 3px;
+    transform: scale(0.65);
+    transform-origin: bottom left;
+  }
+  .scene-gate {
+    right: 4%;
+    bottom: 100px;
+    transform: scale(0.7);
+    transform-origin: right bottom;
+  }
+  .scene-stairs {
+    right: 0;
+    transform: scale(0.5);
+  }
+  .scene-switch {
+    right: 4%;
+  }
+  .scene-inscription {
+    left: 25%;
+    top: 20px;
+  }
   #root {
     padding: 20px 12px 40px;
   }

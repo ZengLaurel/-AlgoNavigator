@@ -26,4 +26,5 @@ needing a real browser Worker in CI.
 
 ## Status
 
-Last verified: 2026-10-30 — pending final Phase 2 verification (`npm test`)
+Last verified: 2026-11-06 — 2/2 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

@@ -42,4 +42,5 @@ guarantee hold under future edits.
 
 ## Status
 
-Last verified: 2026-11-02 — 8/8 passing (`npm test`)
+Last verified: 2026-11-06 — 8/8 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

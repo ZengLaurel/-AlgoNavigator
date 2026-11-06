@@ -54,4 +54,5 @@ auto-stops it) that fix needs to preserve, not just the lint rule.
 
 ## Status
 
-Last verified: 2026-10-30 — 4/4 passing (`npm test`)
+Last verified: 2026-11-06 — 4/4 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

@@ -56,4 +56,5 @@ and no network, so CI never spends money or depends on provider uptime.
 
 ## Status
 
-Last verified: 2026-11-02 — 12/12 passing (`npm test`)
+Last verified: 2026-11-06 — 12/12 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

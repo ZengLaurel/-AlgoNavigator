@@ -7,6 +7,9 @@ export interface StructureElement {
   id: string
   value: number | string
   highlighted?: boolean
+  /** Stack Ruins game only (SPEC §11.4): which carved-stone glyph to render
+   * for this element. Optional and ignored by the plain-number renderer. */
+  glyph?: 'base' | 'moon' | 'sun' | 'star' | 'cracked'
 }
 
 export interface StructureState {

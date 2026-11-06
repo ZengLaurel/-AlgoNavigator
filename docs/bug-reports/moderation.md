@@ -45,4 +45,5 @@ student in this lesson is genuinely likely to ask.
 
 ## Status
 
-Last verified: 2026-11-02 — 20/20 passing (`npm test`)
+Last verified: 2026-11-06 — 20/20 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

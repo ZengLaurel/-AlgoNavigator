@@ -23,5 +23,5 @@ usability contract at the execution boundary.
 
 ## Status
 
-Last verified: 2026-10-30 — pending first run after Phase 2 test additions
-(`npm test`)
+Last verified: 2026-11-06 — 6/6 passing (`npm test`); see
+[`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.
