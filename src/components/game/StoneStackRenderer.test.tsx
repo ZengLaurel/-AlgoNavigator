@@ -30,14 +30,14 @@ describe('StoneStackRenderer', () => {
 
   it('uses 2:1 stones and highlights peek without removing a stone', () => {
     const { container } = render(<StoneStackRenderer state={state} />)
-    const stones = container.querySelectorAll('[data-glyph] > rect:first-child')
-    expect(stones).toHaveLength(3)
-    expect(Number(stones[0].getAttribute('width'))).toBe(
-      2 * Number(stones[0].getAttribute('height')),
+    const images = container.querySelectorAll('[data-glyph] > image')
+    expect(images).toHaveLength(3)
+    expect(Number(images[0].getAttribute('width'))).toBe(
+      2 * Number(images[0].getAttribute('height')),
     )
-    expect(stones[2].getAttribute('fill')).not.toBe(
-      stones[0].getAttribute('fill'),
-    )
+    const stones = container.querySelectorAll('[data-glyph]')
+    expect(stones[2].getAttribute('data-highlighted')).toBe('true')
+    expect(stones[0].getAttribute('data-highlighted')).toBe('false')
   })
 
   it('shows an empty state without a top marker', () => {

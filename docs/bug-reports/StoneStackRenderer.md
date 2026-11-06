@@ -16,9 +16,12 @@ stones, distorted dimensions, and misleading top markers.
 ## Known gaps
 
 - Spring appearance and visual composition require browser inspection.
-- Final external image assets are not yet supplied.
 - Unlike the old renderer tests, these tests use real Framer Motion and wait
   for exit completion rather than mocking the animation layer.
+- Since real art replaced the placeholder SVGs (`src/assets/index.ts`), the
+  2:1/highlight test asserts on `<image>` dimensions and a `data-highlighted`
+  flag rather than `<rect>` fill colors — the highlight itself is now drawn
+  as a glow outline around the image, not a recolor.
 
 ## Status
 

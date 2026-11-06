@@ -163,7 +163,29 @@ pattern, click Run, and see the door open and stairway appear; an
 incorrect or erroring solution leaves the room state unchanged with a
 friendly error shown.
 
+**Status: done.** `GameStage` now routes between Trial of Stones and
+Stairway Repair via an unlock-on-completion nav button; `MyStack.push`
+gained a backward-compatible optional `glyph` parameter; the solution check
+is the standalone `checkStairwayRepair` function (SPEC's generic
+`Exercise.solutionCheck` interface was never implemented, so this follows
+the room-based architecture already in place instead). Real artwork for the
+door, switch, stones, sprite, and stairway (`docs/picture_summary.md`) was
+also wired into `src/assets/index.ts` during this phase, replacing those
+keys' placeholder SVGs — each component's existing `descriptor.src` branch
+point (built in Phase 4) made this a data-only change.
+
 ## Phase 6 — Forked Path (Stack as Backtracking)
+
+**Implementation status (2026-11-06):** implemented with bounded seeded-testable
+branching tree generation, immutable push/pop/revisit state, stable SVG layout,
+a dedicated room-icon stack using `computeStackLayout`, keyboard room actions,
+locked edge tweens and reduced motion, frozen exit completion/replay, and
+explicit room-02 continuation with persistent navigation unlocks. Tests solve
+maps by graph traversal or an injected fixture, not random UI guesses.
+Manual browser acceptance remains pending: full Python-backed three-room
+playthrough, tween appearance, narrow-screen usability, and OS reduced-motion
+behavior have not been visually verified in this environment. Do not treat
+this as Phase 7 visual sign-off.
 
 **Goal:** a second, independent application of the stack concept — path
 backtracking through a generated maze — ships as its own level.

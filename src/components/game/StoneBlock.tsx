@@ -105,12 +105,26 @@ export function StoneBlock({
 
   if (descriptor.src) {
     return (
-      <image
-        href={descriptor.src}
-        width={width}
-        height={height}
-        aria-label={descriptor.alt}
-      />
+      <g data-glyph={resolvedGlyph} data-highlighted={highlighted}>
+        {highlighted && (
+          <rect
+            x={-4}
+            y={-4}
+            width={width + 8}
+            height={height + 8}
+            rx={14}
+            fill="none"
+            stroke={PALETTE.stoneHighlighted}
+            strokeWidth={3}
+          />
+        )}
+        <image
+          href={descriptor.src}
+          width={width}
+          height={height}
+          aria-label={descriptor.alt}
+        />
+      </g>
     )
   }
 

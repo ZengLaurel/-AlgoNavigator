@@ -2,9 +2,13 @@
 import { describe, expect, it } from 'vitest'
 import { runStackCode, type PyodideInterface } from './execBridge'
 
-function createFakePyodide(): PyodideInterface {
+function createFakePyodide(
+  pairs: Array<[number | string, string | null]> = [
+    [5, null],
+    [8, null],
+  ],
+): PyodideInterface {
   let stdoutHandler: ((text: string) => void) | undefined
-  const values = [5, 8]
   return {
     setStdout: ({ batched }) => {
       stdoutHandler = batched
@@ -18,7 +22,7 @@ function createFakePyodide(): PyodideInterface {
       }
       if (code === '_read_state(stack)') {
         return {
-          toJs: () => values,
+          toJs: () => pairs,
           destroy: () => undefined,
         }
       }
@@ -61,5 +65,23 @@ print(missing_name)
       'Python does not know that name yet. Check its spelling and make sure you created it.',
     )
     expect(result.finalState).toBeNull()
+  })
+
+  it('reports a glyph when the student code passes one to push', async () => {
+    const result = await runStackCode(
+      createFakePyodide([
+        ['base', 'base'],
+        ['moon', 'moon'],
+      ]),
+      `stack = MyStack()
+stack.push('base', 'base')
+stack.push('moon', 'moon')
+`,
+    )
+
+    expect(result.finalState?.elements).toEqual([
+      { id: 'slot-0', value: 'base', glyph: 'base' },
+      { id: 'slot-1', value: 'moon', glyph: 'moon' },
+    ])
   })
 })

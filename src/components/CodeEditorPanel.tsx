@@ -62,8 +62,20 @@ export function CodeEditorPanel({
   }
 
   const execute = async () => {
-    onResult(await run(code))
+    let result: ExecResult
+    try {
+      result = await run(code)
+    } catch {
+      result = {
+        stdout: '',
+        error: 'Python could not run your code. Please try again.',
+        finalState: null,
+      }
+    }
+    onResult(result)
   }
+
+  const busy = status === 'loading' || status === 'running'
 
   const statusMessage = {
     idle: 'Ready when you are.',
@@ -82,10 +94,10 @@ export function CodeEditorPanel({
         aria-label="Python code editor"
       />
       <p aria-live="polite">{statusMessage}</p>
-      <button type="button" onClick={execute} disabled={status === 'running'}>
+      <button type="button" onClick={execute} disabled={busy}>
         Run
       </button>
-      <button type="button" onClick={reset} disabled={status === 'running'}>
+      <button type="button" onClick={reset} disabled={busy}>
         Reset
       </button>
     </section>

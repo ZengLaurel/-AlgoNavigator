@@ -396,6 +396,20 @@ h2 {
   color: #f2c265;
   font-weight: 700;
 }
+.room-trail button {
+  min-height: auto;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.room-trail button:hover {
+  background: none;
+  color: #f2c265;
+}
 .trial-heading {
   display: flex;
   flex-wrap: wrap;
@@ -578,10 +592,114 @@ h2 {
   margin: 0;
   color: #f2c265;
 }
+.stairway-target {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #61738a;
+  border-radius: 12px;
+  background: #223047;
+}
+.stairway-scene {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  height: 220px;
+  margin-bottom: 16px;
+  border: 1px solid #61738a;
+  border-radius: 16px;
+  background: radial-gradient(ellipse at 60% 20%, #3b4a63, #101b2d 75%);
+}
+.stairway-scene .scene-guide {
+  left: 6%;
+  bottom: 30px;
+}
+.stairway-scene .scene-gate {
+  right: 8%;
+  bottom: 30px;
+}
+.stairway-scene .scene-switch {
+  right: 9%;
+  bottom: 4px;
+}
+.stairway-scene .scene-stairs {
+  right: 20%;
+  bottom: 4px;
+}
+.stairway-tokens {
+  margin: 10px 0 0;
+  color: #f2c265;
+}
+.stairway-help,
+.stairway-feedback {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #61738a;
+  border-radius: 12px;
+  color: #e7edf6;
+  background: #223047;
+  line-height: 1.6;
+}
+.stairway-help h3 {
+  margin: 0;
+}
+.stairway-help pre {
+  overflow-x: auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: #101b2d;
+}
+.stairway-help ol:empty {
+  display: none;
+}
+.stairway-live {
+  margin-top: 16px;
+}
 .game-art-note {
   color: #b8c5d8;
   font-size: 0.75rem;
   margin: 24px 0 0;
+}
+
+.forked-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 24px;
+  align-items: start;
+}
+.forked-map {
+  display: block;
+  width: 100%;
+  max-height: 680px;
+  color: #f1f5f9;
+}
+.forked-map [role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+.forked-map [role='button']:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 4px;
+}
+.path-marker {
+  pointer-events: none;
+}
+.path-sidebar {
+  border: 1px solid #64748b;
+  border-radius: 12px;
+  padding: 12px;
+}
+.path-stack {
+  display: block;
+  width: 100%;
+  max-height: 460px;
+  color: #f1f5f9;
+}
+@media (max-width: 700px) {
+  .forked-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .path-stack {
+    max-height: 340px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

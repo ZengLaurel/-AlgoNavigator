@@ -4,6 +4,8 @@
 
 - Captures `print()` output from the Stack exercise.
 - Converts the final Stack values into the shared `StructureState` shape.
+- Reports a per-slot glyph when the student code passes one to
+  `push(value, glyph)` (Phase 5 — Stairway Repair).
 - Converts a student `NameError` into a child-friendly error message.
 - Keeps the bridge test deterministic by using a small fake Pyodide
   interface rather than downloading and initializing the full WASM runtime
@@ -17,6 +19,10 @@ student can run code successfully but see the wrong output or an empty live
 Stack. If exception mapping breaks, raw Python errors can leak into the
 child-facing interface. These tests protect the data contract without
 requiring a browser Worker.
+
+Since Phase 5, `MyStack.push(value, glyph=None)` carries an optional glyph
+so Stairway Repair can compare the live stack's carved-stone pattern
+against a target; `push(value)` with no glyph is unaffected.
 
 ## Known gaps
 

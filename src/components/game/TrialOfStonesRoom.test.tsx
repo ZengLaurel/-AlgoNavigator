@@ -11,11 +11,58 @@ function completeTrial() {
   }
 }
 
+/** Sprite/door/stairs art now resolves to real `<img>` elements (alt text)
+ * instead of placeholder `<svg role="img" aria-label>`; this matches either. */
+function findByAccName(text: string) {
+  return screen.queryByAltText(text) ?? screen.getByLabelText(text)
+}
+function queryByAccName(text: string) {
+  return screen.queryByAltText(text) ?? screen.queryByLabelText(text)
+}
+
 describe('TrialOfStonesRoom', () => {
+  it('explains all seven moves and keeps captions aligned with actual top changes', () => {
+    render(<TrialOfStonesRoom />)
+    const guide = screen.getByRole('complementary', {
+      name: 'How the stone tower works',
+    })
+    expect(guide.textContent).toContain('Last In, First Out')
+    expect(guide.textContent).toContain('Use Step forward')
+    expect(guide.querySelectorAll('li')).toHaveLength(7)
+    expect(trialOfStonesSteps.map((step) => step.operation)).toEqual([
+      'push',
+      'push',
+      'push',
+      'peek',
+      'pop',
+      'pop',
+      'pop',
+    ])
+    const expected = [
+      ['base'],
+      ['base', 'moon'],
+      ['base', 'moon', 'star'],
+      ['base', 'moon', 'star'],
+      ['base', 'moon'],
+      ['base'],
+      [],
+    ]
+    trialOfStonesSteps.forEach((step, index) => {
+      expect(step.afterState.elements.map((element) => element.glyph)).toEqual(
+        expected[index],
+      )
+      expect(step.description.startsWith(`${step.operation}:`)).toBe(true)
+      fireEvent.click(screen.getByRole('button', { name: 'Step forward' }))
+      expect(screen.getByText(step.description)).toBeTruthy()
+    })
+    expect(trialOfStonesSteps[3].description).toContain('No stone is removed')
+    expect(trialOfStonesSteps[6].description).toContain('stack is now empty')
+  })
+
   it('starts with the guide, closed gate, and no premature completion', () => {
     render(<TrialOfStonesRoom />)
-    expect(screen.getByLabelText('The guide sprite, explaining')).toBeTruthy()
-    expect(screen.getByLabelText('A closed stone ruins door')).toBeTruthy()
+    expect(findByAccName('The guide sprite, explaining')).toBeTruthy()
+    expect(findByAccName('A closed stone ruins door')).toBeTruthy()
     expect(screen.queryByRole('status')).toBeNull()
   })
 
@@ -25,9 +72,9 @@ describe('TrialOfStonesRoom', () => {
     expect(screen.getByRole('status').textContent).toContain(
       'Last In, First Out',
     )
-    expect(screen.getByLabelText('The guide sprite, celebrating')).toBeTruthy()
-    expect(screen.getByLabelText('An open stone ruins door')).toBeTruthy()
-    expect(screen.getByLabelText('A glowing magic stairway')).toBeTruthy()
+    expect(findByAccName('The guide sprite, celebrating')).toBeTruthy()
+    expect(findByAccName('An open stone ruins door')).toBeTruthy()
+    expect(findByAccName('A glowing magic stairway')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Step back' }))
     expect(screen.getByRole('status')).toBeTruthy()
@@ -35,7 +82,7 @@ describe('TrialOfStonesRoom', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Replay the trial' }))
     expect(screen.queryByRole('status')).toBeNull()
     expect(screen.getByText('Starting point')).toBeTruthy()
-    expect(screen.queryByLabelText('A glowing magic stairway')).toBeNull()
+    expect(queryByAccName('A glowing magic stairway')).toBeNull()
   })
 
   it('finishes through automatic playback', async () => {

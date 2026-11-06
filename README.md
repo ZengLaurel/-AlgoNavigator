@@ -41,11 +41,19 @@ details.
 
 ## Project status
 
-Phase 4 now opens **Stack Ruins — Trial of Stones**, a ruins-themed
-push/peek/pop demonstration with a guide, gate, completion reward, and replay.
-Artwork is currently inline SVG/CSS placeholders. The Python editor and tutor
-remain in the repository but are not mounted in the game; Stairway Repair
-and Forked Path are future rooms. No new dependencies are needed for Phase 4.
+Phase 6 adds **Forked Path**, a generated branching tree maze with an SVG
+map and a dedicated room-stack sidebar. Child moves push (including explored
+branches); parent moves and Backtrack pop without erasing visited rooms.
+The entrance is protected and reaching the exit freezes play until replay
+with a newly generated maze. Trial of Stones → Stairway Repair → Forked Path
+is now connected through explicit Continue buttons; unlocked navigation
+stays available when revisiting earlier rooms. Movement uses an edge tween
+and respects reduced motion. Map-node and badge artwork use local placeholders;
+existing Phase 5 door, switch, stones, sprite, stairway art and lazy Pyodide
+loading are preserved. No new dependencies or tutor changes.
+
+Browser visual/full-playthrough QA is still required; automated verification
+and its known gaps are recorded in the test companions and roadmap.
 See:
 
 - [docs/REQUIREMENTS.md](./docs/REQUIREMENTS.md) — product requirements and scope.

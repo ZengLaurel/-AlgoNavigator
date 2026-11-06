@@ -16,6 +16,14 @@ const ALL_KEYS: AssetKey[] = [
   'sprite-thinking',
   'sprite-happy',
   'magic-stairs',
+  'map-board',
+  'node-entrance',
+  'node-hall',
+  'node-corridor',
+  'node-dead-end',
+  'node-exit',
+  'badge-stack',
+  'fx-sparkle',
 ]
 
 describe('ASSETS', () => {

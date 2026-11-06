@@ -1,33 +1,45 @@
 import { loadPyodide, type PyodideInterface } from 'pyodide'
 import { runStackCode } from './execBridge'
+import type { WorkerRequest, WorkerResponse } from './protocol'
 
 const PYODIDE_INDEX_URL = '/pyodide/'
 let pyodide: PyodideInterface | undefined
-
-interface WorkerRequest {
-  code: string
-}
+let initialization: Promise<PyodideInterface> | undefined
 
 interface WorkerScope {
   onmessage: ((event: MessageEvent<WorkerRequest>) => void) | null
-  postMessage(message: unknown): void
+  postMessage(message: WorkerResponse): void
 }
 
 const workerScope = self as unknown as WorkerScope
 
-workerScope.onmessage = async (event) => {
+workerScope.onmessage = async ({ data }) => {
+  const { requestId } = data
+  if (data.type === 'init') {
+    try {
+      initialization ??= loadPyodide({ indexURL: PYODIDE_INDEX_URL })
+      pyodide = await initialization
+      workerScope.postMessage({ type: 'ready', requestId })
+    } catch (error) {
+      initialization = undefined
+      workerScope.postMessage({
+        type: 'init-error',
+        requestId,
+        error: String(error),
+      })
+    }
+    return
+  }
   try {
-    pyodide ??= await loadPyodide({ indexURL: PYODIDE_INDEX_URL })
-    const result = await runStackCode(pyodide, event.data.code)
-    workerScope.postMessage({ type: 'result', result })
+    if (!pyodide)
+      throw new Error('Python is not initialized. Run again to retry.')
+    const result = await runStackCode(pyodide, data.code)
+    workerScope.postMessage({ type: 'result', requestId, result })
   } catch (error) {
     workerScope.postMessage({
       type: 'result',
-      result: {
-        stdout: '',
-        error: String(error),
-        finalState: null,
-      },
+      requestId,
+      result: { stdout: '', error: String(error), finalState: null },
     })
   }
 }

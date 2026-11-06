@@ -376,6 +376,21 @@ student through a ruins hall. Three rooms gate progress in order:
 - The student edits Python calling a provided `MyStack` (reused from Phase
   2's harness, extended with a `glyph` parameter on `push`) to make the live
   stack match the target exactly, in order.
+- The target also exposes visible code-name tokens `base → moon → star`,
+  explicitly labeled bottom to top. Room-local deterministic hints reveal
+  progressively: the missing stones, push order/arguments, then the two missing
+  lines. Previously revealed hints remain visible; hints never edit code and
+  reset on Replay. No tutor/AI integration is used.
+- Instructions explain the provided `MyStack`, `push(number, 'glyph')` syntax,
+  top-of-stack placement, and that every Run executes the complete program
+  afresh and displays its final state rather than a step-through animation.
+- `getStairwayFeedback` supplies teaching feedback separately from the success
+  checker: correct-prefix missing stones, first wrong position bottom to top,
+  extra stones and pop guidance, empty stack, and missing (`null`) state. Omitted
+  glyphs retain the existing base default; exact-match success semantics stay
+  unchanged. Python errors are shown separately. While loading/running, retained
+  stones are explicitly labeled as the previous result and stale feedback/errors
+  are hidden; no-result and current-result labels distinguish other states.
 - `Exercise.solutionCheck` (existing type, SPEC §4) compares final
   `StructureState.elements[].glyph` array against the target array —
   deterministic, no AI grading, consistent with SPEC §1's existing decision
@@ -411,22 +426,28 @@ interface PathState {
 }
 ```
 
-- Map is generated at level start as a small connected graph with at least
-  one dead end and exactly one `exit`; node positions are computed
-  server-side-free (pure function, testable) and rendered as SVG circles +
-  lines — **never baked into the background image**, matching the asset
-  manifest's explicit constraint.
-- Moving into an unvisited node pushes it onto `pathStack` and animates the
-  sprite/marker sliding along the connecting line (Framer Motion position
-  tween, reusing the same approach as the stairway climb).
+- Map is generated at level start as a small connected bidirectional tree,
+  with one entrance, one leaf exit, at least one non-exit dead end, and a
+  branching hall. Node types reflect actual topology. Layout is a pure
+  client-side function of topology, rendered as SVG nodes and unique edges;
+  the background is a blank stone board, never a baked-in map.
+- The stack initially contains the entrance; Top always identifies the
+  current room. Every adjacent child move pushes, including re-entering an
+  explored branch. First visits add to an immutable, monotonically growing
+  visited set; popping never erases exploration history. Non-adjacent
+  moves are rejected. Clicking the parent or Backtrack pops exactly once;
+  the entrance cannot be popped. Movement is locked during an edge tween
+  and reduced-motion users move immediately.
 - Reaching a `deadEnd` requires the student to back out: popping
   `pathStack` moves the marker back along the same edge. The current
   `pathStack` is rendered as a small sidebar using the **same stone-stack
   visual language** as the main game (small node-icon "stones"), making the
   abstraction explicit: this is still a stack, just holding rooms instead
   of glyphs.
-- Reaching `exit` triggers the completion sequence (badge/sparkle assets,
-  §11.6 third batch).
+- Reaching `exit` freezes exploration and displays game completion and a
+  badge placeholder. Replay generates a new maze. Switching rooms unmounts
+  and resets local room state but never re-locks previously unlocked navigation.
+  Stairway Repair advances only on its explicit success-panel Continue button.
 - This is the one new piece of non-trivial logic in the pivot and gets its
   own test file per ROADMAP.md Phase 6's automated-test row: map generation
   validity (exactly one exit, every node reachable, at least one dead end)

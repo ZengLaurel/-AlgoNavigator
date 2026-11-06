@@ -1,6 +1,7 @@
 import { mapPythonError } from './errorMessages'
 import { STACK_HARNESS, STACK_STATE_EXPRESSION } from './pythonHarness'
 import type { ExecResult } from './types'
+import type { StructureElement } from '../structures/types'
 
 interface PyProxy {
   toJs(options?: { create_proxies?: boolean }): unknown
@@ -25,8 +26,10 @@ export async function runStackCode(
     const stateProxy = (await pyodide.runPythonAsync(
       STACK_STATE_EXPRESSION,
     )) as PyProxy
-    const values = stateProxy.toJs({ create_proxies: false }) as Array<
-      number | string
+    // Each item is a (value, glyph) pair from MyStack.push; glyph is None
+    // unless the student (or the Stairway Repair exercise) passed one.
+    const pairs = stateProxy.toJs({ create_proxies: false }) as Array<
+      [number | string, StructureElement['glyph'] | null]
     >
     stateProxy.destroy?.()
 
@@ -34,9 +37,10 @@ export async function runStackCode(
       stdout,
       error: null,
       finalState: {
-        elements: values.map((value, index) => ({
+        elements: pairs.map(([value, glyph], index) => ({
           id: `slot-${index}`,
           value,
+          ...(glyph ? { glyph } : {}),
         })),
       },
     }

@@ -3,18 +3,18 @@ class MyStack:
     def __init__(self):
         self.items = []
 
-    def push(self, value):
-        self.items.append(value)
+    def push(self, value, glyph=None):
+        self.items.append((value, glyph))
 
     def pop(self):
         if not self.items:
             raise IndexError("pop from empty stack")
-        return self.items.pop()
+        return self.items.pop()[0]
 
     def peek(self):
         if not self.items:
             raise IndexError("peek from empty stack")
-        return self.items[-1]
+        return self.items[-1][0]
 
 
 def _read_state(stack):
