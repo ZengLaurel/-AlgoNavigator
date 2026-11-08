@@ -4,13 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev-local-tutor.mjs",
+    "dev:api": "vite",
+    "dev:local": "node scripts/dev-local-tutor.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:report": "node scripts/test-report.mjs",
+    "assets:optimize": "node scripts/optimize-game-assets.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

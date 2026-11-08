@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ASSETS } from '../../assets'
 import { CodeEditorPanel } from '../CodeEditorPanel'
+import { TutorChatPanel } from '../TutorChatPanel'
 import { PyodideProvider } from '../../engine/pyodide/PyodideProvider'
 import type { ExecResult } from '../../engine/pyodide/types'
 import { usePyodide } from '../../engine/pyodide/pyodideContext'
@@ -53,10 +55,14 @@ export function StairwayRepairContent({
 }: {
   onComplete?: () => void
 }) {
+  const reducedMotion = Boolean(useReducedMotion())
   const [result, setResult] = useState<ExecResult | null>(null)
   const [completed, setCompleted] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const [hintCount, setHintCount] = useState(0)
+  const [currentCode, setCurrentCode] = useState(starterCode)
+  const [tutorOpen, setTutorOpen] = useState(false)
+  const [tutorStarted, setTutorStarted] = useState(false)
   const { status } = usePyodide()
   const busy = status === 'loading' || status === 'running'
 
@@ -74,6 +80,7 @@ export function StairwayRepairContent({
     setResult(null)
     setCompleted(false)
     setHintCount(0)
+    setCurrentCode(starterCode)
     setAttempt((current) => current + 1)
   }
 
@@ -98,6 +105,14 @@ export function StairwayRepairContent({
       </p>
 
       <div className="stairway-target">
+        <img
+          src={ASSETS['quest-scroll'].src!}
+          width={48}
+          height={48}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+        />
         <span className="scene-label">Target pattern (bottom to top)</span>
         <TargetPattern />
         <p
@@ -117,12 +132,24 @@ export function StairwayRepairContent({
         <div className="scene-guide">
           <motion.div
             animate={completed ? { y: -36 } : { y: 0 }}
-            transition={{ type: 'spring', stiffness: 160, damping: 20 }}
+            transition={
+              reducedMotion
+                ? { duration: 0 }
+                : { type: 'spring', stiffness: 160, damping: 20 }
+            }
           >
             <Sprite pose={spritePose} />
           </motion.div>
         </div>
         <div className="scene-gate">
+          {completed && (
+            <img
+              className="stairway-glow"
+              src={ASSETS['fx-magic-glow'].src!}
+              alt=""
+              aria-hidden="true"
+            />
+          )}
           <RuinsDoor opened={completed} />
           <span className="scene-label">
             {completed ? 'Gate awakened' : 'Ancient gate'}
@@ -133,11 +160,31 @@ export function StairwayRepairContent({
         </div>
         <div className="scene-stairs">
           <MagicStairs visible={completed} />
+          {completed && !reducedMotion && (
+            <motion.img
+              className="stairway-dust"
+              src={ASSETS['fx-dust'].src!}
+              alt=""
+              aria-hidden="true"
+              initial={{ opacity: 0.6, y: 0 }}
+              animate={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.8 }}
+            />
+          )}
         </div>
       </div>
 
       <aside className="stairway-help" aria-labelledby="stack-basics-heading">
-        <h3 id="stack-basics-heading">Meet your stone stack</h3>
+        <h3 id="stack-basics-heading">
+          <img
+            src={ASSETS['magic-code-book'].src!}
+            width={48}
+            height={48}
+            alt=""
+            aria-hidden="true"
+          />{' '}
+          Meet your stone stack
+        </h3>
         <p>
           A stack is like a stone tower: you can only add or take away stones at
           the top. The top is the last stone you put on, not the bottom stone.
@@ -222,6 +269,7 @@ export function StairwayRepairContent({
         key={attempt}
         starterCode={starterCode}
         onResult={handleResult}
+        onCodeChange={setCurrentCode}
       />
 
       <div className="stairway-live">
@@ -254,9 +302,55 @@ export function StairwayRepairContent({
         </p>
       )}
 
+      <aside className="stairway-help" aria-label="Stack tutor">
+        <button
+          type="button"
+          aria-expanded={tutorOpen}
+          aria-controls="stairway-tutor"
+          onClick={() => {
+            setTutorStarted(true)
+            setTutorOpen((open) => !open)
+          }}
+        >
+          {tutorOpen ? 'Hide the tutor' : 'Ask the stack tutor'}
+        </button>
+        <div id="stairway-tutor" hidden={!tutorOpen}>
+          {tutorStarted && (
+            <TutorChatPanel
+              key={attempt}
+              context={{
+                currentCode,
+                lastRunResult: result,
+                hintsUsedThisExercise: hintCount,
+                gameState: JSON.stringify({
+                  room: 'Stairway Repair',
+                  order: 'bottom to top',
+                  target: targetPattern,
+                  stack: result?.finalState?.elements ?? null,
+                  completed,
+                  running: busy,
+                  note: busy
+                    ? 'Last result is from a previous run.'
+                    : undefined,
+                }),
+              }}
+            />
+          )}
+        </div>
+      </aside>
+
       {completed && (
         <div className="trial-completion" role="status">
-          <h3>Stairway repaired!</h3>
+          <h3>
+            <img
+              src={ASSETS['fx-sparkle'].src!}
+              width={32}
+              height={32}
+              alt=""
+              aria-hidden="true"
+            />{' '}
+            Stairway repaired!
+          </h3>
           <p>
             Your stack matched the pattern. The path to the final room is open.
           </p>
@@ -274,8 +368,8 @@ export function StairwayRepairContent({
   )
 }
 
-/** Stairway Repair (SPEC §11.5.2) owns its own PyodideProvider — Python
- * only loads once a student opens this room, not on initial page load. */
+/** Stairway Repair (SPEC §11.5.2) owns its own PyodideProvider.
+ * The editor loads on room entry; the Python Worker/runtime starts on Run. */
 export function StairwayRepairRoom({
   onComplete,
 }: {

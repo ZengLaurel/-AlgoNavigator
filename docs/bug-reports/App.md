@@ -1,5 +1,12 @@
 # src/App.test.tsx
 
+**Team integration update (2026-11-08):** App now starts at the illustrated
+world map. Tests cover four scroll regions, locked dialogs, hash routing,
+direct Stack entry, return navigation, malformed saved progress, and no
+module gem after finishing only room 01. Final-exit reward/storage tests
+are in AppCompletion.test.tsx; the historical Phase 4 notes below predate
+this map integration.
+
 ## Scenarios covered
 
 - App opens Stack Ruins and Trial of Stones with playback controls.

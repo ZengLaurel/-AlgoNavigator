@@ -23,6 +23,17 @@ const nodes: Record<string, RoomNode> = {
 const enter = (name: RegExp) =>
   fireEvent.keyDown(screen.getByRole('button', { name }), { key: 'Enter' })
 describe('ForkedPathRoom', () => {
+  it('reports module completion only when reaching the exit', () => {
+    const onComplete = vi.fn()
+    render(<ForkedPathRoom generate={() => nodes} onComplete={onComplete} />)
+    expect(onComplete).not.toHaveBeenCalled()
+    enter(/^Fork fork/)
+    enter(/^Dead end dead/)
+    expect(onComplete).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Backtrack (pop)' }))
+    enter(/^Exit exit/)
+    expect(onComplete).toHaveBeenCalledTimes(1)
+  })
   it('explains room cards and pops the room being left while keeping explored marks', () => {
     const { container } = render(<ForkedPathRoom generate={() => nodes} />)
     const guide = screen.getByRole('complementary', {

@@ -15,8 +15,12 @@ import { PathStackRenderer } from './PathStackRenderer'
 
 export function ForkedPathRoom({
   generate = generateMaze,
+  onComplete,
+  onPractice,
 }: {
   generate?: () => Record<string, RoomNode>
+  onComplete?: () => void
+  onPractice?: () => void
 }) {
   const [state, setState] = useState(() => createPathState(generate()))
   const [moving, setMoving] = useState(false)
@@ -26,6 +30,14 @@ export function ForkedPathRoom({
   const locked = useRef(false)
   const reducedMotion = Boolean(useReducedMotion())
   const complete = isPathComplete(state)
+  const completionReported = useRef(false)
+  useEffect(() => {
+    if (!complete) completionReported.current = false
+    else if (!completionReported.current) {
+      completionReported.current = true
+      onComplete?.()
+    }
+  }, [complete, onComplete])
   // Fallback also releases the lock if animation callbacks are interrupted.
   useEffect(() => {
     if (!moving) return
@@ -164,6 +176,11 @@ export function ForkedPathRoom({
             You used a stack to explore, backtrack, and find the exit.
             Exploration is now frozen.
           </p>
+          {onPractice && (
+            <button type="button" onClick={onPractice}>
+              Continue to Teach Xiao Tuo →
+            </button>
+          )}
           <button
             type="button"
             onClick={() => {

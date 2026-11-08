@@ -1,0 +1,255 @@
+{
+  "policy": "Full source contain-fit; no crop or background removal. Alpha count is not a visual quality approval. Deleted backgrounds not restored.",
+  "assets": [
+    {
+      "source": "stone-door-closed.png",
+      "actualFormat": "png",
+      "output": "stone-door-closed.png",
+      "width": 768,
+      "height": 1024,
+      "sourceWidth": 765,
+      "sourceHeight": 1024,
+      "transparentPixels": 379598
+    },
+    {
+      "source": "stone-door-open.png",
+      "actualFormat": "png",
+      "output": "stone-door-open.png",
+      "width": 768,
+      "height": 1024,
+      "sourceWidth": 765,
+      "sourceHeight": 1024,
+      "transparentPixels": 397497
+    },
+    {
+      "source": "switch-inactive.png",
+      "actualFormat": "png",
+      "output": "switch-inactive.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 30073
+    },
+    {
+      "source": "switch-active.png",
+      "actualFormat": "png",
+      "output": "switch-active.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 35851
+    },
+    {
+      "source": "node-entrance.png",
+      "actualFormat": "png",
+      "output": "node-entrance.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 47763
+    },
+    {
+      "source": "node-hall (1).png",
+      "actualFormat": "png",
+      "output": "node-hall.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 50597
+    },
+    {
+      "source": "node-corridor.png",
+      "actualFormat": "png",
+      "output": "node-corridor.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 50716
+    },
+    {
+      "source": "node-dead-end.png",
+      "actualFormat": "png",
+      "output": "node-dead-end.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 48058
+    },
+    {
+      "source": "node-exit.png",
+      "actualFormat": "png",
+      "output": "node-exit.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 47800
+    },
+    {
+      "source": "quest-scroll.png",
+      "actualFormat": "png",
+      "output": "quest-scroll.png",
+      "width": 256,
+      "height": 256,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 58035
+    },
+    {
+      "source": "block-base.png",
+      "actualFormat": "png",
+      "output": "block-base.png",
+      "width": 512,
+      "height": 256,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 109599
+    },
+    {
+      "source": "block-moon.png",
+      "actualFormat": "png",
+      "output": "block-moon.png",
+      "width": 512,
+      "height": 256,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 110536
+    },
+    {
+      "source": "block-sun.png",
+      "actualFormat": "png",
+      "output": "block-sun.png",
+      "width": 512,
+      "height": 256,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 111232
+    },
+    {
+      "source": "block-star.png",
+      "actualFormat": "png",
+      "output": "block-star.png",
+      "width": 512,
+      "height": 256,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 110140
+    },
+    {
+      "source": "block-cracked.png",
+      "actualFormat": "png",
+      "output": "block-cracked.png",
+      "width": 512,
+      "height": 256,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 108796
+    },
+    {
+      "source": "fx-dust.png",
+      "actualFormat": "png",
+      "output": "fx-dust.png",
+      "width": 512,
+      "height": 256,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 125908
+    },
+    {
+      "source": "sprite-idle.png",
+      "actualFormat": "png",
+      "output": "sprite-idle.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 239777
+    },
+    {
+      "source": "sprite-guide.png",
+      "actualFormat": "png",
+      "output": "sprite-guide.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 237728
+    },
+    {
+      "source": "sprite-thinking.png",
+      "actualFormat": "png",
+      "output": "sprite-thinking.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 800,
+      "sourceHeight": 800,
+      "transparentPixels": 215406
+    },
+    {
+      "source": "sprite-happy.png",
+      "actualFormat": "png",
+      "output": "sprite-happy.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 232620
+    },
+    {
+      "source": "badge-stack-apprentice.png",
+      "actualFormat": "png",
+      "output": "badge-stack-apprentice.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 202819
+    },
+    {
+      "source": "magic-code-book.png",
+      "actualFormat": "png",
+      "output": "magic-code-book.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 193604
+    },
+    {
+      "source": "fx-magic-glow.png",
+      "actualFormat": "png",
+      "output": "fx-magic-glow.png",
+      "width": 512,
+      "height": 512,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 225104
+    },
+    {
+      "source": "magic-stairs.png",
+      "actualFormat": "png",
+      "output": "magic-stairs.png",
+      "width": 1024,
+      "height": 768,
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "transparentPixels": 663405
+    },
+    {
+      "source": "fx-sparkle.png",
+      "actualFormat": "png",
+      "output": "fx-sparkle.png",
+      "width": 128,
+      "height": 128,
+      "sourceWidth": 1024,
+      "sourceHeight": 1024,
+      "transparentPixels": 15614
+    }
+  ]
+}

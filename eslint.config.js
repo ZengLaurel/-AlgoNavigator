@@ -7,7 +7,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'hello-algo']),
+  globalIgnores(['dist', 'hello-algo', 'artifacts']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

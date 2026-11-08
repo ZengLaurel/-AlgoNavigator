@@ -24,7 +24,16 @@ the room would switch before the student ever saw the reward panel.
 - Room 03 starts locked, unlocks via room 02 continuation and remains unlocked after returning to room 01.
 - StairwayRepairRoom is mocked at its completion callback boundary; its actual success gating is covered by its own component suite. No real Python worker or browser full playthrough is exercised.
 
+## Persistence regression addendum
+
+`src/engine/gameProgress.test.ts` tests all ordered unlock levels, exact version
+and field validation (including extra code fields), corrupt JSON, denied storage
+and quota failure. GameStage additionally tests reload-to-Trial with saved room
+three and replay of room one not downgrading that unlock. Tests clear storage
+between cases. Browser coverage is separate in scripts/game-browser-check.mjs;
+it uses actual Python rather than the mocked completion callback.
+
 ## Status
 
-Last verified: 2026-11-06 — 4/4 passing (`npm test`); see
+Last verified: 2026-11-06 — 5/5 passing (`npm test`); see
 [`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

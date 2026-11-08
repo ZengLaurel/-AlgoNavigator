@@ -1,5 +1,41 @@
 # AIgoNavigator — Requirements Document (MVP)
 
+## Current shipped game scope — 2026-11-08
+
+User-requested extension: after the three-room Stack game, offer the optional
+Teach Xiao Tuo practice bank. Children demonstrate stack actions, correct the
+sprite's stated misconception, explain top-only/LIFO, and verify a fresh
+example. Four sourced, adapted problems are available (1441/844/2390/1047).
+Hints and a constrained learner/coach chat support teaching, never provide
+complete solutions and never award mastery. Persist only exercise IDs and
+unlock status in `algonavigator.stack-teaching.v1`; explanations/chat are not
+automatically stored. Explicit chat submission sends activity context to AI;
+local export is optional. The three-room gem criterion remains unchanged.
+
+Team-map integration: the homepage is the World Adventure Map with four
+regions; only Stack is implemented. `/#/stack` opens the existing three-room
+game and includes a return link and skills handbook. Reaching the final maze
+exit earns one data gem, persisted independently in
+`algonavigator.adventure-progress.v1`. Replays cannot duplicate a gem. The
+existing room-unlock and optional Tutor transcript records are retained.
+Root reload opens the map; direct Stack reload starts at Trial with saved
+room unlocks. See TEAM-MERGE.md for source revision and conflict decisions.
+
+The Stack Ruins game supersedes the older four-structure lesson scope below for
+this delivery. It has three rooms and an optional Stack tutor in room 02.
+The tutor sends questions, recent chat, Python code and room/run context to
+the AI service only on Ask. Disclose this before submission and discourage
+personal information. Its chat transcript is saved locally and exportable;
+the game remains playable if AI is unavailable. Save only ordered
+room unlocks on this device: `algonavigator.stack-ruins.progress` contains exactly
+`{ "version": 1, "unlockedThrough": 1 | 2 | 3 }`. No code, hints, maze, identity or
+transcript is saved in the progress record (tutor transcripts use a separate
+local record). Reload opens Trial with saved entrances;
+replaying earlier rooms cannot relock later ones. Unsupported versions, extra
+fields, malformed data or blocked storage must not prevent play. This is not
+cross-device sync or a resumable editor. Real students and school hardware have
+not been validated; see PILOT.md before arranging the pilot.
+
 ## 1. Overview
 
 AIgoNavigator is a web-based learning platform that teaches upper-elementary

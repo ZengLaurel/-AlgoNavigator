@@ -18,6 +18,7 @@ export function TutorChatPanel({ context }: TutorChatPanelProps) {
   )
   const [draft, setDraft] = useState('')
   const [pending, setPending] = useState(false)
+  const [sessionHints, setSessionHints] = useState(0)
 
   useEffect(() => {
     saveTranscript(messages)
@@ -34,17 +35,17 @@ export function TutorChatPanel({ context }: TutorChatPanelProps) {
     setDraft('')
     setPending(true)
 
-    // Hints used = tutor answers already given for this exercise, so the
-    // server can withhold full answers until the student has had two hints.
-    const hintsUsed = history.filter(
-      (message) => message.role === 'tutor',
-    ).length
+    // Old transcripts and service/moderation replies do not unlock solutions.
+    const hintsUsed = context.hintsUsedThisExercise + sessionHints
 
     const result = await askTutor(
       question,
       { ...context, hintsUsedThisExercise: hintsUsed },
       history,
     )
+    if (result.ok && !result.moderationFlag) {
+      setSessionHints((count) => count + 1)
+    }
 
     setMessages((current) => [
       ...current,
@@ -61,7 +62,7 @@ export function TutorChatPanel({ context }: TutorChatPanelProps) {
     <section className="lesson-card tutor-card" aria-labelledby="tutor-heading">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Step 4 · Ask</p>
+          <p className="eyebrow">Stack helper · Ask</p>
           <h2 id="tutor-heading">Ask the tutor</h2>
         </div>
         <span className="section-badge">Helper</span>
@@ -69,6 +70,11 @@ export function TutorChatPanel({ context }: TutorChatPanelProps) {
       <p className="helper-text">
         Ask anything about stacks. The tutor gives hints so you can work it out
         yourself.
+      </p>
+      <p className="helper-text">
+        When you press Ask, your question, recent chat, code and room state are
+        sent to the AI service. Avoid personal information. Chat is saved in
+        this browser and can be exported below.
       </p>
 
       <ol className="tutor-messages" aria-live="polite">
@@ -103,6 +109,7 @@ export function TutorChatPanel({ context }: TutorChatPanelProps) {
         <input
           id="tutor-input"
           type="text"
+          maxLength={500}
           value={draft}
           placeholder="What does pop do?"
           onChange={(event) => setDraft(event.target.value)}
@@ -112,7 +119,11 @@ export function TutorChatPanel({ context }: TutorChatPanelProps) {
           disabled={pending}
         />
         <div className="tutor-buttons">
-          <button type="button" onClick={() => void send()} disabled={pending}>
+          <button
+            type="button"
+            onClick={() => void send()}
+            disabled={pending || !draft.trim()}
+          >
             Ask
           </button>
           <button

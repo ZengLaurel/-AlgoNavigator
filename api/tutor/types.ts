@@ -23,6 +23,8 @@ export interface TutorRunResult {
 }
 
 export interface TutorRequestContext {
+  teachingMode?: 'teach-sprite' | 'practice-coach'
+  gameState?: string
   currentCode?: string
   lastRunResult?: TutorRunResult
   animationStepIndex?: number

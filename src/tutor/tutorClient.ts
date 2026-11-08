@@ -19,10 +19,13 @@ export async function askTutor(
     response = await fetch(TUTOR_ENDPOINT, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
+      signal: AbortSignal.timeout(60_000),
       body: JSON.stringify({
         lessonId: LESSON_ID,
         studentMessage,
         context: {
+          teachingMode: context.teachingMode,
+          gameState: context.gameState,
           currentCode: context.currentCode,
           lastRunResult: context.lastRunResult ?? undefined,
           hintsUsedThisExercise: context.hintsUsedThisExercise,

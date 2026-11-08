@@ -1,5 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { GAME_PROGRESS_KEY } from '../../engine/gameProgress'
+beforeEach(() => localStorage.clear())
 vi.mock('./StairwayRepairRoom', () => ({
   StairwayRepairRoom: ({ onComplete }: { onComplete?: () => void }) => (
     <section>
@@ -18,7 +20,35 @@ function completeTrial() {
 }
 
 describe('GameStage', () => {
-  it('unlocks room three explicitly and preserves both unlocks after returning', () => {
+  it('reloads into Trial with saved entrances, and replay cannot relock room three', () => {
+    localStorage.setItem(
+      GAME_PROGRESS_KEY,
+      JSON.stringify({ version: 1, unlockedThrough: 3 }),
+    )
+    const view = render(<GameStage />)
+    expect(
+      screen.getByRole('heading', { name: 'Trial of Stones' }),
+    ).toBeTruthy()
+    expect(
+      screen.getByRole('button', { name: '03 · Forked Path' }),
+    ).toBeTruthy()
+    completeTrial()
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Continue to Stairway Repair →' }),
+    )
+    expect(
+      JSON.parse(localStorage.getItem(GAME_PROGRESS_KEY)!).unlockedThrough,
+    ).toBe(3)
+    view.unmount()
+    render(<GameStage />)
+    expect(
+      screen.getByRole('heading', { name: 'Trial of Stones' }),
+    ).toBeTruthy()
+    expect(
+      screen.getByRole('button', { name: '03 · Forked Path' }),
+    ).toBeTruthy()
+  })
+  it('unlocks room three explicitly and preserves both unlocks after returning', async () => {
     render(<GameStage />)
     expect(
       screen.queryByRole('button', { name: '03 · Forked Path' }),
@@ -30,7 +60,9 @@ describe('GameStage', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Continue to Forked Path →' }),
     )
-    expect(screen.getByRole('heading', { name: 'Forked Path' })).toBeTruthy()
+    expect(
+      await screen.findByRole('heading', { name: 'Forked Path' }),
+    ).toBeTruthy()
     fireEvent.click(
       screen.getByRole('button', { name: '01 · Trial of Stones' }),
     )
@@ -38,7 +70,9 @@ describe('GameStage', () => {
       screen.getByRole('button', { name: '02 · Stairway Repair' }),
     ).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: '03 · Forked Path' }))
-    expect(screen.getByRole('heading', { name: 'Forked Path' })).toBeTruthy()
+    expect(
+      await screen.findByRole('heading', { name: 'Forked Path' }),
+    ).toBeTruthy()
   })
   it('starts on Trial of Stones with Stairway Repair locked', () => {
     render(<GameStage />)

@@ -2,10 +2,12 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { AskModelInput } from './handler.js'
 import { TutorRefusalError } from './errors.js'
 
-/** Default per SDK guidance. Override only via server env, never from the
- * client. SPECIFICATION.md §1 assumed a Haiku-class model for cost; set
- * ALGONAV_TUTOR_MODEL=claude-haiku-4-5 to take that tradeoff. */
-const MODEL = process.env.ALGONAV_TUTOR_MODEL ?? 'claude-opus-5'
+/** Server-only model configuration. A task-specific override takes priority
+ * over the host's existing provider model setting. */
+const MODEL =
+  process.env.ALGONAV_TUTOR_MODEL ??
+  process.env.ANTHROPIC_MODEL ??
+  'claude-opus-5'
 
 /** Replies are deliberately short (the system prompt caps them at ~60 words),
  * but adaptive thinking also draws from max_tokens, so leave headroom. */

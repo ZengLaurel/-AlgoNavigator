@@ -15,16 +15,35 @@ function tutorDevApi(): Plugin {
     apply: 'serve',
     configureServer(server) {
       server.middlewares.use('/api/tutor', (req, res) => {
+        if (
+          req.headers.origin &&
+          req.headers.origin !== `http://${req.headers.host}`
+        ) {
+          res.statusCode = 403
+          res.end()
+          return
+        }
         const chunks: Buffer[] = []
-        req.on('data', (chunk: Buffer) => chunks.push(chunk))
+        let size = 0
+        req.on('data', (chunk: Buffer) => {
+          size += chunk.length
+          if (size > 32_768) {
+            res.statusCode = 413
+            res.end()
+            req.destroy()
+          } else chunks.push(chunk)
+        })
         req.on('end', () => {
           void (async () => {
             try {
               const { handleTutorRequest } = await server.ssrLoadModule(
                 '/api/tutor/handler.ts',
               )
-              const { askClaude } = await server.ssrLoadModule(
-                '/api/tutor/claudeClient.ts',
+              const local = process.env.ALGONAV_TUTOR_PROVIDER === 'local-codex'
+              const provider = await server.ssrLoadModule(
+                local
+                  ? '/api/tutor/localCodexClient.ts'
+                  : '/api/tutor/claudeClient.ts',
               )
               const { TUTOR_SYSTEM_PROMPT } = await server.ssrLoadModule(
                 '/api/tutor/systemPrompt.ts',
@@ -35,11 +54,15 @@ function tutorDevApi(): Plugin {
                   method: req.method ?? 'GET',
                   body: Buffer.concat(chunks).toString('utf8'),
                 },
-                { askModel: askClaude, systemPrompt: TUTOR_SYSTEM_PROMPT },
+                {
+                  askModel: local ? provider.askLocalCodex : provider.askClaude,
+                  systemPrompt: TUTOR_SYSTEM_PROMPT,
+                },
               )
 
               res.statusCode = result.status
               res.setHeader('content-type', 'application/json')
+              res.setHeader('cache-control', 'no-store')
               res.end(JSON.stringify(result.body))
             } catch (error) {
               // Surfaces setup problems (missing API key, bad import) in the

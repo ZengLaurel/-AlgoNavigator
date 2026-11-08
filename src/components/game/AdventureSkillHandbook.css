@@ -1,0 +1,85 @@
+.skill-handbook {
+  position: fixed;
+  z-index: 10;
+  inset-block-start: 16px;
+  inset-inline-end: 0;
+  inline-size: max-content;
+  max-inline-size: calc(100vw - 16px);
+  max-block-size: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  color: var(--ruins-ink);
+  background: #223047;
+  border: 1px solid #61738a;
+  border-inline-end: 0;
+  border-radius: 12px 0 0 12px;
+  box-shadow: 0 8px 24px #10172555;
+  font-size: 0.82rem;
+}
+
+.game-root .skill-handbook-toggle,
+.game-root .skill-handbook-topic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  text-align: start;
+  color: var(--ruins-ink);
+  background: #27344a;
+}
+
+.game-root .skill-handbook-toggle {
+  flex-shrink: 0;
+  justify-content: space-between;
+  border-radius: 11px 0 0 11px;
+  color: #f2c265;
+}
+
+.game-root .skill-handbook-toggle:hover:not(:disabled),
+.game-root .skill-handbook-topic:hover:not(:disabled),
+.game-root .skill-handbook-topic[aria-expanded='true'] {
+  background: #354660;
+}
+
+.skill-handbook-toggle span:last-child {
+  color: var(--ruins-cyan);
+  font-size: 1.25rem;
+}
+
+.skill-handbook ul {
+  inline-size: min(17rem, calc(100vw - 16px));
+  min-block-size: 0;
+  margin: 0;
+  padding: 10px;
+  overflow: auto;
+  list-style: none;
+}
+
+.skill-handbook li + li {
+  margin-block-start: 6px;
+}
+
+.skill-handbook-topic svg {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  color: var(--ruins-cyan);
+}
+
+.skill-handbook p {
+  margin: 8px 4px 10px;
+  line-height: 1.55;
+}
+
+@media (max-width: 760px) {
+  .skill-handbook {
+    position: static;
+    inline-size: 100%;
+    max-inline-size: none;
+    margin-block-start: 24px;
+    border-inline-end: 1px solid #61738a;
+    border-radius: 12px;
+    max-block-size: 45dvh;
+  }
+}

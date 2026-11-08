@@ -1,5 +1,39 @@
 # AIgoNavigator — Roadmap
 
+## User-prioritized extension — Teach Xiao Tuo Stack practice (2026-11-08)
+
+**Goal:** extend the Stack ending into learning by teaching, using a bounded
+selection from the supplied LeetCode Stack list rather than all problems.
+
+**Implemented:** room 04 unlocks at the maze exit (including migration for
+previous Stack-gem holders); four original child-friendly adaptations of
+1441, 844, 2390 and 1047 with source links; visible stack/top and symbolic
+actions; labelled FIFO misconception; demonstrate → correct/explain → fresh
+transfer gates; three progressive hints; three chat shortcuts; separate
+learner and coach modes; happy sprite and per-activity learned progress.
+The existing three-room gem and local Codex Tutor continue to work.
+
+**Assessment boundary:** stored mastery requires deterministic trace and
+transfer evidence plus a correct structured rule/reason. Own-word explanation
+is optional conversation, not keyword scoring. Chat cannot unlock mastery.
+Server prompt v1 selects only a vetted coaching intent; raw generated prose,
+code and unknown intent fields never reach the practice UI. All hint counts
+retain the no-complete-solution policy. Offline practice remains playable.
+
+**Verification:** case-level outcomes are generated in TEST-RESULTS.md; five
+companion reports describe cases, inputs and expectations. Browser/live checks
+and limitations are recorded in TEACHING-ACCEPTANCE.md. The test-report script
+now writes failed cases too, rather than leaving an old passing report.
+This extension does not assert Phase 7/8 art/hardware gates or a real-student
+learning outcome; the planned pilot must assess those separately.
+
+**Team integration (2026-11-08):** merged World Adventure Map, region scrolls,
+skills handbook and data-gem progress from `1x1dontsleep/AlgoNavigator` revision
+`581a1a6`. The current three-room game and local Tutor remain intact; the
+module gem is awarded at the final maze exit. This adds navigation and
+progress presentation, not implementations of the other three structures.
+See [TEAM-MERGE.md](./TEAM-MERGE.md).
+
 Sequencing of [SPECIFICATION.md](./SPECIFICATION.md) into executable phases.
 Each phase has a goal, deliverables, and an exit criterion that must be met
 before moving to the next phase. Work proceeds phase by phase, in order.
@@ -62,6 +96,37 @@ Run, and see the Stack animation update to match their code's real
 behavior; infinite loops are caught and recoverable without a page reload.
 
 ## Phase 3 — AI Tutor Integration (Stack lesson only)
+
+**Address correction (2026-11-08):** the reported repeated offline replies
+came from the old static preview at 4174, while the local Tutor ran at a
+different address. Replaced that preview with the local Tutor server and
+fixed `dev` / `dev:local` to 127.0.0.1:4174 with strict port binding.
+The launcher no longer silently selects a new address.
+
+**Local-provider follow-up (2026-11-08):** after the user reported an API
+failure, local development now defaults to the installed Codex CLI's
+ChatGPT login via `npm run dev` / `dev:local`. The original API path is
+available via `dev:api` and remains the production adapter. This is an
+online local bridge, not an offline model. Existing system proxy support
+fixed direct CLI connectivity; the browser's Chinese “pop是什么？” received
+a real code-aware hint. CLI requests are ephemeral/read-only, sensitive
+tools disabled, untrusted input passed via stdin; local HTTP checks Origin
+and caps bodies at 32 KiB. Timeouts supersede the earlier 30-second note:
+55 seconds for CLI and 60 seconds in the browser. No auth files are read
+or copied by the application.
+
+**Game integration completed (2026-11-08):** the user requested Tutor
+continuation, superseding the earlier deferred-integration note. Room 02
+now offers an optional chat with current edited code, run output/error,
+target glyphs and stack state. Versioned prompt v2 adds room context and
+student-language replies. The existing local transcript/export and moderation
+remain active. Old transcripts, failures and moderated replies do not count
+as hints; requests time out after 30 seconds without blocking gameplay.
+Model selection honors ALGONAV_TUTOR_MODEL, then ANTHROPIC_MODEL, then the
+existing default. Verified live in-browser Chinese hinting and live API
+checks for code-aware pop help, withholding full solutions at zero hints,
+off-topic redirect and prompt-extraction moderation. All 179 tests pass.
+This is a bounded acceptance sample, not a general safety-quality guarantee.
 
 **Goal:** working end-to-end tutoring loop for one lesson.
 
@@ -214,7 +279,45 @@ dead ends via the visible path stack, and reach the exit to complete the
 Stack Ruins game end to end (Trial of Stones → Stairway Repair → Forked
 Path).
 
+## Delivery checkpoint — 2026-11-06
+
+Approved bounded continuation (not a declaration that all phase gates passed):
+
+- Implemented: exact versioned room-unlock persistence, corruption/blocked-storage
+  fallback and monotonic replay; Stairway reduced-motion success transition;
+  source-preserving 25-image PNG export with format/dimension/alpha manifest;
+  map-node/badge/book/sparkle registration and room-scoped mounts.
+- Locally verified: production Chrome 156 full three-room playthrough, real Python
+  infinite-loop timeout and successful retry without refresh, keyboard maze,
+  dead-end pop/revisit, entrance protection, exit freeze, replay, reload unlocks,
+  390px Forked layout, both motion preferences. CDP script records evidence under
+  artifacts/game-<timestamp>; it preserves older kids-* evidence.
+- Phase 7 remains **partial**: art quality/composites/paired state anchors not
+  visually approved, no subject cropping/background removal, deleted backgrounds
+  not restored, board remains programmatic; scroll/glow/dust not yet mounted.
+- Phase 8 remains **partial**: Firefox, separate Edge, controlled browser Worker
+  crash injection, school hardware and controlled cold-load measurements pending.
+  Unit tests cover Worker failure recovery; browser acceptance covers a real hang.
+- Phase 9 **prepared, not run**: PILOT.md supplies anonymous observation template
+  and facilitator checklist. Actual students and go/no-go decision are external.
+
 ## Phase 7 — Asset Finalization & Polish
+
+**Lossless compression (2026-11-08):** completed for all 25 published PNGs
+using `npm run assets:optimize`, from 3,054,638 to 2,405,816 bytes (21.2%
+smaller). The script checks chunk CRCs and exact decompressed image-data
+equality before writing, retains non-IDAT chunks, and leaves `picture/`
+untouched. Sizes and hashes are recorded in `artifacts/asset-optimization.json`.
+Asset tests (24), production build and lint pass. Background restoration,
+art/composite/anchor visual approval and controlled cold-load measurement
+remain pending; Phase 7 is still partial.
+
+**Increment (2026-11-08):** Stairway Repair now mounts the quest-scroll
+beside the target, a static magic glow on success, and a one-shot dust
+fade on stairway restoration. Decorative images are hidden from assistive
+technology and ignore pointer events; reduced-motion mode skips the dust.
+Effects mount only on success in room 02. Final art cleanup and visual
+approval remain pending; this increment does not close the Phase 7 gate.
 
 **Goal:** swap every placeholder for final art and add the non-blocking
 polish layer.

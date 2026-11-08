@@ -1,5 +1,13 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  within,
+  waitFor,
+} from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import { EditorView } from '@codemirror/view'
 import { PyodideContext } from '../../engine/pyodide/pyodideContext'
 import type { ExecResult, PyodideStatus } from '../../engine/pyodide/types'
 import { StairwayRepairContent } from './StairwayRepairRoom'
@@ -48,6 +56,63 @@ const erroredResult: ExecResult = {
 }
 
 describe('StairwayRepairRoom', () => {
+  it('only sends tutor context on Ask, including edited code and real run state', async () => {
+    window.localStorage.clear()
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          reply: 'Which stone is on top?',
+          moderationFlag: false,
+        }),
+        {
+          headers: { 'content-type': 'application/json' },
+        },
+      ),
+    )
+    try {
+      renderWithRun(vi.fn().mockResolvedValue(nonMatchingResult))
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Ask the stack tutor' }),
+      )
+      expect(fetchMock).not.toHaveBeenCalled()
+      const editor = EditorView.findFromDOM(
+        document.querySelector('.cm-editor') as HTMLElement,
+      )!
+      const editedCode = 'stack = MyStack()\nstack.push(1, "base")'
+      act(() =>
+        editor.dispatch({
+          changes: { from: 0, to: editor.state.doc.length, insert: editedCode },
+        }),
+      )
+      fireEvent.click(screen.getByRole('button', { name: 'Run' }))
+      await screen.findByText(/Your stack — this run result/)
+      fireEvent.change(screen.getByLabelText('Your question'), {
+        target: { value: 'What is missing?' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /^Ask$/ }))
+      await screen.findByText('Which stone is on top?')
+      const body = JSON.parse(fetchMock.mock.calls[0][1]!.body as string)
+      expect(body.context.currentCode).toBe(editedCode)
+      expect(body.context.lastRunResult.finalState).toEqual(
+        nonMatchingResult.finalState,
+      )
+      expect(JSON.parse(body.context.gameState)).toMatchObject({
+        room: 'Stairway Repair',
+        target: ['base', 'moon', 'star'],
+        stack: nonMatchingResult.finalState!.elements,
+        completed: false,
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'Hide the tutor' }))
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Ask the stack tutor' }),
+      )
+      await waitFor(() =>
+        expect(screen.getByText('Which stone is on top?')).toBeTruthy(),
+      )
+    } finally {
+      fetchMock.mockRestore()
+    }
+  })
   it('only continues after success and an explicit button click', async () => {
     const onComplete = vi.fn()
     renderWithRun(vi.fn().mockResolvedValue(matchingResult), onComplete)

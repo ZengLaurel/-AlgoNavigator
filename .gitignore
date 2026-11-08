@@ -4,6 +4,14 @@
 # JetBrains IDE local config
 .idea/
 
+# Temporary upstream sources used during team integration
+/artifacts/
+/kids-*.png
+/picture/photo.zip
+/artifacts/teammate-*
+/artifacts/team-head/
+/artifacts/team-App.test.reference.tsx
+
 # Node / frontend
 node_modules/
 dist/

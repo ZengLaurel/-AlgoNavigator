@@ -355,6 +355,11 @@ h2 {
   background: #d8e3ff;
 }
 
+:root:has(.game-root) {
+  color-scheme: dark;
+  background: radial-gradient(ellipse at top, #223047, #101b2d 75%) fixed;
+}
+
 .game-root {
   --ruins-ink: #f5ead8;
   --ruins-cyan: #4dd0e1;
@@ -625,9 +630,32 @@ h2 {
   right: 20%;
   bottom: 4px;
 }
+.ruins-sprite > img {
+  transform: scaleX(-1);
+}
+
 .stairway-tokens {
   margin: 10px 0 0;
   color: #f2c265;
+}
+.stairway-glow,
+.stairway-dust {
+  position: absolute;
+  pointer-events: none;
+  object-fit: contain;
+}
+.stairway-glow {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.45;
+}
+.stairway-dust {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
 }
 .stairway-help,
 .stairway-feedback {

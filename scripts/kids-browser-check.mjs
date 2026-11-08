@@ -1,0 +1,48 @@
+import fs from 'node:fs/promises'
+const pages = await (await fetch('http://127.0.0.1:9222/json/list')).json()
+const ws = new WebSocket(pages.find(p=>p.type==='page').webSocketDebuggerUrl)
+await new Promise(r=>ws.addEventListener('open',r,{once:true}))
+let id=0; const pending=new Map(); const errors=[]
+ws.onmessage=e=>{const m=JSON.parse(e.data); if(m.id){const p=pending.get(m.id); pending.delete(m.id);m.error?p.reject(m.error):p.resolve(m.result)} else if(m.method==='Runtime.exceptionThrown'||m.method==='Log.entryAdded'&&m.params.entry.level==='error') errors.push(m)}
+const send=(method,params={})=>new Promise((resolve,reject)=>{pending.set(++id,{resolve,reject});ws.send(JSON.stringify({id,method,params}))})
+const ev=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw new Error(JSON.stringify(r.exceptionDetails));return r.result.value}
+const wait=async expression=>{for(let i=0;i<600;i++){if(await ev(expression))return;await new Promise(r=>setTimeout(r,200))}throw new Error('Timeout '+expression)}
+const click=async text=>ev(`(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===${JSON.stringify(text)});if(!b||b.disabled)throw Error('Button unavailable: '+${JSON.stringify(text)});b.click();return true})()`)
+const check=async(expression,label)=>{if(!await ev(expression))throw new Error(label);console.log('PASS '+label)}
+const shot=async name=>{const r=await send('Page.captureScreenshot',{captureBeyondViewport:true});await fs.writeFile(`D:/AIgoNavigator/kids-${name}.png`,Buffer.from(r.data,'base64'))}
+await send('Runtime.enable');await send('Log.enable');await send('Page.enable')
+await send('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false})
+await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]})
+await send('Page.navigate',{url:'http://127.0.0.1:5173/'})
+await wait(`!!document.querySelector('#trial-stack-guide')`)
+await check(`document.querySelector('[aria-labelledby="trial-stack-guide"]').querySelectorAll('li').length===7`,'Trial has seven explanatory moves')
+for(let i=0;i<7;i++){await click('Step forward');await new Promise(r=>setTimeout(r,70))}
+await wait(`document.body.innerText.includes('Secret discovered')`)
+await click('Continue to Stairway Repair →')
+await wait(`!!document.querySelector('#stack-functions-heading')`)
+await check(`document.querySelector('[aria-labelledby="stack-basics-heading"]').querySelectorAll('li').length===4`,'Four ordered constructor and push steps')
+await check(`document.querySelector('[aria-labelledby="stack-functions-heading"]').innerText.includes('returns the number 3')`,'Function examples explain returned numeric values')
+const original=await ev(`document.querySelector('.cm-content').innerText`)
+for(let i=1;i<=3;i++)await click(`Show hint ${i} of 3`)
+await check(`document.querySelector('.cm-content').innerText===${JSON.stringify(original)}`,'All progressive hints leave editor unchanged')
+await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false})
+await check(`document.documentElement.scrollWidth<=390`,'Narrow Stairway page has no horizontal overflow')
+await ev(`document.querySelector('#stack-basics-heading').scrollIntoView()`);await shot('build-mobile')
+await ev(`document.querySelector('#stack-functions-heading').scrollIntoView()`);await shot('functions-mobile')
+await send('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false})
+await wait(`[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Run'&&!b.disabled)`)
+await click('Run');await wait(`document.body.innerText.includes('Missing 2 stones')`)
+console.log('PASS Real Python starter reports missing moon and star')
+await ev(`document.querySelector('.cm-content').focus()`)
+await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',modifiers:2});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',modifiers:2})
+await send('Input.insertText',{text:"stack = MyStack()\nstack.push(1, 'base')\nstack.push(2, 'moon')\nstack.push(3, 'star')\n"})
+await click('Run');await wait(`document.body.innerText.includes('Stairway repaired!')`)
+await ev(`document.querySelector('#stack-functions-heading').scrollIntoView()`);await shot('functions-desktop')
+console.log('PASS CodeMirror input and real Pyodide solution complete Stairway')
+await click('Continue to Forked Path →');await wait(`!!document.querySelector('#path-guide-heading')`)
+await check(`document.querySelector('[aria-labelledby="path-guide-heading"]').innerText.includes('room you are leaving, not the room you are returning to')`,'Forked Path explains leaving-room card removal')
+await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false})
+await check(`document.documentElement.scrollWidth<=390`,'Narrow Forked Path page has no horizontal overflow')
+await ev(`document.querySelector('#path-guide-heading').scrollIntoView()`);await shot('path-mobile')
+console.log('ERRORS',JSON.stringify(errors))
+ws.close()

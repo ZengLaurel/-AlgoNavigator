@@ -12,6 +12,28 @@ technical design. It is the reference for implementation decisions; the
 > by the pivot (Pyodide execution, error mapping, and the code editor are
 > reused as-is — see §11.7).
 
+## Local delivery addendum — 2026-11-06
+
+- Game progress is an exact two-field, version-1 envelope under
+  `algonavigator.stack-ruins.progress`, validated by `src/engine/gameProgress.ts`.
+  An ordered level 1/2/3 encodes prerequisite unlocks. Reads/writes catch storage
+  errors, use memory fallback, and never save student code or personal data.
+  App reload deliberately returns to Trial; previous-room completion is monotonic.
+- Stairway success movement uses a zero-duration transition for reduced motion.
+- `scripts/prepare-game-assets.mjs` uses local browser decoding/canvas export,
+  signature-based PNG/JPEG detection, contain-fit centered transparent canvases,
+  and fixed target sizes. The original `block-cracked.png` is selected; its
+  alternate is untouched. `node-hall (1).png` is decoded as JPEG; thinking uses
+  the supplied PNG. Full-frame contain-fit preserves source content, **not**
+  verified subject anchors/transparency. No source/background recovery, automatic
+  background removal or art-quality sign-off. Deleted board uses SVG fallback.
+- Node/badge/book/sparkle images mount only in their room or success branch.
+  Scroll/glow/dust are registered but scene placement remains pending. All
+  instructional text and graph edges remain DOM/SVG, not baked artwork.
+- Production acceptance: `scripts/game-browser-check.mjs`, fresh evidence folder,
+  bounded CDP and UI waits, real CodeMirror input and real Python timeout/retry.
+  This is Chrome evidence, not Firefox/Edge/school hardware certification.
+
 ## 1. Assumptions Made to Resolve Open Requirements Questions
 
 The requirements doc left 4 questions open. To unblock implementation, the
@@ -341,6 +363,52 @@ student through a ruins hall. Three rooms gate progress in order:
    mechanic re-applied to spatial navigation instead of data values.
 
 ### 11.4 Reused vs. new architecture
+
+**Approved extension (2026-11-08): Teach Xiao Tuo practice bank.** After
+the maze exit, unlock a fourth, optional room. Select four child-adapted
+problems from the linked LeetCode list's Stack sections: 1441, 844, 2390,
+1047. Use original short stories/examples and link each source; do not copy
+editorials or require a LeetCode account. The existing maze gem remains valid.
+
+Each activity has a deterministic three-stage loop: demonstrate stack
+actions; explicitly correct Xiao Tuo's initially mistaken FIFO belief by
+choosing LIFO and explaining top-only access; teach using optional own words;
+then solve a fresh transfer example. Correct actions alone cannot skip the
+teaching stage. Incorrect actions never mutate the stack; empty backspaces
+are ignored, empty pops blocked, and peek never consumes input. The displayed
+sprite changes from confused to testing to learned only after these gates.
+Free text is conversation, not a keyword-based proof of understanding.
+
+Three chat shortcuts and a separate coach reuse the local/remote Tutor
+transport with server-selected, versioned practice prompts. Xiao Tuo acts as
+the learner; the coach asks guiding questions. Neither mode may provide
+complete solutions/code even after many hints. AI replies cannot award mastery.
+Progress stores only versioned known exercise IDs and the bank-unlock flag,
+not explanations or chat. Existing three-room unlock schema is unchanged.
+Practice chat is scoped in memory per exercise/mode; optional export is local.
+Hints, retry, keyboard actions, visible stack/top labels and reduced motion
+remain usable without any model connection. Report all automated cases and
+outcomes in TEST-RESULTS.md and add companion scenario documentation; record
+live browser/AI checks separately, including unverified limitations.
+
+**Team world-map integration (2026-11-08):** App owns hash navigation between
+the illustrated World Adventure Map and `/#/stack`. GameStage retains all
+three rooms plus the optional room-02 tutor, and hosts the expandable skills
+handbook. Only ForkedPathRoom's final exit reports module completion through
+GameStage to App. App records one idempotent data gem in the team's separate
+adventure-progress key; the existing room unlock schema is unchanged.
+The other three map regions show a locked dialog. Source revision and merge
+decisions are recorded in TEAM-MERGE.md.
+
+**Tutor re-integration decision (2026-11-08):** The requested Phase 3
+continuation reuses the Stack tutor inside Stairway Repair (room 02).
+The student explicitly opens the optional chat. At Ask time it receives
+current Python code, last run output/error, target glyph order and current
+stack state, labelled as untrusted data. It does not execute code or unlock
+rooms. Trial and Forked Path remain independent of AI. The existing proxy,
+moderation, hint-first prompt and local transcript/export are retained.
+The UI discloses that questions and lesson context are sent to the AI service.
+This decision supersedes the table's original deferred-integration note below.
 
 | Layer                                                                              | Status                                   | Notes                                                                                                                                                                                                                                         |
 | ---------------------------------------------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

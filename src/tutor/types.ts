@@ -19,6 +19,8 @@ export interface TutorMessage {
 }
 
 export interface TutorLessonContext {
+  teachingMode?: 'teach-sprite' | 'practice-coach'
+  gameState?: string
   currentCode: string
   lastRunResult: { stdout: string; error: string | null } | null
   hintsUsedThisExercise: number

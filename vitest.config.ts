@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 // Kept separate from vite.config.ts: vitest bundles its own copy of Vite,
 // whose plugin types don't line up with the root Vite install, so mixing
@@ -7,5 +7,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    exclude: [...configDefaults.exclude, 'artifacts/**'],
   },
 })

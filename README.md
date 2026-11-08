@@ -1,5 +1,22 @@
 # AIgoNavigator
 
+**New: Teach Xiao Tuo practice bank.** After finding the Forked Path exit,
+choose **Continue to Teach Xiao Tuo** or **04 · Teach Xiao Tuo**. Teach the
+sprite through four child-adapted Stack tasks, with progressive hints,
+top-only/LIFO rule correction, a fresh transfer example, and optional
+learner/coach chat. Sources: LeetCode 1441, 844, 2390 and 1047 from the linked
+Stack list. Practice works offline after the app loads; AI chat needs the
+running local service. [Case-by-case test results](docs/TEST-RESULTS.md) and
+[browser acceptance](docs/TEACHING-ACCEPTANCE.md) document verification.
+
+The homepage now includes the team's illustrated **World Adventure Map**.
+Choose **Stack Ruins** to enter the full three-room game with local Tutor,
+or use `http://127.0.0.1:4174/#/stack` directly. The other three regions show
+a locked-level dialog. Return to the map at any time; reaching the final
+maze exit earns one persistent data gem. An expandable skills handbook is
+available in the Stack game. See [team integration notes](docs/TEAM-MERGE.md)
+for the pinned source version and merge decisions.
+
 A web-based platform that teaches upper-elementary students (grades 4–6)
 the fundamentals of data structures using real Python — combining visual
 animations, guided hands-on coding, and a conversational AI tutor.
@@ -41,19 +58,37 @@ details.
 
 ## Project status
 
-Phase 6 adds **Forked Path**, a generated branching tree maze with an SVG
-map and a dedicated room-stack sidebar. Child moves push (including explored
-branches); parent moves and Backtrack pop without erasing visited rooms.
-The entrance is protected and reaching the exit freezes play until replay
-with a newly generated maze. Trial of Stones → Stairway Repair → Forked Path
-is now connected through explicit Continue buttons; unlocked navigation
-stays available when revisiting earlier rooms. Movement uses an edge tween
-and respects reduced motion. Map-node and badge artwork use local placeholders;
-existing Phase 5 door, switch, stones, sprite, stairway art and lazy Pyodide
-loading are preserved. No new dependencies or tutor changes.
+Phase 6 gameplay is implemented. Local production-preview Chrome acceptance now
+covers all three rooms with real Python, timeout/retry without refresh, keyboard
+maze navigation, dead-end pop/revisit, exit freeze, replay, 390px layout, and both
+motion preferences. Versioned localStorage preserves only ordered room unlocks;
+reload starts at Trial. Corrupt/unsupported data and denied storage fail safely.
 
-Browser visual/full-playthrough QA is still required; automated verification
-and its known gaps are recorded in the test companions and roadmap.
+Supplied source images are exported to PNG without changing `picture/` using
+`node scripts/prepare-game-assets.mjs` (requires an existing local CDP endpoint;
+Node 22+ for these CDP scripts). The manifest records true source formats,
+dimensions and alpha counts. Map nodes, badge and code book are connected;
+deleted backgrounds are not restored. **Art is not final:** no background removal,
+content crop, light/dark composite or paired-anchor visual approval is claimed.
+The map retains its programmatic blank-board fallback. Scroll/glow/dust are
+mounted in Stairway Repair; reduced-motion mode skips the dust animation.
+The prototype art notice remains.
+
+After exporting, run `npm run assets:optimize` to losslessly recompress the
+published PNGs without changing source art, dimensions, alpha or pixel data.
+The command validates PNG checksums and identical decompressed image data,
+keeps the smaller version, and writes `artifacts/asset-optimization.json`
+with sizes and SHA-256 hashes. The 2026-11-08 pass reduced 25 PNGs from
+3,054,638 to 2,405,816 bytes (21.2%). This does not certify visual art quality
+or the cold-load performance target.
+
+Run `npm run build`, `npm run preview -- --host 127.0.0.1 --port 4173`, then
+`node scripts/game-browser-check.mjs` with a local Chrome/Edge CDP endpoint at
+9222 (`APP_URL` / `CDP_URL` override defaults). Evidence goes to a fresh
+`artifacts/game-<timestamp>/` directory; older kids-* evidence is preserved.
+Firefox, a separate Edge run, controlled browser Worker crash injection, true
+cold-load performance, school hardware and real student pilot remain pending.
+See [the pilot checklist](docs/PILOT.md) and the dated roadmap status.
 See:
 
 - [docs/REQUIREMENTS.md](./docs/REQUIREMENTS.md) — product requirements and scope.
@@ -82,7 +117,9 @@ D:\AIgoNavigator\
   Workers enabled.
 - Internet access for the first `npm install` and for downloading the
   Pyodide runtime when the first Python exercise is run. Student Python
-  code itself runs locally in the browser and is not sent to a server.
+code executes locally in the browser. Pressing Ask in the optional room-02
+tutor sends current code, run/room state, the question and recent chat to
+the AI service.
 
 ### Install dependencies
 
@@ -119,7 +156,7 @@ npm run dev
 Open the local address printed by Vite, normally:
 
 ```text
-http://localhost:5173/
+http://127.0.0.1:4174/
 ```
 
 Keep the terminal running while using the app. Press `Ctrl+C` to stop the
@@ -159,6 +196,41 @@ Re-run `npm run test:report` after changing tests and commit the
 regenerated `docs/TEST-RESULTS.md` with the change.
 
 ### Current phase
+
+**Local ChatGPT/Codex mode (2026-11-08):** `npm run dev` (or
+`npm run dev:local`) now starts a loopback-only development server using
+your installed, signed-in Codex CLI at `http://127.0.0.1:4174/`.
+It refuses to silently change ports if 4174 is occupied, avoiding confusion
+with an old static preview that has no tutor API. It needs internet and the account's Codex
+access, but no separate Anthropic key. Run `codex login status` to check
+login; `ALGONAV_CODEX_PATH` can point to the installed executable if it is
+not on PATH. The CLI uses the existing system proxy without changing it.
+Requests run ephemeral in a fresh temporary directory with read-only
+sandbox, shell/app/browser tools disabled and user config ignored. Only
+final text is returned through the existing moderation handler; prompts
+travel over stdin, not shell command interpolation. The bridge is for
+local development, not a public deployment or an offline model. Server
+timeout is 55 seconds and browser timeout is now 60 seconds.
+
+Use `npm run dev:api` for the original Anthropic-compatible API provider.
+The API environment configuration below applies to that mode. Production
+`api/tutor/index.ts` continues to use the server API provider, not local CLI.
+
+Room 02 now includes **Ask the stack tutor** below the stack result.
+It provides code-aware hints, stores the chat locally, and offers Export
+session log. No API request is made until Ask is pressed. Requests time out
+after 30 seconds and AI failure does not prevent solving or leaving the room.
+
+For API-provider development, run `npm run dev:api`; `npm run preview` serves static assets
+and does not provide `/api/tutor`. Configure server-only credentials with
+`ANTHROPIC_API_KEY` or the SDK's existing authentication environment.
+`ALGONAV_TUTOR_MODEL` overrides `ANTHROPIC_MODEL`; if neither is present,
+the existing default is used. An optional `ANTHROPIC_BASE_URL` selects the
+configured gateway. Never prefix credentials with `VITE_`. Deployment must
+provide the `/api/tutor` server adapter in addition to the static build.
+Live acceptance on 2026-11-08 covered Chinese hints, current-code context,
+withholding a complete solution at zero hints, off-topic redirect and
+system-prompt extraction moderation; pilot transcript review is still needed.
 
 Use Play or Step forward to place the base, moon, and star stones, peek at
 the top, then remove them in reverse order. Completing the sequence awakens

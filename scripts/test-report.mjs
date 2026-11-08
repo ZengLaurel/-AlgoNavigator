@@ -8,10 +8,17 @@ const root = resolve(import.meta.dirname, '..')
 const jsonPath = resolve(root, '.test-results.json')
 const outPath = resolve(root, 'docs/TEST-RESULTS.md')
 
-execSync('npx vitest run --reporter=json --outputFile=.test-results.json', {
-  cwd: root,
-  stdio: 'inherit',
-})
+if (existsSync(jsonPath)) unlinkSync(jsonPath)
+try {
+  execSync('npx vitest run --reporter=json --outputFile=.test-results.json', {
+    cwd: root,
+    stdio: 'inherit',
+  })
+} catch (error) {
+  if (!existsSync(jsonPath)) throw error
+  // Still write every failed case and its diagnostics, never leave a stale pass.
+  process.exitCode = 1
+}
 
 const raw = JSON.parse(readFileSync(jsonPath, 'utf8'))
 if (existsSync(jsonPath)) unlinkSync(jsonPath)

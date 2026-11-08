@@ -4,6 +4,8 @@
 
 - All twenty-two logical sprite/map/reward keys resolve to descriptors with nonempty alt text.
 - Image sources are null placeholders or nonempty paths, never empty strings.
+- Every registered non-null image exists as a genuine PNG with dimensions matching
+  `public/assets/export-manifest.json`, including the additional decorative keys.
 
 ## Why this test exists
 
@@ -15,12 +17,12 @@ signal.
 
 ## Known gaps
 
-- Does not verify the referenced files actually exist on disk or load in a
-  browser (e.g. a typo'd `/assets/...` path); covered by manual browser QA.
+- Does not verify successful browser decoding, network response status, subject
+  cropping, paired-state anchors, or visual quality; these require browser/art QA.
 - Does not assert on the choice of real art vs. placeholder per key — only
   that the descriptor shape itself is valid either way.
 
 ## Status
 
-Last verified: 2026-11-06 — 23/23 passing (`npm test`); see
+Last verified: 2026-11-06 — 24/24 passing (`npm test`); see
 [`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.

@@ -30,10 +30,13 @@ export type AssetKey =
   | 'node-exit'
   | 'badge-stack'
   | 'fx-sparkle'
+  | 'magic-code-book'
+  | 'quest-scroll'
+  | 'fx-magic-glow'
+  | 'fx-dust'
 
 export interface AssetDescriptor {
-  /** Final image path once real art lands; `null` means "render the
-   * placeholder" and is the expected value for every key today. */
+  /** Exported image path; null retains the programmatic fallback. */
   src: string | null
   /** Required regardless of placeholder/real state — accessibility text
    * must exist before the art does. */
@@ -42,13 +45,26 @@ export interface AssetDescriptor {
 
 export const ASSETS: Record<AssetKey, AssetDescriptor> = {
   'map-board': { src: null, alt: 'Blank stone map board' },
-  'node-entrance': { src: null, alt: 'Maze entrance' },
-  'node-hall': { src: null, alt: 'Forked hall' },
-  'node-corridor': { src: null, alt: 'Connecting corridor' },
-  'node-dead-end': { src: null, alt: 'Dead end' },
-  'node-exit': { src: null, alt: 'Maze exit' },
-  'badge-stack': { src: null, alt: 'Stack explorer badge' },
-  'fx-sparkle': { src: null, alt: 'Celebration sparkle' },
+  'node-entrance': { src: '/assets/node-entrance.png', alt: 'Maze entrance' },
+  'node-hall': { src: '/assets/node-hall.png', alt: 'Forked hall' },
+  'node-corridor': {
+    src: '/assets/node-corridor.png',
+    alt: 'Connecting corridor',
+  },
+  'node-dead-end': { src: '/assets/node-dead-end.png', alt: 'Dead end' },
+  'node-exit': { src: '/assets/node-exit.png', alt: 'Maze exit' },
+  'badge-stack': {
+    src: '/assets/badge-stack-apprentice.png',
+    alt: 'Stack explorer badge',
+  },
+  'fx-sparkle': { src: '/assets/fx-sparkle.png', alt: 'Celebration sparkle' },
+  'magic-code-book': {
+    src: '/assets/magic-code-book.png',
+    alt: 'Magic code book',
+  },
+  'quest-scroll': { src: '/assets/quest-scroll.png', alt: 'Quest scroll' },
+  'fx-magic-glow': { src: '/assets/fx-magic-glow.png', alt: 'Magic glow' },
+  'fx-dust': { src: '/assets/fx-dust.png', alt: 'Stone dust' },
   'stone-door-closed': {
     src: '/assets/stone-door-closed.png',
     alt: 'A closed stone ruins door',
@@ -94,7 +110,7 @@ export const ASSETS: Record<AssetKey, AssetDescriptor> = {
     alt: 'The guide sprite, explaining',
   },
   'sprite-thinking': {
-    src: '/assets/sprite-thinking.jpg',
+    src: '/assets/sprite-thinking.png',
     alt: 'The guide sprite, thinking',
   },
   'sprite-happy': {
