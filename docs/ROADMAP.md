@@ -1,5 +1,39 @@
 # AIgoNavigator — Roadmap
 
+## 当前执行计划：四板块扩展（2026-11-11）
+
+**需求基线：** [REQUIREMENTS.md §12](./REQUIREMENTS.md#12-四大板块完整教学需求2026-11-11)。
+数组、链表、队列现已明确纳入后续交付范围，每个板块对齐 Stack 的完整功能：
+动画、导师教学、知识补充、真实 Python 任务、独立应用挑战及教小拓题库。
+知识来源为本地 `hello-algo/` 的数组、链表和队列章节，参考版本及教学边界
+以需求文档 §12.2 为准，参考仓库保持只读。
+
+本轮只更新路线图；下列新增阶段均为**未开始**，不表示已开发或通过测试。
+`SPECIFICATION.md` 仍主要描述 Stack，**下一项实际工作是 Phase 10 的规格同步**。
+必须先完成设计门槛，才进入 Phase 11 的实现；不能直接将 Stack-only 的状态、
+执行接口和提示词复制到三个板块。
+
+| 工作项                            | 当前状态               | 下一步 / 完成证据                            |
+| --------------------------------- | ---------------------- | -------------------------------------------- |
+| Phase 0–6、Stack Tutor 与教学题库 | 已有实现及历史验证记录 | 后续每阶段保持回归，不代表所有人工验收已完成 |
+| 四板块需求                        | 已明确，2026-11-11     | REQUIREMENTS.md §12                          |
+| Phase 7 美术与视觉完善            | 部分完成               | 透明素材、合成与锚点视觉检查等剩余项继续保留 |
+| Phase 8 试点加固                  | 部分完成               | 跨浏览器、真实设备、冷启动及故障恢复证据     |
+| Phase 9 真实学生试点              | 已准备，未运行         | PILOT.md、实际观察与结果记录                 |
+| Phase 10 规格与内容设计           | 未开始，下一步         | 三板块数据契约、教学内容和判定设计           |
+| Phase 11 共用能力扩展             | 未开始                 | 执行、导师、教学判定、导航与存档兼容验证     |
+| Phase 12 数组 Supply Camp         | 未开始                 | 四阶段体验、手册、导师、至少四题及验收       |
+| Phase 13 链表 Misty Forest        | 未开始                 | 四阶段体验、手册、导师、至少四题及验收       |
+| Phase 14 队列 Harbor Pier         | 未开始                 | 四阶段体验、手册、导师、至少四题及验收       |
+| Phase 15 四板块联合验收           | 未开始                 | 全回归、四区进度、人工验收及待办清单         |
+
+**执行顺序与历史阶段的关系：** 新功能沿 Phase 10 → 11 → 12 → 13 → 14 → 15
+顺序推进，每阶段满足自己的退出标准后再进入下一阶段。用户确认的扩展范围
+允许先进行这些内部设计与开发，不以未运行的 Phase 9 作为开发前置条件。
+Phase 7/8/9 保留为独立的美术、可靠性和真实学习效果验收事项；安全与可靠性
+问题不能因范围扩展被搁置。面向儿童试点前必须完成适用的 Phase 8 门槛，
+不能凭功能开发完成就直接安排试用。此规则覆盖文末旧的全局线性阶段约束。
+
 ## User-prioritized extension — Teach Xiao Tuo Stack practice (2026-11-08)
 
 **Goal:** extend the Stack ending into learning by teaching, using a bounded
@@ -350,9 +384,10 @@ NFR-3/NFR-4.
 **Goal:** de-risk before putting this in front of real children.
 
 - Cross-browser check (latest Chrome/Edge/Firefox) per NFR-5.
-- Manual transcript review process dry-run **only if** the tutor is
-  re-integrated before this phase (see the Phase 3 status note above) —
-  otherwise skip, since no AI conversation exists in the shipped game.
+- Manual transcript review process dry-run for the re-integrated Tutor
+  and Teach Xiao Tuo chat (Phase 3 / 2026-11-08 extension). Review all
+  implemented structures as they ship; do not skip this gate on the basis
+  of the superseded deferred-Tutor plan.
 - Reliability pass: forced Pyodide worker crashes/hangs during Stairway
   Repair, confirm recovery without progress loss (NFR-6) — reuses Phase
   2's respawn-on-hang logic and its existing test, verified in-browser.
@@ -372,19 +407,188 @@ metrics, adapted to the game format.
   without hints, any crashes/hangs requiring reload, qualitative feedback
   on whether the game framing improved engagement versus the original
   lesson-page format.
-- Write up findings and decide next-phase scope: Array/LinkedList/Queue
-  game rooms (previously "Phase 5 — Replicate for Remaining Structures"),
-  tutor re-integration, and/or further polish — see REQUIREMENTS.md §3
-  Non-Goals as the candidate backlog, now alongside the game-specific
-  options above.
+- Write up findings and adjust teaching difficulty, hint quality and pacing.
+  Array/LinkedList/Queue are already approved in REQUIREMENTS.md §12;
+  their development no longer awaits a scope decision from this pilot.
+  If the pilot runs after Phase 15, cover all four structures and the
+  three-of-four independent-challenge metric in REQUIREMENTS.md §10.
+  If it runs earlier, state exactly which shipped structures were observed
+  and leave the broader learning-outcome claim unverified.
 
-**Exit criterion:** success metrics are measured and documented; go/no-go
-decision made for post-MVP investment, including whether to extend the
-game format to the remaining three structures.
+**Exit criterion:** applicable success metrics are measured and documented;
+learning and usability findings, limitations and a go/no-go decision for
+broader student use are recorded. Do not imply a completed four-structure
+pilot from a Stack-only observation.
+
+## Phase 10 — 四板块规格与教学内容设计
+
+**状态：未开始；下一步。** 对应需求 §12.1–12.12。本阶段先完成文档设计，
+不以实现代码代替尚未明确的接口、内容或判题规则。
+
+**交付内容：**
+
+- 更新 SPECIFICATION.md：明确新基线优先级，修订三个结构仍“不在范围内”的
+  旧表述，保留已交付 Stack 与历史约束的适用范围。
+- 定义数组（索引、长度、容量）、链表（稳定节点身份、next、head、None）和
+  队列（逻辑顺序、front/rear、服务历史）的结构状态及合法操作；标明哪些契约
+  共用、哪些分别建模，不强迫三种结构复用只有 elements 的栈状态。
+- 明确动画快照、操作事件、Python harness、运行结果校验和判题的连接方式。
+  Python 执行结果必须携带结构证据；数组移动、链表改引用、队列服务顺序
+  应可观察，stdout 或最终空结构不能作为唯一通关证据。
+- 定义模块/任务/运行标识、请求过期处理和 Worker 故障恢复，避免切换板块后
+  接收上一板块的执行结果或 AI 回复。
+- 设计每板块四阶段的内容清单、三关目标、手册条目、Tutor 上下文，以及至少
+  四道原创固定教学题。每题写出误解、允许操作、示范/迁移输入、正确规则与
+  原因、恰好三个渐进提示、判定证据及失败反馈。
+- 定义“示范 → 纠错解释 → 待验证复述 → 新例迁移 → 已教会”的状态机；
+  模型和自由解释文字不负责判题，任何提示层级均不提供完整解法。
+- 定义四区路由、逐关解锁、每区一颗宝石、逐题掌握与旧 Stack 存档兼容方案，
+  以及进度记录、编程会话与习题内存聊天的不同留存边界。
+- 在规格中建立“需求段落 / 验收 ID → 设计章节 → 计划测试层级”的映射，
+  覆盖 ARR、LL、QUE、TEACH、AI、RUN、NAV、STORE、UX 全部验收组。
+
+**退出标准：** 三个板块均有可以直接实现的操作契约、内容与判定样例；
+需求 §12.11 中每一组都有设计落点。示范与迁移不是同一组数据，错误过程不能
+只凭正确终态过关。规格、需求和本路线图的范围与完成定义一致，未解决的
+阻塞设计问题明确列出并在实现前解决。
+
+## Phase 11 — 执行、导师、教学与进度的共用能力扩展
+
+**状态：未开始。依赖：Phase 10。** 以最小必要改动扩展现有能力，保留
+Stack 的游戏流程、已用 API 与旧存档，不在此阶段提前开放未完成区域。
+
+**交付内容：**
+
+- 按规格扩展模块内容注册、四阶段外壳、知识手册入口和通用动画控制。
+  结构规则与 renderer 独立，使脚本演示和 Python 结果使用同一知识模型。
+- 扩展执行协议、harness 选择和返回状态校验；每次 Run 使用干净任务状态。
+  覆盖未知模块、无效状态、旧响应、异常、超时及 Worker 重建后的再运行。
+- 扩展当前仅支持 stack 的 Tutor 前后端边界：模块白名单、版本化角色提示词、
+  本题上下文、针对模块的安全回退和三条快捷问题；继续支持本地开发桥接及
+  生产代理。题目/角色切换隔离上下文；AI 不得改变操作或授予进度。
+- 为后续题库提供可复用的教学门槛、逐级提示、重置/重玩和掌握记录能力；
+  对不同结构保留各自合法动作与判定，不能把全部题目做成 push/pop。
+- 扩展模块解锁与宝石存档，校验版本和题目 ID，兼容现有 Stack 房间、题库
+  及地图记录；重复完成不重复奖励，存储失败时使用可玩的内存状态。
+
+**验证：** 自动覆盖 TEACH-02/03/04、AI-02、RUN-01、NAV-01、STORE-01 的
+共用行为及旧 Stack 回归；浏览器检查切换与超时恢复。对话采用 mock 验证
+代理边界，后续各板块另做真实模型的角色与内容审阅。
+
+**退出标准：** 共用契约可承载三类结构，各类返回状态与错误分支有验证；
+现有 Stack 完整流程可继续玩，旧记录不丢失或产生其他板块奖励。
+新区域仍保持未开放，直到对应板块阶段验收完成。
+
+## Phase 12 — 数组板块 Supply Camp
+
+**状态：未开始。依赖：Phase 11。** 对应需求 §12.4。
+
+| 增量            | 必需交付                                                              | 验证重点                                                     |
+| --------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 12.1 观察与知识 | 营地储物格动画、预测检查、播放/暂停/双向单步/速度；数组手册与导师入口 | 索引从 0 开始，访问/替换/插入/删除/遍历/扩容的字幕与状态一致 |
+| 12.2 Python     | 补给整理脚手架、Run/Reset、真实执行驱动数组视图、错误与提示           | ARR-01/02/03、RUN-01；长度、容量、移动证据及边界索引         |
+| 12.3 独立应用   | 新序列的营地装箱任务、固定判定、完成按钮及单颗宝石                    | 完整序列与操作规则均正确，第一关或访问页面不授奖             |
+| 12.4 教小拓     | 找到第几个格子、中间插入补给、删除后补齐空位、储物格满了怎么办        | 每题示范、规则/原因、新迁移及三个提示，全部教学门槛有效      |
+
+将小拓的误解分别设为从 1 编号、覆盖代替插入、删除留下洞、长度等于容量。
+容量不足不静默丢数据，教学负索引限制须区别于 Python 原生行为；手册说明
+数组模型与 Python list 的差异。Tutor 回复和快捷问题必须针对数组。
+
+**退出标准：** 四个增量、独立手册、全程导师和至少四题均可使用；
+ARR-01/02/03 及本板块的 TEACH-01–04、AI-01/02、RUN-01、NAV-01、
+STORE-01、UX-01 有真实结果和缺口记录。浏览器完成一遍三关及四题迁移，
+断开 AI 仍可通关；通过后才开放地图数组入口。Stack 回归通过。
+
+## Phase 13 — 链表板块 Misty Forest
+
+**状态：未开始。依赖：Phase 12 通过，复用 Phase 11 的能力。** 对应需求 §12.5。
+这是开发顺序，不是学生必须先完成数组的学习限制。
+
+| 增量            | 必需交付                                                               | 验证重点                                                |
+| --------------- | ---------------------------------------------------------------------- | ------------------------------------------------------- |
+| 13.1 观察与知识 | 林间信标、引用箭头、head/None/当前节点、操作动画与预测；链表手册及导师 | 逻辑关系来自 next 而非画面相邻位置；节点身份与值分离    |
+| 13.2 Python     | 修复信标链脚手架、真实节点与引用变化、Run/Reset、错误与提示            | LL-01/02/03、RUN-01；头尾/中间插删、重复值、空与单节点  |
+| 13.3 独立应用   | 新节点的森林送信任务、可观察遍历路径、完整链路判定及单颗宝石           | 到达要求节点且终止于 None，不能漏节点、断链或形成非法环 |
+| 13.4 教小拓     | 沿 next 找伙伴、头部加入新信标、中间接入信标、移除信标仍保持道路连通   | 示范与迁移覆盖引用更新、头节点变化及尾部/单节点边界     |
+
+小拓误解包括沿画面右边走、插入丢失后续链路、擦掉值即删除、删除头节点却
+不改 head。非法引用、环与遍历长度须有界检查并允许修复，不能只靠成功路径
+测试。手册比较数组与链表，不把双向、循环链表或复杂度证明加入基础关卡。
+
+**退出标准：** 四个增量、手册、导师和至少四题完整；LL-01/02/03 与本板块
+全部通用验收组有证据。浏览器验证真实改引用、非法环恢复、三关及四题迁移，
+AI 不可用时仍可完成；通过后开放链表区域。数组与 Stack 回归通过。
+
+## Phase 14 — 队列板块 Harbor Pier
+
+**状态：未开始。依赖：Phase 13 通过，复用 Phase 11 的能力。** 对应需求 §12.6。
+
+| 增量            | 必需交付                                                           | 验证重点                                                  |
+| --------------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
+| 14.1 观察与知识 | 码头排队动画与预测、front/rear、到达顺序；队列手册及导师           | rear 入队、front 出队、FIFO、peek 不改状态，与 Stack 区分 |
+| 14.2 Python     | 调度船只脚手架、enqueue/dequeue/peek、返回值和队列状态、错误与提示 | QUE-01/02/03、RUN-01；空队列、单元素和交错入出队          |
+| 14.3 独立应用   | 新事件序列的港口服务站、等待队列及离港历史、单颗宝石               | 既校验服务顺序又校验最终队列，不能只因队列清空就通过      |
+| 14.4 教小拓     | 谁先上船、新船停在哪里、看看队首不让它离开、边到港边服务           | 每题纠正一个误解，独立迁移，提示与角色均针对队列          |
+
+小拓误解包括后来先走、队首插队、peek 当出队、空队列仍能出队。
+教学接口采用 enqueue/dequeue，手册解释与参考章节 push/pop 命名的关系。
+不把列表 pop(0) 描述为常数时间；循环队列、固定容量和回绕指针仅作可选扩展。
+
+**退出标准：** 四个增量、手册、导师和至少四题完整；QUE-01/02/03 与本板块
+全部通用验收组有证据。浏览器验证交错事件、三关与四题迁移，AI 不可用时
+仍可完成；通过后开放队列区域。其他三个已实现板块回归通过。
+
+## Phase 15 — 四板块联合验收与交付整理
+
+**状态：未开始。依赖：Phase 12–14 均通过。** 目标是验证完整学习体验及
+跨板块边界，不以编译通过或累计测试数量替代功能验收。
+
+- 对照 REQUIREMENTS.md §12.11 完成全部验收组，三个新增题库逐题记录
+  示范/迁移的正确与错误轨迹、规则/原因不匹配、重置和重玩；至少十二道新题
+  均需通过，不以已有四道 Stack 题替代。复查提示不泄露完整解法。
+- 完成四区导航、无跨区强制前置、每区一颗宝石和 4/4 展示；验证进入页面、
+  查看手册和完成第一关不授奖，教学题掌握不影响三关宝石标准。
+- 验证旧 Stack 三种进度记录、损坏/未知记录及禁用存储；连续切换板块、题目
+  或角色时不泄漏对话、不接收过期执行结果、不丢失已经获得的解锁。
+- 对四板块分别做真实 Python 运行、异常、无限循环、Worker 恢复和重试；
+  在 AI 服务关闭时完成核心流程。首次 Python 加载仍可能依赖网络。
+- 对四板块做键盘、窄屏、减少动态效果和真实模型话术审阅，记录浏览器、
+  设备及网络条件；关联 Phase 7/8 的剩余美术、跨浏览器与学校设备门槛。
+- 更新 README 的模块可用状态、使用说明和已知限制，整理测试与浏览器证据。
+  Phase 9 的试点材料随新范围调整；未开展真实学生观察时明确写“未运行”。
+
+**退出标准：** 全部板块的必需体验与验收有可复核证据，Stack 无已知回归，
+没有阻塞本次功能交付的安全/可靠性问题。尚未测量的设备性能、视觉签核或
+学生学习效果逐项列出，不得写成“全部验收完成”。只有通过 Phase 8 的适用
+门槛后才进入儿童试点；Phase 9 的学习效果结论须另行记录。
+
+## 新增阶段的统一测试与进度记录规则
+
+以下规定适用于 Phase 11–15；Phase 10 以需求覆盖与设计核对作为验证。
+
+1. 自动验证覆盖结构状态变换、操作轨迹、判题门槛、动画控制与布局、渲染、
+   Python 执行桥接、Tutor 边界及存档迁移；浏览器验证真实 Worker、动画呈现、
+   导航、输入、超时恢复与无障碍。模型语气与提示质量另做人工审阅。
+2. 每阶段按改动执行适用测试，并在代码交付前运行 `npm run test:report`、
+   `npm run build`、`npm run lint` 和所改文件的格式检查。失败先修复再推进，
+   不用重复运行无关测试替代缺失的验收。
+3. 遵循 [bug-reports/README.md](./bug-reports/README.md)，新测试文件配套说明
+   用例、输入、预期、回归目的、缺口及最近结果；`TEST-RESULTS.md` 由真实运行
+   生成，包含逐例通过/失败、耗时与失败信息，不手改成预期数字。
+4. 手工证据分别放入计划新增的 `ARRAY-ACCEPTANCE.md`、
+   `LINKED-LIST-ACCEPTANCE.md`、`QUEUE-ACCEPTANCE.md` 和
+   `FOUR-MODULE-ACCEPTANCE.md`。这些文件目前尚未创建；实施时记录提交版本、
+   日期、浏览器/设备/网络、用例 ID、输入步骤、预期、实际、状态和截图/日志位置。
+   未执行、失败、阻塞与通过分别标注，不把缺失证据当作通过。
+5. 路线图阶段状态只有在退出证据完整时更新为完成；部分交付写明已做与剩余项。
+   旧的 222 条测试属于历史 Stack 基线，不能作为新板块或当前版本通过的证明。
+   本次仅更新文档，不运行产品测试或刷新其结果，也不宣称新增验收已执行。
 
 ---
 
-**Process note:** do not start a phase's work until the prior phase's exit
-criterion is met. If a phase surfaces a design gap, update
-SPECIFICATION.md (and REQUIREMENTS.md if scope is affected) before
+**Process note (2026-11-11):** follow the dependency rules in the current
+execution plan above. Phase 10 design precedes all new implementation;
+Phases 11–15 advance only after their stated dependencies pass. Historical
+Phases 7–9 retain their separate gates. If work surfaces a design gap,
+update SPECIFICATION.md (and REQUIREMENTS.md if scope is affected) before
 continuing, rather than deviating silently.
