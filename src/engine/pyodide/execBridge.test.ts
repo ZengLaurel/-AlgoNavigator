@@ -15,7 +15,7 @@ function createFakePyodide(
     },
     runPythonAsync: async (code: string) => {
       if (code.includes('print(stack.peek())')) {
-        stdoutHandler?.('3\n')
+        stdoutHandler?.('3')
       }
       if (code.includes('missing_name')) {
         throw new Error("NameError: name 'missing_name' is not defined")

@@ -1,0 +1,221 @@
+.linked-adventure {
+  min-height: 100vh;
+  background: linear-gradient(150deg, #142c32, #22354b 65%, #303840);
+  color: #f6efdc;
+  padding: 24px 12px 72px;
+}
+.linked-adventure .game-root {
+  max-width: 1120px;
+  margin: auto;
+  padding: 24px;
+  background: #17283b;
+  border: 1px solid #697964;
+  border-radius: 20px;
+}
+.linked-adventure h1,
+.linked-adventure h2,
+.linked-adventure h3 {
+  color: #f2c265;
+  line-height: 1.25;
+}
+.linked-adventure a {
+  color: #92e4e2;
+}
+.linked-adventure nav,
+.linked-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.linked-adventure nav button[aria-current='step'] {
+  outline: 3px solid #f2c265;
+  outline-offset: 3px;
+}
+.linked-adventure button {
+  background: #67cbd5;
+  color: #132738;
+  margin: 6px 6px 6px 0;
+  min-height: 44px;
+}
+.linked-adventure button:hover:not(:disabled) {
+  background: #a5e7e3;
+}
+.linked-adventure button:focus-visible,
+.linked-adventure input:focus-visible,
+.linked-adventure select:focus-visible,
+.linked-adventure summary:focus-visible {
+  outline: 3px solid #f2c265;
+  outline-offset: 3px;
+}
+.linked-adventure label {
+  display: block;
+  margin: 12px 0;
+}
+.linked-adventure input:not([type='radio']),
+.linked-adventure select,
+.linked-adventure textarea {
+  display: block;
+  width: min(100%, 520px);
+  padding: 10px;
+  border: 1px solid #99bbc1;
+  border-radius: 8px;
+  background: #f6f3e6;
+  color: #182b3d;
+  font: inherit;
+}
+.linked-adventure input[type='radio'] {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+.linked-adventure fieldset {
+  min-width: 0;
+  border: 1px solid #6e8b94;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.linked-adventure legend {
+  padding: 0 8px;
+  color: #f2d497;
+}
+.linked-adventure details {
+  border-top: 1px solid #607881;
+  margin-top: 22px;
+  padding-top: 16px;
+}
+.linked-adventure summary {
+  cursor: pointer;
+  color: #a4e4d9;
+  font-weight: 700;
+  min-height: 44px;
+}
+.linked-display {
+  margin: 20px 0;
+  padding: 18px;
+  border-radius: 14px;
+  background: #203c43;
+}
+.linked-scroll {
+  overflow-x: auto;
+  padding: 12px 4px;
+}
+.linked-slots {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  min-height: 140px;
+  align-items: center;
+}
+.linked-slot {
+  flex: 0 0 112px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 8px;
+  border: 2px solid #e1bb77;
+  border-radius: 10px;
+  background: #f4dfac;
+  color: #172c38;
+}
+.linked-slot strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 1.15rem;
+}
+.linked-slot.empty {
+  background: transparent;
+  color: #d3e5dc;
+  border-style: dashed;
+}
+.linked-index {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.linked-event {
+  min-height: 2.8em;
+  color: #d4ede4;
+}
+.linked-guide {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+}
+.linked-guide .ruins-sprite {
+  position: relative;
+  inset: auto;
+  flex: 0 0 96px;
+}
+.linked-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a8dacd;
+}
+.linked-source {
+  font-size: 0.82rem;
+  color: #bcd4d2;
+}
+.linked-adventure .code-editor {
+  background: white;
+  color: #1c2b3d;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 18px 0;
+}
+.linked-adventure .cm-editor {
+  min-height: 220px;
+  font-size: 16px;
+}
+.linked-adventure pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .linked-adventure {
+    padding: 8px;
+  }
+  .linked-adventure .game-root {
+    padding: 16px;
+  }
+  .linked-guide {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .linked-adventure h1 {
+    font-size: 2rem;
+  }
+  .linked-controls fieldset {
+    padding: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .linked-adventure * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.linked-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.linked-node {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  background: #f6efdc;
+  color: #183c35;
+  border-radius: 14px;
+  border: 3px solid #91b9ad;
+  min-width: 150px;
+}
+.linked-node.current {
+  border-color: #f2b23d;
+  box-shadow: 0 0 0 3px #f2b23d;
+}

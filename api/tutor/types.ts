@@ -6,6 +6,12 @@
  */
 
 export const SUPPORTED_LESSON_ID = 'stack'
+export const SUPPORTED_LESSON_IDS = [
+  'stack',
+  'array',
+  'linked-list',
+  'queue',
+] as const
 
 /** Caps applied before any paid provider call. Oversized input is rejected,
  * not truncated, so a student never gets an answer about silently cut code. */
@@ -23,6 +29,12 @@ export interface TutorRunResult {
 }
 
 export interface TutorRequestContext {
+  taskId?: string
+  exerciseId?: string
+  exampleId?: string
+  phase?: string
+  stateSummary?: string
+  lastActions?: string[]
   teachingMode?: 'teach-sprite' | 'practice-coach'
   gameState?: string
   currentCode?: string
@@ -39,6 +51,7 @@ export interface TutorTurn {
 }
 
 export interface TutorRequestBody {
+  requestId?: string
   lessonId: string
   studentMessage: string
   context?: TutorRequestContext
@@ -46,6 +59,7 @@ export interface TutorRequestBody {
 }
 
 export interface TutorResponseBody {
+  requestId?: string
   reply: string
   moderationFlag: boolean
 }

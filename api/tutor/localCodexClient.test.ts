@@ -3,11 +3,16 @@ import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { spawn } from 'node:child_process'
+import { homedir } from 'node:os'
+import path from 'node:path'
 import { askLocalCodex } from './localCodexClient.js'
 
 vi.mock('node:child_process', () => ({ spawn: vi.fn() }))
 
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => {
+  vi.restoreAllMocks()
+  vi.unstubAllEnvs()
+})
 
 function fakeProcess(code = 0) {
   const child = Object.assign(new EventEmitter(), {
@@ -35,6 +40,26 @@ function fakeProcess(code = 0) {
 }
 
 describe('local Codex tutor', () => {
+  it('passes the canonical Codex directory when the desktop environment omits it, preserving explicit overrides', async () => {
+    vi.stubEnv('CODEX_HOME', '')
+    fakeProcess()
+    await askLocalCodex({
+      system: 'Tutor',
+      userContent: 'Why do array items move?',
+    })
+    expect(vi.mocked(spawn).mock.calls.at(-1)![2]!.env!.CODEX_HOME).toBe(
+      path.join(homedir(), '.codex'),
+    )
+    vi.stubEnv('CODEX_HOME', 'D:\\explicit-codex-profile')
+    fakeProcess()
+    await askLocalCodex({
+      system: 'Tutor',
+      userContent: 'Why do array items move?',
+    })
+    expect(vi.mocked(spawn).mock.calls.at(-1)![2]!.env!.CODEX_HOME).toBe(
+      'D:\\explicit-codex-profile',
+    )
+  })
   it('uses stdin for untrusted questions, disables sensitive tools and returns only final text', async () => {
     const process = fakeProcess()
     const question = '$(do-not-execute) 中文'

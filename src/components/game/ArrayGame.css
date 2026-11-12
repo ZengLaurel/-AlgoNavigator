@@ -1,0 +1,200 @@
+.array-adventure {
+  min-height: 100vh;
+  background: linear-gradient(150deg, #142c32, #22354b 65%, #303840);
+  color: #f6efdc;
+  padding: 24px 12px 72px;
+}
+.array-adventure .game-root {
+  max-width: 1120px;
+  margin: auto;
+  padding: 24px;
+  background: #17283b;
+  border: 1px solid #697964;
+  border-radius: 20px;
+}
+.array-adventure h1,
+.array-adventure h2,
+.array-adventure h3 {
+  color: #f2c265;
+  line-height: 1.25;
+}
+.array-adventure a {
+  color: #92e4e2;
+}
+.array-adventure nav,
+.array-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.array-adventure nav button[aria-current='step'] {
+  outline: 3px solid #f2c265;
+  outline-offset: 3px;
+}
+.array-adventure button {
+  background: #67cbd5;
+  color: #132738;
+  margin: 6px 6px 6px 0;
+  min-height: 44px;
+}
+.array-adventure button:hover:not(:disabled) {
+  background: #a5e7e3;
+}
+.array-adventure button:focus-visible,
+.array-adventure input:focus-visible,
+.array-adventure select:focus-visible,
+.array-adventure summary:focus-visible {
+  outline: 3px solid #f2c265;
+  outline-offset: 3px;
+}
+.array-adventure label {
+  display: block;
+  margin: 12px 0;
+}
+.array-adventure input:not([type='radio']),
+.array-adventure select,
+.array-adventure textarea {
+  display: block;
+  width: min(100%, 520px);
+  padding: 10px;
+  border: 1px solid #99bbc1;
+  border-radius: 8px;
+  background: #f6f3e6;
+  color: #182b3d;
+  font: inherit;
+}
+.array-adventure input[type='radio'] {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+.array-adventure fieldset {
+  min-width: 0;
+  border: 1px solid #6e8b94;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.array-adventure legend {
+  padding: 0 8px;
+  color: #f2d497;
+}
+.array-adventure details {
+  border-top: 1px solid #607881;
+  margin-top: 22px;
+  padding-top: 16px;
+}
+.array-adventure summary {
+  cursor: pointer;
+  color: #a4e4d9;
+  font-weight: 700;
+  min-height: 44px;
+}
+.array-display {
+  margin: 20px 0;
+  padding: 18px;
+  border-radius: 14px;
+  background: #203c43;
+}
+.array-scroll {
+  overflow-x: auto;
+  padding: 12px 4px;
+}
+.array-slots {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  min-height: 140px;
+  align-items: center;
+}
+.array-slot {
+  flex: 0 0 112px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 8px;
+  border: 2px solid #e1bb77;
+  border-radius: 10px;
+  background: #f4dfac;
+  color: #172c38;
+}
+.array-slot strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 1.15rem;
+}
+.array-slot.empty {
+  background: transparent;
+  color: #d3e5dc;
+  border-style: dashed;
+}
+.array-index {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.array-event {
+  min-height: 2.8em;
+  color: #d4ede4;
+}
+.array-guide {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+}
+.array-guide .ruins-sprite {
+  position: relative;
+  inset: auto;
+  flex: 0 0 96px;
+}
+.array-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a8dacd;
+}
+.array-source {
+  font-size: 0.82rem;
+  color: #bcd4d2;
+}
+.array-adventure .code-editor {
+  background: white;
+  color: #1c2b3d;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 18px 0;
+}
+.array-adventure .cm-editor {
+  min-height: 220px;
+  font-size: 16px;
+}
+.array-adventure pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .array-adventure {
+    padding: 8px;
+  }
+  .array-adventure .game-root {
+    padding: 16px;
+  }
+  .array-guide {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .array-adventure h1 {
+    font-size: 2rem;
+  }
+  .array-controls fieldset {
+    padding: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .array-adventure * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

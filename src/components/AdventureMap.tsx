@@ -39,11 +39,15 @@ function GemIcon() {
 
 export interface AdventureMapProps {
   stackCompleted: boolean
+  completedModules?: number
 }
 
-export function AdventureMap({ stackCompleted }: AdventureMapProps) {
+export function AdventureMap({
+  stackCompleted,
+  completedModules,
+}: AdventureMapProps) {
   const lockedDialog = useRef<HTMLDialogElement>(null)
-  const count = stackCompleted ? 1 : 0
+  const count = completedModules ?? (stackCompleted ? 1 : 0)
 
   return (
     <main className="adventure-map" aria-labelledby="map-title">

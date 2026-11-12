@@ -13,18 +13,26 @@ export async function askTutor(
   studentMessage: string,
   context: TutorLessonContext,
   history: TutorMessage[],
+  options?: { signal: AbortSignal; requestId: string },
 ): Promise<TutorReply> {
   let response: Response
   try {
     response = await fetch(TUTOR_ENDPOINT, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      signal: AbortSignal.timeout(60_000),
+      signal: options?.signal ?? AbortSignal.timeout(60_000),
       body: JSON.stringify({
-        lessonId: LESSON_ID,
+        lessonId: context.moduleId ?? LESSON_ID,
+        requestId: options?.requestId,
         studentMessage,
         context: {
           teachingMode: context.teachingMode,
+          taskId: context.taskId,
+          exerciseId: context.exerciseId,
+          exampleId: context.exampleId,
+          phase: context.phase,
+          stateSummary: context.stateSummary,
+          lastActions: context.lastActions,
           gameState: context.gameState,
           currentCode: context.currentCode,
           lastRunResult: context.lastRunResult ?? undefined,
@@ -55,6 +63,15 @@ export async function askTutor(
   ) {
     return { ok: false, reply: OFFLINE_REPLY }
   }
+  if (
+    context.moduleId &&
+    context.moduleId !== 'stack' &&
+    (payload as { requestId?: unknown }).requestId !== options?.requestId
+  )
+    return {
+      ok: false,
+      reply: 'The lesson changed. Ask again in the current activity.',
+    }
 
   const { reply, moderationFlag } = payload as {
     reply: string

@@ -1,5 +1,10 @@
 import { loadPyodide, type PyodideInterface } from 'pyodide'
 import { runStackCode } from './execBridge'
+import {
+  runModuleCode,
+  moduleFailure,
+  validModuleRequest,
+} from './moduleExecution'
 import type { WorkerRequest, WorkerResponse } from './protocol'
 
 const PYODIDE_INDEX_URL = '/pyodide/'
@@ -28,6 +33,20 @@ workerScope.onmessage = async ({ data }) => {
         error: String(error),
       })
     }
+    return
+  }
+  if (data.type === 'run-module') {
+    if (!validModuleRequest(data) || !pyodide) {
+      workerScope.postMessage(
+        moduleFailure(
+          data,
+          'Python is not ready or the lesson is invalid.',
+          'INVALID_REQUEST',
+        ),
+      )
+      return
+    }
+    workerScope.postMessage(await runModuleCode(pyodide, data))
     return
   }
   try {

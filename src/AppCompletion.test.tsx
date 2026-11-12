@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { ADVENTURE_PROGRESS_KEY } from './adventureProgress'
+import { MODULE_PROGRESS_KEY } from './engine/modules/progress'
 
 // GameStage only reports completion at the final room's exit. Test the
 // application reward/storage boundary independently of Python and animations.
@@ -29,9 +29,10 @@ describe('world-map completion integration', () => {
     const view = render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Reach maze exit' }))
     fireEvent.click(screen.getByRole('button', { name: 'Reach maze exit' }))
-    expect(JSON.parse(localStorage.getItem(ADVENTURE_PROGRESS_KEY)!)).toEqual({
-      stackCompleted: true,
-    })
+    expect(
+      JSON.parse(localStorage.getItem(MODULE_PROGRESS_KEY)!).modules.stack
+        .completed,
+    ).toBe(true)
     await returnToMap()
     expect(
       screen.getByLabelText('Adventure progress: 1 / 4 data gems'),

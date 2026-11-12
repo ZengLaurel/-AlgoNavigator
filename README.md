@@ -11,8 +11,9 @@ running local service. [Case-by-case test results](docs/TEST-RESULTS.md) and
 
 The homepage now includes the team's illustrated **World Adventure Map**.
 Choose **Stack Ruins** to enter the full three-room game with local Tutor,
-or use `http://127.0.0.1:4174/#/stack` directly. The other three regions show
-a locked-level dialog. Return to the map at any time; reaching the final
+or use `http://127.0.0.1:4174/#/stack` directly. **Supply Camp / Array** is also
+playable at `http://127.0.0.1:4174/#/array`, with observation, Python, Camp
+Packing and four teach-to-learn activities. **Misty Forest / Linked List** is playable at `http://127.0.0.1:4174/#/linked-list`: reference animations, Python repair, forest delivery, handbook, Tutor and four teaching activities. **Harbor Pier / Queue** is playable at `http://127.0.0.1:4174/#/queue`, with arrivals/departure animation, real Python dispatch, harbor service, a handbook, Tutor and four teaching activities. All four regions are open. See [linked list acceptance](docs/LINKED-LIST-ACCEPTANCE.md). Return to the map at any time; reaching the final
 maze exit earns one persistent data gem. An expandable skills handbook is
 available in the Stack game. See [team integration notes](docs/TEAM-MERGE.md)
 for the pinned source version and merge decisions.
@@ -58,11 +59,31 @@ details.
 
 ## Project status
 
+**2026-11-12: Phase 15 desktop joint checks.** Current regression: **330/330 cases across 46 files**, plus lint/build. Four modules passed browser exception, infinite-loop timeout and retry checks; eight rendered Python/teaching pages fit a simulated 390px viewport. Fixed Python output line breaks, Queue peek hint specificity, new-module heading focus and pre-transfer rule restatement. [Cases](docs/FOUR-MODULE-TEST-CASES.md) and [acceptance / outstanding gates](docs/FOUR-MODULE-ACCEPTANCE.md) separate actual checks from untested school hardware, exhaustive accessibility, wider live-model/outage coverage and child outcomes. Phase 15 is partially complete; the pilot has not been conducted.
+
+**Historical checkpoint — 2026-11-12: Phase 14 Queue.** At that checkpoint: **308/308 tests across 45 files**, plus lint/build and local browser completion of all Queue rooms and four fresh teaching examples. See [Queue cases](docs/QUEUE-TEST-CASES.md) and [acceptance with remaining checks](docs/QUEUE-ACCEPTANCE.md). Next: Phase 15, four-module joint acceptance. Broad device and student pilot gates remain separate.
+
+**Historical checkpoint — 2026-11-12: Phase 13 Linked List.** Misty Forest includes six observation steps, real Python reference editing, forest delivery, a knowledge handbook, optional online Tutor/learner roles and four teach-to-learn activities. At that checkpoint: **288/288 tests, 43 files**, plus lint/build. See [case register](docs/LINKED-LIST-TEST-CASES.md) and [browser acceptance and remaining checks](docs/LINKED-LIST-ACCEPTANCE.md). Next: Phase 14 Queue / Harbor Pier.
+
+**Historical checkpoint — 2026-11-11: Phase 12 Array.** Supply Camp includes six operation
+animations and predictions, a real Python task, an independent packing challenge,
+knowledge examples, optional Tutor/Xiao Tuo chat and four teaching activities.
+Each activity needs demonstration, rule/reason correction and a fresh transfer
+example. Completion earns one Array gem; teaching IDs persist independently.
+At this checkpoint, **271 tests passed across 41 files**, with browser checks of the full Array
+flow and both live chat roles. That checkpoint preceded Phase 13 above.
+See [Array acceptance](docs/ARRAY-ACCEPTANCE.md),
+[case register](docs/ARRAY-TEST-CASES.md) and the updated roadmap.
+Shared Phase 11 capabilities and historical checks remain documented in
+[Phase 11 acceptance](docs/PHASE11-ACCEPTANCE.md).
+
 Phase 6 gameplay is implemented. Local production-preview Chrome acceptance now
 covers all three rooms with real Python, timeout/retry without refresh, keyboard
 maze navigation, dead-end pop/revisit, exit freeze, replay, 390px layout, and both
-motion preferences. Versioned localStorage preserves only ordered room unlocks;
-reload starts at Trial. Corrupt/unsupported data and denied storage fail safely.
+motion preferences. Versioned localStorage now preserves per-module unlocks,
+completion and known mastered IDs, with read-only migration of legacy Stack
+records. Reload starts at Trial. Corrupt/unsupported data and denied storage
+fail safely without persisting student code in progress.
 
 Supplied source images are exported to PNG without changing `picture/` using
 `node scripts/prepare-game-assets.mjs` (requires an existing local CDP endpoint;
@@ -117,9 +138,9 @@ D:\AIgoNavigator\
   Workers enabled.
 - Internet access for the first `npm install` and for downloading the
   Pyodide runtime when the first Python exercise is run. Student Python
-code executes locally in the browser. Pressing Ask in the optional room-02
-tutor sends current code, run/room state, the question and recent chat to
-the AI service.
+  code executes locally in the browser. Pressing Ask in the optional room-02
+  tutor sends current code, run/room state, the question and recent chat to
+  the AI service.
 
 ### Install dependencies
 

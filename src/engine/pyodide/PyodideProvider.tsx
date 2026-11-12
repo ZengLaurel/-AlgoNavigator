@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 import type { ExecResult, PyodideStatus } from './types'
 import type { WorkerRequest, WorkerResponse } from './protocol'
 import { PyodideContext } from './pyodideContext'
+import { ModuleRunner, type ModuleRunInput } from './moduleRunner'
+import { moduleFailure } from './moduleExecution'
 
 const INITIALIZATION_TIMEOUT_MS = 30000
 const EXECUTION_TIMEOUT_MS = 5000
@@ -25,11 +27,31 @@ export function PyodideProvider({ children }: { children: ReactNode }) {
     ((result: ExecResult, discard?: boolean) => void) | null
   >(null)
   const mountedRef = useRef(true)
+  const moduleRunnerRef = useRef<ModuleRunner | null>(null)
+  const runModule = useCallback((input: ModuleRunInput) => {
+    if (!mountedRef.current || activeRef.current)
+      return Promise.resolve(
+        moduleFailure(
+          { ...input, requestId: 0, workerGeneration: 0 },
+          'Python is unavailable or busy.',
+          'BUSY',
+        ),
+      )
+    moduleRunnerRef.current ??= new ModuleRunner(
+      createPyodideWorker,
+      (value) => {
+        if (mountedRef.current) setStatus(value)
+      },
+    )
+    return moduleRunnerRef.current.run(input)
+  }, [])
+  const cancelModule = useCallback(() => moduleRunnerRef.current?.cancel(), [])
 
   useEffect(() => {
     mountedRef.current = true
     return () => {
       mountedRef.current = false
+      moduleRunnerRef.current?.cancel()
       activeRef.current?.(
         failure('Python execution was cancelled because the editor closed.'),
         true,
@@ -43,7 +65,7 @@ export function PyodideProvider({ children }: { children: ReactNode }) {
   const run = useCallback((code: string): Promise<ExecResult> => {
     if (!mountedRef.current)
       return Promise.resolve(failure('The Python editor is closed.'))
-    if (activeRef.current)
+    if (activeRef.current || moduleRunnerRef.current?.busy)
       return Promise.resolve(
         failure('Python is busy. Wait for the current run to finish.'),
       )
@@ -159,7 +181,7 @@ export function PyodideProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <PyodideContext.Provider value={{ status, run }}>
+    <PyodideContext.Provider value={{ status, run, runModule, cancelModule }}>
       {children}
     </PyodideContext.Provider>
   )

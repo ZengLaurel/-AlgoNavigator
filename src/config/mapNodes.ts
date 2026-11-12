@@ -1,3 +1,4 @@
+import { moduleCatalog } from '../content/modules/catalog'
 export interface MapNode {
   id: string
   name: string
@@ -15,8 +16,8 @@ export const MAP_NODES: MapNode[] = [
     scrollTitle: 'Array of Campsites',
     scrollPosition: { x: 21, y: 51 },
     type: 'array',
-    route: null,
-    isImplemented: false,
+    route: moduleCatalog.array.route,
+    isImplemented: moduleCatalog.array.implemented,
   },
   {
     id: 'misty-forest',
@@ -24,8 +25,8 @@ export const MAP_NODES: MapNode[] = [
     scrollTitle: 'Linked Mistwood',
     scrollPosition: { x: 50, y: 64 },
     type: 'linked-list',
-    route: null,
-    isImplemented: false,
+    route: moduleCatalog['linked-list'].route,
+    isImplemented: moduleCatalog['linked-list'].implemented,
   },
   {
     id: 'stack-ruins',
@@ -34,7 +35,7 @@ export const MAP_NODES: MapNode[] = [
     scrollPosition: { x: 73, y: 22 },
     type: 'stack',
     route: '/#/stack',
-    isImplemented: true,
+    isImplemented: moduleCatalog.stack.implemented,
   },
   {
     id: 'harbor-pier',
@@ -42,7 +43,7 @@ export const MAP_NODES: MapNode[] = [
     scrollTitle: 'Queued Harbor',
     scrollPosition: { x: 77, y: 77 },
     type: 'queue',
-    route: null,
-    isImplemented: false,
+    route: moduleCatalog.queue.route,
+    isImplemented: moduleCatalog.queue.implemented,
   },
 ]

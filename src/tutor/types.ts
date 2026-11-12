@@ -19,6 +19,13 @@ export interface TutorMessage {
 }
 
 export interface TutorLessonContext {
+  moduleId?: 'stack' | 'array' | 'linked-list' | 'queue'
+  taskId?: string
+  exerciseId?: string
+  exampleId?: string
+  phase?: string
+  stateSummary?: string
+  lastActions?: string[]
   teachingMode?: 'teach-sprite' | 'practice-coach'
   gameState?: string
   currentCode: string

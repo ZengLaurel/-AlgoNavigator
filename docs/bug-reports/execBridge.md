@@ -37,3 +37,5 @@ against a target; `push(value)` with no glyph is unaffected.
 
 Last verified: 2026-11-06 — 2/2 passing (`npm test`); see
 [`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.
+
+Phase 15 (2026-11-12): 330/330 full regression passed. Both Python bridges preserve line and blank-line boundaries; real module exceptions recover cleanly; all three module Worker timeout retries reject stale responses; Queue peek hints are specific in both languages; lazy module entry restores heading focus. See [joint cases](../FOUR-MODULE-TEST-CASES.md) and [bounded browser acceptance](../FOUR-MODULE-ACCEPTANCE.md).

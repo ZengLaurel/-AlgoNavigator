@@ -4,6 +4,23 @@ This document translates [REQUIREMENTS.md](./REQUIREMENTS.md) into a concrete
 technical design. It is the reference for implementation decisions; the
 [ROADMAP.md](./ROADMAP.md) sequences the work described here into phases.
 
+## 当前设计基线：Phase 10（2026-11-11）
+
+**§12 是 REQUIREMENTS.md §12 的四板块扩展设计，优先于下方历史方案中冲突的
+范围、接口和提示规则。** 数组、链表、队列均纳入交付；每区包含动画与预测、
+Python 任务、独立应用、教小拓题库，并贯穿知识手册与导师。§1–10 保留最初
+架构背景，§11 保留已交付 Stack 的专有设计；它们不是新模块的完整实现契约。
+
+Phase 10 完成设计；Phase 11 已实现共用能力：模块注册、三种结构操作和事件校验、
+Python harness/Worker 生命周期、导师隔离、教学状态机及 v2 进度层。
+实际导出类型以源码为准，本文类型展示设计契约。Phase 12 已交付数组完整
+房间、动画、四道习题及在线导师，并开放地图入口。Phase 13 已交付链表核心流程（2026-11-12），Phase 14 已交付队列核心流程（2026-11-12）。队列使用 enqueue/dequeue/peek，显示 front/rear、等待船只和离港历史。Python 与应用关同时校验固定事件次序和完整状态，不以清空队列或最终单船代替证据。四道教学题覆盖 FIFO、队尾入队、peek 无副作用、交错事件和空队列恢复，全部包含独立新例。验收与设备检查缺口见 [QUEUE-ACCEPTANCE.md](./QUEUE-ACCEPTANCE.md)。
+链表使用 chain.link/setHead 暴露引用编辑，并提供安全 insert/remove helpers；节点在固定存储位置显示 ID/value/next，逻辑路径由 next 计算，环可修复。Python 关要求两次改引用并按路径访问；应用关同时检查完整路径、插删证据和访问顺序。四道教学题覆盖重复值、空路径建头、尾插与单节点删除。实际结果及设备检查缺口见 [LINKED-LIST-ACCEPTANCE.md](./LINKED-LIST-ACCEPTANCE.md)。
+数组验收见 [ARRAY-ACCEPTANCE.md](./ARRAY-ACCEPTANCE.md)。共用能力见
+[PHASE11-ACCEPTANCE.md](./PHASE11-ACCEPTANCE.md) 的验证范围与限制。
+
+Phase 15 hardening (2026-11-12): both Python output bridges preserve batched line breaks, including blank lines. Queue peek questions select a reviewed concept-specific hint rather than a generic FIFO hint; raw model prose remains undisplayed. The shared module shell focuses the entry heading after lazy loading and the room heading after stage changes. Correct rules/reasons are restated before independent verification, explicitly pending; mastery still requires the fresh example. These are corrections within the existing contract; device/pilot gates remain separate. Evidence: [FOUR-MODULE-ACCEPTANCE.md](./FOUR-MODULE-ACCEPTANCE.md).
+
 > **Pivot (2026-11-05):** the Stack lesson is being rebuilt as a small
 > underground-ruins game rather than a report-card-style lesson page. See
 > **§11** for the full game design; ROADMAP.md Phases 4–6 sequence the
@@ -328,9 +345,10 @@ challenge, all as stacked `<section>` cards) tested the mechanic but did not
 make the Stack concept feel like something worth exploring. The project is
 being reshaped into a small, self-contained game — an underground ruins
 where a stack of carved stones is the literal mechanic the player
-manipulates to proceed. Scope is deliberately narrowed to **Stack only**;
-Array/LinkedList/Queue game levels are out of scope until this slice proves
-the pattern (see ROADMAP.md Phase 5's revised note).
+manipulates to proceed. The 2026-11-05 slice deliberately narrowed scope to
+**Stack only**. That historical limit is superseded by REQUIREMENTS.md §12
+and this document's §12 for the approved Array/LinkedList/Queue extension;
+the shipped Stack room design below remains applicable.
 
 ### 11.2 Source documents
 
@@ -366,8 +384,7 @@ student through a ruins hall. Three rooms gate progress in order:
 
 **Approved extension (2026-11-08): Teach Xiao Tuo practice bank.** After
 the maze exit, unlock a fourth, optional room. Select four child-adapted
-problems from the linked LeetCode list's Stack sections: 1441, 844, 2390,
-1047. Use original short stories/examples and link each source; do not copy
+problems from the linked LeetCode list's Stack sections: 1441, 844, 2390, 1047. Use original short stories/examples and link each source; do not copy
 editorials or require a LeetCode account. The existing maze gem remains valid.
 
 Each activity has a deterministic three-stage loop: demonstrate stack
@@ -571,3 +588,373 @@ touched by this pivot. Only the visual shell around them changes.
   shadows are all CSS/SVG/Framer Motion, not pre-rendered art, per the same
   manifest note — this is a hard constraint on every new component, not a
   style preference.
+
+## 12. 四板块扩展技术设计（Phase 10）
+
+### 12.1 内容来源、模块与边界
+
+知识基线为 REQUIREMENTS.md §12.2 指定的本地 `hello-algo/` 版本
+`455e8c1281846c2a2c6b9c7fe2fd069bc87b7a85`。仅参考数组、链表、队列章节的
+概念及操作规则，原创故事、题目、代码与图示。新增能力在 Phase 11 实现，
+各区分别在 Phase 12/13/14 验收后开放，不能仅因路由注册就标记已实现。
+
+| moduleId    | 路由             | 地图区       | 三关 taskId                                                | 第四阶段          |
+| ----------- | ---------------- | ------------ | ---------------------------------------------------------- | ----------------- |
+| array       | `/#/array`       | Supply Camp  | array-observe / array-code / array-apply                   | array-teach       |
+| linked-list | `/#/linked-list` | Misty Forest | linked-list-observe / linked-list-code / linked-list-apply | linked-list-teach |
+| queue       | `/#/queue`       | Harbor Pier  | queue-observe / queue-code / queue-apply                   | queue-teach       |
+| stack       | `/#/stack`       | Stack Ruins  | 保留现有房间 ID                                            | 保留已有四题 ID   |
+
+模块注册表保存标题、可用状态、路由、房间内容、知识手册、harness ID、题库与
+renderer；不保存学生状态。不设置跨板块前置条件。已开放区从第一关开始，
+保存的解锁允许重访后续关卡。新模块共用 ModuleStage 外壳，Stack GameStage
+保留专有迷宫与石阶，不为抽象统一而重写已交付流程。
+
+计划职责：`src/content/modules/` 放内容及任务定义；`src/engine/structures/`
+放各自纯操作与校验；`src/engine/teaching/` 放教学状态机；执行协议继续位于
+`src/engine/pyodide/`；模块视图放 `src/components/game/`；提示词仍仅放在
+`api/prompts/`。这些是后续文件职责约定，不代表文件已创建。
+
+### 12.2 状态与操作契约
+
+以下类型为新协议设计；旧 `StructureState` 和 `runStackCode` 通过适配器继续
+服务 Stack。`Value` 限有限数值或最多 32 字符的字符串，教学内容不含可执行值。
+ID 在同一题的一次运行内稳定且唯一，不能用数组位置或值作为节点身份。
+
+```ts
+type NewModuleId = 'array' | 'linked-list' | 'queue'
+type ModuleId = NewModuleId | 'stack'
+type Value = number | string
+type Item = { id: string; value: Value }
+type ArrayState = { kind: 'array'; items: Item[]; capacity: number }
+type LinkedListState = {
+  kind: 'linked-list'
+  head: string | null
+  nodes: Array<{ id: string; value: Value; next: string | null }>
+}
+type QueueState = { kind: 'queue'; waiting: Item[]; served: Item[] }
+type NewState = ArrayState | LinkedListState | QueueState
+type OperationEvent = {
+  sequence: number
+  operation: string
+  args: Record<string, Value | null>
+  before: NewState
+  after: NewState
+  returned: Value | Value[] | null // traverse returns a list of values
+  accepted: boolean
+  errorCode: string | null
+}
+```
+
+**共同行为：** 操作为纯状态转换，返回新状态、事件及反馈。事件从 0 连续编号。
+非法操作产生 rejected 事件，before/after 相同，不推进任务；合法读取也记录
+事件但不改状态。UI 操作与 Python harness 使用同一操作语义。判题在任务初态
+重放事件、校验每一步和最终状态，不信任客户端提交的 pass 或 AI 给出的结论。
+这是教学证据校验，不是防作弊或高风险考试安全系统。
+
+| 结构 | 合法操作与参数                                                                                                                       | 不变量及错误                                                                                                                                   |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 数组 | get(index)、set(index,value)、insert(index,value)、remove(index)、traverse()、grow(capacity)                                         | length = items.length；0 ≤ length ≤ capacity ≤ 16；索引须整数且非负；访问/修改/删除 index < length，插入 index ≤ length；grow 必须严格增大容量 |
+| 链表 | visit(id)、setHead(id/null)、link(id,nextId/null)、insertHead(id)、insertAfter(previousId,id)、removeHead()、removeAfter(previousId) | 节点 ID 唯一、引用存在；每个节点只有一个 next；遍历有界；本轮目标为无环单链；高层插删原子地更新全部引用                                        |
+| 队列 | enqueue(value)、dequeue()、peek()                                                                                                    | 入队到 waiting 尾部；出队移走首项并追加 served；peek 返回首值且 waiting/served 均不变；front/rear 派生自首尾 ID，空时均为 null                 |
+
+数组 insert 为后部整体右移，remove 后整体左移，不能覆盖或留洞；容量不足
+返回 CAPACITY_FULL，允许学生 grow 后重试；get/remove/peek/dequeue 返回实际值。
+队列 enqueue 分配新 ID，重复值不得混淆到达顺序；不限制固定队容量，但限制
+序列化证据大小。链表 nodes 含题目提供的全部节点，未接入或被移除节点可保留
+为可见散点；正确性以从 head 可达的身份序列、要求的引用和目标集合判断。
+insertHead/insertAfter 只接入尚不可达且 next 为 null 的节点；删除时被移除
+节点的 next 置 null，其余未删除链路须保留；空头或无后继时返回 EMPTY。
+
+底层 link/setHead 用于“修复信标链”的可视或代码任务，允许临时断开或形成环，
+以便学生观察错误；出现未知 ID 时拒绝修改。快照可展示已知节点形成的环，
+但遍历至多访问 nodes.length + 1 次并报告 CYCLE，任务判定不通过且可再次修改。
+高层插入不能引入环。null 在画面标作 None，严禁把节点右侧的画面元素当 next。
+
+最多 16 个题目节点/物品，最多 128 个操作事件；题目数据必须在界限内，超出
+返回 EVIDENCE_LIMIT，不截断后仍判通过。运行输出最多保留 4,000 字符并标注
+已截断，不影响独立结构证据。序列化状态拒绝未知字段、非有限数和不匹配的 kind。
+
+### 12.3 动画、Python 与判题连接
+
+动画步骤采用 `{event, captionKey, focusIds}`。脚本以初态和合法操作生成事件，
+运行结果经事件重放校验后交给同一 renderer。数组焦点展示移动前后索引，
+链表保留节点布局并突出引用变化，队列突出 front/rear 及服务历史。
+播放位置只影响展示，不能再次执行已发生的操作；后退展示既存 before 快照。
+播放暂停、速度 0.5/1/2 倍、单步均不改变判定；减少动态效果直接切换快照。
+动画中禁用新的变更动作，读取和回放无奖励副作用；字幕、焦点和标签均为 DOM/SVG。
+
+**新执行协议草案：**
+
+```ts
+type RunIdentity = {
+  moduleId: ModuleId
+  taskId: string
+  exampleId: string
+  sessionId: string // 组件生命周期内的随机标识，不持久化
+  requestId: number
+  workerGeneration: number
+}
+type ModuleRunRequest = RunIdentity & {
+  type: 'run-module'
+  protocolVersion: 2
+  code: string
+}
+type ModuleRunResult = RunIdentity & {
+  type: 'module-result'
+  protocolVersion: 2
+  stdout: string
+  error: { code: string; message: string } | null
+  initialState: NewState | null
+  finalState: NewState | null
+  events: OperationEvent[]
+}
+```
+
+`run-module` 仅用于新三区；Stack 保留原 run/result 协议和结果适配路径。
+Phase 11 仅注册每个新模块 `*-code/main` 的可信执行夹具；其他房间与例子须随
+对应模块交付注册，不能通过随意提供 taskId 来执行未注册内容。
+Worker 从可信任务注册表按模块、任务和例子选择固定初态及 harness，拒绝未知
+组合，不接受 UI 自定义 Python harness 或任意状态读取表达式。新结果不得通过
+类型断言强转成旧 Stack 结果。所有字段须在运行时校验，而不仅是 TypeScript。
+
+每次 Run 创建独立 Python globals，重新装入教学对象，执行后在 finally 清理
+代理对象及 globals。提供 `array`（TeachingArray）、`chain`（TeachingChain）、
+`queue`（TeachingQueue）三个固定变量，对应 §12.2 操作；学生仅补充方法调用
+或遍历代码。Phase 11 的三个实例共用 TeachingStructure Python 类实现各自方法，
+公开变量仍分别为 array/chain/queue。harness 记录操作与返回值，私有快照序列化实际对象；直接覆盖
+教学变量、绕过接口改内部属性或快照不一致均反馈 INVALID_EVIDENCE，不授予成功。
+这不把浏览器 Python 描述为对恶意代码的强隔离，保留原 Worker 沙箱边界。
+
+主线程同一时刻仅一个运行；初始化上限 30 秒、执行上限 5 秒，沿用当前上限。
+超时/worker error/messageerror 结束等待并 terminate，下一次 Run 重建 Worker；
+不丢当前编辑内容或既有进度。切换任务、例子、模块及卸载使 session 失效，
+取消活动运行，提升 workerGeneration；结果身份必须与活动运行全部相同才接收。
+重复结果只结算一次。Run 失败可展示诊断快照但不写完成状态；重置恢复本题初态。
+代码只在浏览器执行；只有学生主动 Ask 时才提交限定的本题代码作为 AI 文本上下文。
+
+判题步骤：校验身份和结构 → 从可信初态重放事件 → 比对返回值和最终快照 →
+检查本任务操作限制、观察目标和完成条件 → 显示具体反馈。示范/挑战允许的
+合法等价轨迹均可通过，不以一串固定按钮序列或代码字符串作为唯一答案。
+包含非法尝试的交互可修正后继续；rejected 事件不算有效证据，后续仍须完整
+完成目标。直接改最终结构、漏掉必要观察或绕过规定操作不能凭终态过关。
+
+### 12.4 三关、手册与导师内容
+
+第一关每个操作族均有动画字幕和至少一次预测检查，全部观看并通过基础规则
+检查才解锁第二关；重试不限次数。第二关只在成功 Run 的状态与事件证据通过时
+显示 Continue，点击后解锁第三关；第三关通过后点击 Complete 才获得宝石并
+开放题库。打开页面、动画播完、Tutor 回复或提示计数均不能代替判定。
+
+| 板块 | 第二关：固定初态与目标                                                                                  | 第三关：独立应用                                                                                            |
+| ---- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 数组 | `[A,B,C]` 容量 4；插入 X 至索引 1，替换原 C 为 D，删除 B；最终 `[A,X,D]`，须保留 A/C 的身份追踪直至替换 | `[rope,food,lamp]` 容量 3，扩到 5，索引 1 插入 map，移除 food；遍历返回 `[rope,map,lamp]`，验证 grow 与移动 |
+| 链表 | `a -> b -> None`、散点 x；将 x 插在 a 后，再删除 a；head=x 且 `x -> b -> None`                          | 布局打乱的 a/b/c/d，按给定信件顺序 a,c,b,d 连接；从 a 遍历并结束于 None，全部且仅访问要求节点               |
+| 队列 | 入队 A/B，peek 返回 A，出队 A，再入队 C；waiting 为 B/C，served 为 A                                    | 按事件到达 K/L、服务一次、到达 M、服务两次；served=K/L/M，waiting 空；事件消费顺序固定                      |
+
+数组 set 保留格内物品的 ID 并替换其值；insert 分配新的 ID，remove 移除原 ID，
+因此“原 C”可被追踪。链表信件挑战用 link/setHead，自选连接次序，但必须最后
+执行 visit 沿链检查全部要求节点；相同值不能代替指定身份。队列事件挑战每次
+只开放当前事件的动作，peek 可随时观察但不消耗到达/服务事件。
+
+手册内容 ID 按 `moduleId/topicId` 命名。数组：索引与值、访问替换、移动、
+遍历、长度容量与扩容、Python list 区别；链表：节点与引用、head/None、遍历、
+插入删除、断链与环、数组比较；队列：FIFO、front/rear、入出队、peek、空队列、
+与栈比较、deque 命名说明。双向链表、循环队列和复杂度证明标作可选扩展。
+每条含定义、类比、前后例子、误解和关联操作；错误码提供 topicId 可直接展开，
+关闭手册回到原任务与焦点。所有阶段有导师入口，不能只在编程关展示。
+
+### 12.5 十二道教小拓练习内容
+
+题目结构固定为 moduleId、exerciseId、contentVersion=1、标题、故事、来源、
+误解、allowedOperations、demo、transfer、ruleId、reasonId、hints（三元组）、
+successCaption 和 failureFeedback。来源记录 `original` 及 §12.1 对应知识章节。
+每题支持三个快捷问题：“你觉得该操作哪个对象？”、“让我解释这个规则”、
+“我们试一个新例子好吗？”，按本题名词替换“对象”。以下目标和证据仅供内容
+作者与判题使用，不整段呈现给学生；学生只看到任务条件、当前输入和局部提示。
+
+**数组：**
+
+| exerciseId / 标题             | 示范初态、任务与目标                               | 独立迁移                                             | 允许操作 / 判定证据                     | 误解；正确规则 / 原因 ID                        |
+| ----------------------------- | -------------------------------------------------- | ---------------------------------------------------- | --------------------------------------- | ----------------------------------------------- |
+| array-index / 找到第几个格子  | `[A,B,C]`，读取第一个格子，返回 A 且数组不变       | `[K,L,M,N]`，读取第三个，返回 M 且不变               | get；正确位置的实际读取事件             | 第一个索引为 1；zero-based / position-not-value |
+| array-insert / 中间插入补给   | `[A,B,C]` 容量 4，在索引 1 插 X，得到 `[A,X,B,C]`  | `[K,L]` 容量 3，在索引 1 插 M，得到 `[K,M,L]`        | insert；目标值和身份顺序，原后缀完整    | 插入覆盖旧物品；shift-right / preserve-existing |
+| array-remove / 删除后补齐空位 | `[A,B,C,D]`，删索引 1，返回 B，得到 `[A,C,D]`      | `[K,L,M]`，删索引 0，返回 K，得到 `[L,M]`            | remove；返回值、移动与有效长度          | 删除留下洞；shift-left / contiguous-used-slots  |
+| array-grow / 储物格满了怎么办 | `[A,B]` 容量 2，先扩到 4，再尾插 C，得到 `[A,B,C]` | `[K,L,M]` 容量 3，扩到 5，再尾插 N，得到 `[K,L,M,N]` | grow/insert；先扩后插、容量与旧身份保持 | 长度等于容量；length-vs-capacity / spare-space  |
+
+数组每题恰好三个提示（按序逐次显示）：
+
+- array-index：“先找索引标签。”“标签从 0 开始。”“第几个位置和标签上的数字有什么关系？”
+- array-insert：“看看插入点后面的物品。”“插入需要留出位置。”“后面的物品向哪边挪才不会丢失？”
+- array-remove：“找出要拿走的位置。”“后面的物品需要补上。”“删除后有效长度应该怎样变化？”
+- array-grow：“比较长度与容量。”“满格时先增加空间。”“搬到更大区域后，旧物品顺序需要改变吗？”
+
+**链表：** 节点 ID 与值分别显示；示范中的 a/b/c 和迁移中的 p/q/r 等身份不同。
+
+| exerciseId / 标题                           | 示范初态、任务与目标                                                | 独立迁移                                                          | 允许操作 / 判定证据                                       | 误解；正确规则 / 原因 ID                               |
+| ------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
+| linked-list-follow / 沿 next 找伙伴         | 布局打乱的 `a -> c -> b -> None`，从 head 沿链访问 a/c/b；a、b 同值 | `p -> r -> q -> s -> None`，访问 p/r/q/s，画面顺序不同            | visit；每次只能访问 head 或上一访问的 next，完整访问序列  | 往画面右边走；follow-next / reference-defines-order    |
+| linked-list-head / 头部加入新信标           | `a -> b -> None` 与散点 x；插头得到 `x -> a -> b`                   | 单节点 p 与散点 y；得到 `y -> p -> None`                          | insertHead；head 更新，旧链保留                           | 不需要改 head；update-head / first-node-entry          |
+| linked-list-insert / 中间接入信标           | `a -> b -> None` 与散点 x；a 后插 x，得到 `a -> x -> b`             | `p -> q -> r -> None` 与散点 y；q 后插 y，得到 `p -> q -> y -> r` | insertAfter；新节点指向旧后继，前驱指向新节点             | 只改前驱会丢后链；preserve-successor / two-links       |
+| linked-list-remove / 移除信标仍保持道路连通 | `a -> b -> c -> None`，a 后删除 b，得到 `a -> c`                    | `p -> q -> None`，p 后删 q，再删唯一 head p；最终 head=None       | removeAfter/removeHead；返回移除值、剩余身份、尾/头空引用 | 擦掉值就是删除；bypass-node / reconnect-or-update-head |
+
+链表每题恰好三个提示：
+
+- linked-list-follow：“找到 head。”“箭头表示 next。”“如果把图上的节点换个位置，next 会变吗？”
+- linked-list-head：“看看谁是入口。”“新节点需要接到旧入口。”“现在从 head 出发应该先见到谁？”
+- linked-list-insert：“先认出前驱与后继。”“插入后不能丢掉后半条链。”“新节点的 next 应该保留通往哪里？”
+- linked-list-remove：“找被移除节点和它后面的节点。”“剩余路径要连通。”“移除的是头或尾时，哪个引用要指向 None？”
+
+**队列：** waiting 为队首至队尾，served 为实际离开顺序，事件脚本按从左到右消费。
+
+| exerciseId / 标题               | 示范初态、任务与目标                                       | 独立迁移                                                   | 允许操作 / 判定证据                                           | 误解；正确规则 / 原因 ID                                   |
+| ------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------- |
+| queue-first / 谁先上船          | waiting=A/B/C，服务一次；返回 A，waiting=B/C，served=A     | waiting=K/L，服务一次；返回 K，waiting=L，served=K         | dequeue/peek；真实移除首项，未改变剩余次序                    | 最后来先走；fifo / earliest-waits-first                    |
+| queue-rear / 新船停在哪里       | waiting=A/B，C 到达；得到 A/B/C                            | waiting=K，L 到达再 M 到达；得到 K/L/M                     | enqueue/peek；按脚本到达顺序追加，served 不变                 | 新船可插队首；join-rear / preserve-arrival-order           |
+| queue-peek / 看看队首不让它离开 | waiting=A/B，查看返回 A，全部状态不变                      | waiting=K，查看返回 K，全部状态不变                        | peek；至少一次正确观察事件，不能只不操作                      | peek 会让船离开；peek-keeps / inspect-not-remove           |
+| queue-service / 边到港边服务    | 空队列，依次到达 A/B、服务、到达 C、服务两次；served=A/B/C | 空队列，依次到达 K、服务、到达 L/M、服务两次；served=K/L/M | enqueue/dequeue/peek；消费所有事件，服务顺序与 waiting 均正确 | 空了还能出队或后来先走；fifo-nonempty / front-service-only |
+
+队列每题恰好三个提示：
+
+- queue-first：“找 front 标签。”“先到的先接受服务。”“front 和最后到达的船是同一艘吗？”
+- queue-rear：“看看 rear 在哪里。”“新来的要排在已有船之后。”“加入新船会改变已有船的次序吗？”
+- queue-peek：“题目让你查看还是送走？”“peek 只观察。”“操作前后的 waiting 和 served 应该怎样比较？”
+- queue-service：“先读当前到达或服务事件。”“只有非空队列才能服务队首。”“服务完成后，下一艘是谁？它何时到达？”
+
+统一失败反馈按验证失败项生成：操作不允许、索引越界、空间不足、引用非法、
+遍历成环、空结构、返回值错误、轨迹缺失、顺序/身份错误、规则不符、迁移未完。
+只指出出错对象和规则，附 topicId；不得输出下一整串操作或标准程序。
+内容校验器须检查每题两个不同例子、已注册的操作/规则/原因、三个非空提示、
+三个快捷问题和全部题目 ID 唯一；内容作者的解轨迹仅在测试夹具内保存。
+
+### 12.6 教学状态机与确定性门槛
+
+```text
+intro → demonstrate → correct-rule → transfer-ready → transfer → learned
+```
+
+intro 显示任务和被明确标记为“小拓的错误猜想”的误解。demonstrate 由合法
+操作与本题目标通过后才能提交进入 correct-rule。学生选择 ruleId 与 reasonId，
+两者匹配本题定义才进入 transfer-ready；自由解释可选，只用于对话。
+此时小拓复述规则但显示“待验证”，点击 Try new example 才加载 transfer 初态。
+迁移目标通过后进入 learned，才显示 happy、最终复述并保存已教会 ID。
+
+状态含 moduleId/exerciseId/contentVersion/exampleId、当前快照、事件、
+selectedRule/Reason、hintLevel（0–3）及 phase。reducer 仅接受该题允许的事件；
+不接受客户端或模型提交的 learned 布尔值。每次变更重新计算门槛，乱序提交无效。
+更正规则时若还在 correct-rule 可任意重选；进入迁移后修改规则应返回该阶段
+并清空迁移证据。重置当前示范撤回本轮后续门槛，但不抹掉历史已教会记录。
+重置迁移只清空迁移操作，保留本轮已验证规则；Replay 从示范重新开始。
+切题/换角色清空对应对话，不复用另一题证据；已教会的历史状态与本次练习阶段
+分别显示。没有代码字符串、自由文字关键词、聊天次数或提示数通关条件。
+
+UI、代码与聊天均不能直接写进度；只有判定成功后产生的应用完成/教学完成
+事件可交给进度层。所有逻辑在客户端确定性运行，不承诺模型测出了理解程度。
+
+### 12.7 Tutor 与小拓上下文
+
+扩展 POST `/api/tutor` 的 lessonId 白名单为四种 ModuleId。保留现有 Stack
+请求适配，新增 context 包含 taskId、exerciseId（可选）、exampleId、phase、
+teachingMode、stateSummary、最近最多 8 个合法/非法动作、已验证 ruleId、
+hintsUsedThisExercise、可选 currentCode 与 lastRunResult。请求只携带当前题；
+stateSummary 不含完整目标解轨迹或其他题目，标作不可信数据。服务端根据
+受信任的注册表验证 task/exercise 属于该模块，自行选择版本化提示词和知识摘要。
+
+保持提问 500 字符、代码 2,000 字符、输出/错误各 500 字符、最近 6 轮且每轮
+600 字符；结构摘要上限 2,000 字符，使用摘要生成器保留关键标签，不拼接整份
+证据。超长输入按字段契约拒绝或明确标注摘要，不能默默改写任务。
+总 HTTP body 上限 32 KiB。传输只在显式 Ask 时发生；知识手册、规则检查和
+提示不调用模型。未知模块和任务在模型调用前拒绝。
+
+导师角色在各关引导提问；teach-sprite 把学生视为老师，复述已纠正规则或就
+尚缺部分提问；practice-coach 给局部提示。新三区沿用 Stack practice 的受限
+意图模式：模型返回允许的 intent ID，服务端按模块/角色/教学阶段选择已审核
+文本，原始模型代码、未知字段和未经审核的生成正文不直接显示到习题 UI。
+非习题导师可用经过过滤的短回复，但仍禁止输出整题解法。任何 hintLevel 都不
+解除该限制；覆盖历史 §7.2 的“两提示后直给”规则。模型角色口吻需人工审阅。
+
+不把客户端的“已纠正规则”当完成授权；该标记仅影响对话，奖励仍取决于 §12.6。
+回复带 requestId；UI 按 module/task/example/role/session 校验活动身份后显示。
+切换角色先取消请求再创建新会话，过期、重复、超时回复丢弃，不显示到新题。
+保留本地 CLI 55 秒、前端 60 秒上限；代理故障使用本模块的固定回退，提示可
+继续练习，不暴露凭据/日志。不发送自动请求，不自动切换 provider 或读取登录文件。
+
+习题聊天仅保存在当前题/角色内存，可手动导出；编程导师的本地日志保持明确
+告知、按模块及会话隔离。发送前展示数据范围和隐私提示，不在进度存档保存
+代码、姓名、自由解释、模型回复；无账号或服务器会话留存。覆盖 §7.4 的统一
+localStorage 描述，旧 Stack 日志只读兼容，不混入其他板块的滚动上下文。
+
+### 12.8 进度格式、旧存档与宝石
+
+使用新 key `algonavigator.modules-progress.v2`，保留旧三个 key 不删除：
+`algonavigator.stack-ruins.progress`、`algonavigator.stack-teaching.v1`、
+`algonavigator.adventure-progress.v1`。新记录只存以下精确结构：
+
+```ts
+type ModuleProgress = {
+  unlockedThrough: 1 | 2 | 3
+  completed: boolean
+  teachingUnlocked: boolean
+  mastered: string[] // 仅本模块当前已知 exerciseId，去重、排序
+}
+type ProgressV2 = {
+  version: 2
+  modules: Record<ModuleId, ModuleProgress>
+}
+```
+
+初始各区 `{unlockedThrough:1,completed:false,teachingUnlocked:false,mastered:[]}`。
+第三关判定与显式 Complete 同时发生才将 completed 与 teachingUnlocked 置 true；
+历史已开放 Stack 题库可迁移为 teachingUnlocked=true 而不自动授宝石。
+completed=true 必须同时具备 unlockedThrough=3 与 teachingUnlocked=true；
+mastered 非空必须已开放题库。冲突记录拒绝该模块项并回退到该模块初态。
+额外字段/错误类型/未知版本拒绝相应记录或项；仅未知 mastered ID 被过滤，
+重复 ID 去重，不能用坏值授奖。解析、读写错误均返回明确状态供 UI 提示存档
+不可用，内存进度仍继续。新记录未知版本不覆盖写入，以免破坏未来格式。
+
+读取流程：校验新记录 → 独立校验旧 Stack 记录 → 对 Stack 做单调合并。
+room-unlock 的 unlockedThrough 取最大；旧 teaching unlocked 保留、mastered
+仅接受 build/backspace/stars/pairs；旧 adventure 的精确布尔 stackCompleted
+才迁移成 completed，同时推导解锁第三关与题库。旧宝石绝不赋予其他三区。
+旧损坏项不影响新的有效记录，也不影响其他模块。先写新记录成功才视为迁移
+已持久化；失败只在内存合并，下一次可重试；不能靠“已迁移”标志丢弃旧证据。
+
+Phase 11 同时更新地图与 Stack 奖励入口，统一通过进度层读写新结构，保留
+旧读取兼容但不再让旧 saveStackCompleted 覆盖其他区进度。运行时的 Stack
+奖励、关卡及教学事件即时合并到统一内存源；旧 key 保留原样供回退核对。
+宝石数由四区 completed=true 的数量派生，无独立可递增计数器；重玩只做集合
+并集或 unlockedThrough 最大值，最多 4/4。刷新从第一关开场，保存入口可跳转；
+不保存运行中代码、动画位置、链表路径或未完成教学阶段。
+
+### 12.9 验证映射及设计完成检查
+
+以下均为后续实施的验证计划，不是测试结果；每个具体测试还需记录输入、
+预期、实际和状态。本文作者样例是可复核的判题夹具，不能充当浏览器验收。
+
+| 需求 / 验收 ID          | 设计落点          | 计划自动测试                                                | 浏览器 / 人工补充                   |
+| ----------------------- | ----------------- | ----------------------------------------------------------- | ----------------------------------- |
+| §12.1/2；内容来源       | §12.1、12.4/5     | 模块和内容注册校验、来源及例子完整性                        | 教学内容与参考章节人工核对          |
+| §12.3/4；ARR-01/02/03   | §12.2–5           | 数组状态变换、索引、容量、移动、布局/字幕及任务判定         | 三关真实 Python、扩容与移动动画     |
+| §12.5；LL-01/02/03      | §12.2–5           | 引用/身份、插删、head/None、环及遍历边界、SVG 结构          | 打乱布局、重复值、错误链恢复        |
+| §12.6；QUE-01/02/03     | §12.2–5           | FIFO、返回值、peek、不变量、交错事件及服务历史              | 三关真实执行与 front/rear 可读性    |
+| §12.7；TEACH-01         | §12.5/6           | 十二题各自误解、拒绝动作不变、阶段门槛                      | 小拓错误猜想被明确标记              |
+| TEACH-02/03/04          | §12.3、12.5/6     | 不同迁移样例、乱序提交、规则/原因、轨迹、提示、重置/重玩    | 逐题完整示范至迁移、无完整答案      |
+| §12.8；AI-01            | §12.7             | 模块/task 白名单、意图白名单、注入/越界过滤与提示策略       | 四板块真实模型角色和话术审阅        |
+| AI-02                   | §12.7             | 故障、超时、角色/题切换、重复/过期回复、脱离 AI 的判定      | 服务不可用时完成核心流程            |
+| §12.10；RUN-01          | §12.3             | 各 harness、fresh globals、结果校验、身份、取消、超时重建   | 真实 Python 无限循环后修复再运行    |
+| §12.9；NAV-01           | §12.1、12.4、12.8 | 路由、未开放页、独立入口、显式完成、奖励去重及旧存档        | 四区往返、刷新及 4/4                |
+| STORE-01                | §12.8             | 精确 schema、未知版本/字段/ID、单调迁移、禁止存储和写入失败 | 真实浏览器旧数据与禁用存储          |
+| UX-01                   | §12.3/4           | 播放状态、键盘控件、标签、焦点恢复与 reduced-motion 分支    | 窄屏、实际键盘路径、非颜色状态      |
+| §12.9 隐私；§12.12 交付 | §12.7/8，本表     | 出站字段、跨区隔离、进度无私密内容、Stack 回归              | 披露/导出、Phase 7/8 与学生试点限制 |
+
+实施时按 `docs/bug-reports/README.md` 配套测试说明，运行 `npm run test:report`
+生成逐例结果；浏览器证据按 ROADMAP.md 计划的各模块 ACCEPTANCE 文档记录。
+不得修改历史 222 条测试数字来表示新模块通过；Phase 10 仅做文档核对，Phase 11
+实现的真实逐例结果和浏览器证据另见 PHASE11-ACCEPTANCE.md。设备首个 Python
+交互约 5 秒目标、跨浏览器、最终美术
+和真实学习效果仍需 Phase 7/8/9 的独立证据。
+
+**Phase 10 设计结论：** 三种结构的状态与操作、三关目标、十二题内容、全部
+提示、教学状态机、执行/导师身份、存档迁移及验收映射已明确。没有待决定的
+阻塞设计项；代码命名和视觉细节可在本契约范围内细化。Phase 11 实现若发现
+契约不成立，应先修订本规格及必要的需求，再继续实现，不静默改变规则。

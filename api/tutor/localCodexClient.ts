@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { mkdtemp, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { homedir, tmpdir } from 'node:os'
 import path from 'node:path'
 import type { AskModelInput } from './handler.js'
 
@@ -55,6 +55,12 @@ export async function askLocalCodex({
         '-',
       ]
       const child = spawn(process.env.ALGONAV_CODEX_PATH ?? 'codex', args, {
+        // The desktop launcher may omit CODEX_HOME. Give the CLI its normal
+        // canonical default, without reading/copying authentication files here.
+        env: {
+          ...process.env,
+          CODEX_HOME: process.env.CODEX_HOME || path.join(homedir(), '.codex'),
+        },
         cwd: directory,
         shell: false,
         windowsHide: true,

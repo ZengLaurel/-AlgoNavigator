@@ -33,7 +33,48 @@ function completeTrial() {
 }
 
 describe('App', () => {
-  it('opens the map with four regions, only Stack available, and zero gems', () => {
+  it('opens Array from the map without requiring Stack completion', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Supply Camp · Array' }))
+    await waitFor(() =>
+      expect(
+        screen.getByRole('heading', { name: 'Camp storage slots' }),
+      ).toBeTruthy(),
+    )
+    expect(
+      screen
+        .getByRole('button', { name: '2 · Python' })
+        .hasAttribute('disabled'),
+    ).toBe(true)
+    expect(
+      screen
+        .getByRole('button', { name: '4 · Teach Xiao Tuo' })
+        .hasAttribute('disabled'),
+    ).toBe(true)
+  })
+  it('opens Queue independently from the map with later rooms locked', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Harbor Pier · Queue' }))
+    await waitFor(() =>
+      expect(
+        screen.getByRole('heading', { name: 'Harbor arrivals and departures' }),
+      ).toBeTruthy(),
+    )
+    expect(document.activeElement).toBe(
+      screen.getByRole('heading', { name: 'Harbor Pier' }),
+    )
+    expect(
+      screen
+        .getByRole('button', { name: '2 · Python' })
+        .hasAttribute('disabled'),
+    ).toBe(true)
+    expect(
+      screen
+        .getByRole('button', { name: '4 · Teach Xiao Tuo' })
+        .hasAttribute('disabled'),
+    ).toBe(true)
+  })
+  it('opens all four map regions with zero gems', () => {
     render(<App />)
     expect(
       screen.getByRole('heading', { name: 'World Adventure Map' }),
@@ -52,22 +93,7 @@ describe('App', () => {
     const showModal = vi.fn(() => dialog.setAttribute('open', ''))
     Object.defineProperty(dialog, 'showModal', { value: showModal })
     expect(screen.queryByRole('dialog')).toBeNull()
-    for (const name of [
-      'Supply Camp · Array',
-      'Misty Forest · Linked List',
-      'Harbor Pier · Queue',
-    ]) {
-      const button = screen.getByRole('button', { name }) as HTMLButtonElement
-      expect(button.disabled).toBe(false)
-      fireEvent.click(button)
-      expect(window.location.hash).toBe('')
-      expect(screen.getByRole('dialog', { name: 'Level Locked' })).toBe(dialog)
-      expect(dialog.textContent).toContain(
-        'This level is not unlocked yet. Explore another topic first!',
-      )
-      dialog.removeAttribute('open')
-    }
-    expect(showModal).toHaveBeenCalledTimes(3)
+    expect(showModal).not.toHaveBeenCalled()
     expect(
       screen.getByRole('button', { name: 'Stack Ruins · Stack' }),
     ).toBeTruthy()
@@ -169,7 +195,7 @@ describe('App', () => {
   })
 
   it('falls back to the map on unknown routes and ignores malformed progress', () => {
-    window.history.replaceState(null, '', '/#/queue')
+    window.history.replaceState(null, '', '/#/unknown')
     window.localStorage.setItem(ADVENTURE_PROGRESS_KEY, '{broken')
     render(<App />)
     expect(

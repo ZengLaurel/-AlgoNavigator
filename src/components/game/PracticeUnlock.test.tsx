@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GAME_PROGRESS_KEY } from '../../engine/gameProgress'
-import { TEACHING_PROGRESS_KEY } from '../../engine/stackTeaching'
+import { MODULE_PROGRESS_KEY } from '../../engine/modules/progress'
 import { ADVENTURE_PROGRESS_KEY } from '../../adventureProgress'
 import { GameStage } from './GameStage'
 
@@ -37,7 +37,8 @@ describe('final-room practice unlock', () => {
     )
     expect(onComplete).toHaveBeenCalledTimes(1)
     expect(
-      JSON.parse(localStorage.getItem(TEACHING_PROGRESS_KEY)!).unlocked,
+      JSON.parse(localStorage.getItem(MODULE_PROGRESS_KEY)!).modules.stack
+        .teachingUnlocked,
     ).toBe(true)
     fireEvent.click(
       screen.getByRole('button', { name: 'Continue to Teach Xiao Tuo →' }),

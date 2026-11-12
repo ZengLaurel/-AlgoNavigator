@@ -37,3 +37,9 @@ it uses actual Python rather than the mocked completion callback.
 
 Last verified: 2026-11-06 — 5/5 passing (`npm test`); see
 [`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.
+
+## Phase 11 verification
+
+Last verified: 2026-11-11 — 5/5 passing in the full `npm run test:report` run (254/254 overall). Actual per-case results: [TEST-RESULTS.md](../TEST-RESULTS.md).
+
+Stack now reads/writes the shared v2 progress layer; old records are migrated without being overwritten. Storage assertions target v2. Original gameplay and unlock behavior remain covered.

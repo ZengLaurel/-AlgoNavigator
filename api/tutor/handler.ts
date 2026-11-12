@@ -11,6 +11,7 @@ import {
 import { checkStudentMessage, checkTutorReply } from './moderation.js'
 import { isTutorRefusal } from './errors.js'
 import { teachingReply } from './teachingReplies.js'
+import { handleModuleTutor } from './moduleTutor.js'
 
 export interface AskModelInput {
   system: string
@@ -144,6 +145,10 @@ export async function handleTutorRequest(
   if (!isRecord(parsed)) {
     return reject(400, INVALID_REQUEST_REPLY)
   }
+  if (Buffer.byteLength(JSON.stringify(parsed), 'utf8') > 32768)
+    return reject(413, INVALID_REQUEST_REPLY)
+  if (['array', 'linked-list', 'queue'].includes(String(parsed.lessonId)))
+    return handleModuleTutor(parsed, deps)
   if (parsed.lessonId !== SUPPORTED_LESSON_ID) {
     return reject(400, INVALID_REQUEST_REPLY)
   }

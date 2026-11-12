@@ -1,13 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { loadProgress, saveProgress } from '../../engine/gameProgress'
+import { useModuleProgressStore } from '../../engine/modules/progressContext'
 import { RoomLoadBoundary } from './RoomLoadBoundary'
 import { TrialOfStonesRoom } from './TrialOfStonesRoom'
 import { AdventureSkillHandbook } from './AdventureSkillHandbook'
-import { readStackCompleted } from '../../adventureProgress'
-import {
-  loadTeachingProgress,
-  saveTeachingProgress,
-} from '../../engine/stackTeaching'
 
 const StairwayRepairRoom = lazy(() =>
   import('./StairwayRepairRoom').then((room) => ({
@@ -27,21 +22,34 @@ type RoomId = 'trial' | 'stairway' | 'forked' | 'practice'
 
 export function GameStage({ onComplete }: { onComplete?: () => void }) {
   const [activeRoom, setActiveRoom] = useState<RoomId>('trial')
-  const [progress, setProgress] = useState(loadProgress)
+  const progressStore = useModuleProgressStore()
+  const [progress, setProgress] = useState(() => ({
+    version: 1 as const,
+    unlockedThrough: progressStore.read().modules.stack.unlockedThrough,
+  }))
   const [teaching, setTeaching] = useState(() => {
-    const saved = loadTeachingProgress()
-    return { ...saved, unlocked: saved.unlocked || readStackCompleted() }
+    const saved = progressStore.read().modules.stack
+    return {
+      version: 1 as const,
+      unlocked: saved.teachingUnlocked,
+      mastered: saved.mastered,
+    }
   })
   const [teachingStorageFailed, setTeachingStorageFailed] = useState(false)
   function updateTeaching(next: typeof teaching) {
     setTeaching(next)
-    setTeachingStorageFailed(!saveTeachingProgress(next))
+    setTeachingStorageFailed(
+      !progressStore.update('stack', {
+        teachingUnlocked: next.unlocked,
+        mastered: next.mastered,
+      }),
+    )
   }
   const forkedUnlocked = progress.unlockedThrough >= 3
   const stairwayUnlocked = progress.unlockedThrough >= 2
   useEffect(() => {
-    saveProgress(progress)
-  }, [progress])
+    progressStore.update('stack', { unlockedThrough: progress.unlockedThrough })
+  }, [progress, progressStore])
 
   return (
     <main className="game-root">

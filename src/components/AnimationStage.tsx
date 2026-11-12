@@ -38,6 +38,28 @@ export function AnimationStage({
     [frames],
   )
 
+  return (
+    <SnapshotPlayback
+      frames={frames}
+      captions={captions}
+      render={(state) => render(state, maxSlotCount)}
+      onFrameChange={onFrameChange}
+    />
+  )
+}
+
+/** Pure snapshot playback for any structure; stepping never mutates or grades it. Mount keyed by task/example. */
+export function SnapshotPlayback<State>({
+  frames,
+  captions,
+  render,
+  onFrameChange,
+}: {
+  frames: State[]
+  captions: string[]
+  render: (state: State) => React.ReactNode
+  onFrameChange?: (frameIndex: number, isLastFrame: boolean) => void
+}) {
   const [frameIndex, setFrameIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState<(typeof SPEEDS)[number]>(1)
@@ -60,7 +82,8 @@ export function AnimationStage({
 
   return (
     <div>
-      {render(frames[frameIndex], maxSlotCount)}
+      {frames.length > 0 &&
+        render(frames[Math.min(frameIndex, frames.length - 1)])}
       <p aria-live="polite">{captions[frameIndex]}</p>
       <div>
         <button

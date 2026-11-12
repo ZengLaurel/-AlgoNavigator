@@ -35,6 +35,12 @@ added; update the "Status" line whenever the suite is re-verified.
 
 ## Where the actual test-case results live
 
+Phase 11 also has a [case register](../PHASE11-TEST-CASES.md) with stable
+IDs, inputs, steps, expected outcomes and asserted actual results for its
+32 new cases. It identifies the original execution batch; documentation
+updates must not imply that tests were rerun. Browser evidence and pending
+checks are linked from that register.
+
 These reports explain _why_ each test exists. The concrete test-case names,
 per-case pass/fail, durations, and failure messages are generated into
 [`docs/TEST-RESULTS.md`](../TEST-RESULTS.md):

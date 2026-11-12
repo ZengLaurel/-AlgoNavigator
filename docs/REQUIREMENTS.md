@@ -9,10 +9,11 @@
 
 知识基础为仓库已有的 `hello-algo/`（《Hello 算法》）；本次对话中的
 “openAIgo”按该参考项目理解，不另行引入未经确认的知识来源。
-当前仍然只有 Stack 已实现，其余三个板块均为**待开发需求**。
-本次交付仅更新需求文档，不代表已经实现、测试或通过学生试用。
-SPECIFICATION.md、ROADMAP.md 中尚未同步的 Stack-only 范围和阶段限制
-属于旧基线，后续需要依据本需求更新，不能作为三个板块已交付的证据。
+当前 Stack、数组、链表和队列核心功能均已实现，Phase 15 本地桌面联合检查与修复已通过；完整设备/辅助功能等验收仍待完成，详见 [FOUR-MODULE-ACCEPTANCE.md](./FOUR-MODULE-ACCEPTANCE.md)。队列的本地验证与未测项见 [QUEUE-ACCEPTANCE.md](./QUEUE-ACCEPTANCE.md)。链表有限本地验收及未测项见 [LINKED-LIST-ACCEPTANCE.md](./LINKED-LIST-ACCEPTANCE.md)。数组的有限本地验收
+及已知限制见 [ARRAY-ACCEPTANCE.md](./ARRAY-ACCEPTANCE.md)。
+本需求基线最初只更新文档；后续实现、测试与学生试用必须分别举证。
+SPECIFICATION.md、ROADMAP.md 已同步 Phase 10–15（Phase 15 部分完成）；其中历史 Stack-only
+范围不再限制新模块设计，也不能作为全部四板块已交付的证据。
 
 ## Current shipped game scope — 2026-11-08
 
@@ -253,9 +254,9 @@ availability of a moderation endpoint before implementation starts.
 | 板块             | 地图区域     | 当前状态                               | 本次需求范围                         |
 | ---------------- | ------------ | -------------------------------------- | ------------------------------------ |
 | 栈 Stack         | Stack Ruins  | 已有三关、知识手册、导师及四题教学练习 | 作为功能基准，保持现有流程及存档兼容 |
-| 数组 Array       | Supply Camp  | 地图入口尚未开放                       | 完整独立教学流程及至少四道教学练习   |
-| 链表 Linked List | Misty Forest | 地图入口尚未开放                       | 完整独立教学流程及至少四道教学练习   |
-| 队列 Queue       | Harbor Pier  | 地图入口尚未开放                       | 完整独立教学流程及至少四道教学练习   |
+| 数组 Array       | Supply Camp  | 已开放，完成三关及四题                 | 完整独立教学流程及至少四道教学练习   |
+| 链表 Linked List | Misty Forest | 已开放：三关、四题、知识与双角色导师   | 完整独立教学流程及至少四道教学练习   |
+| 队列 Queue       | Harbor Pier  | 已开放：三关、四题、知识与双角色导师   | 完整独立教学流程及至少四道教学练习   |
 
 三个新板块在功能完整度上对齐 Stack，场景与操作按各自知识设计，不照搬
 栈的石块操作、迷宫或 LIFO 规则。每个板块内部按关卡顺序解锁；板块之间

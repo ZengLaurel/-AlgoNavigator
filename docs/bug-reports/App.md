@@ -29,3 +29,13 @@ legacy engine and tutor tests remain in their respective suites.
 
 Last verified: 2026-11-06 — 2/2 passing (`npm test`); see
 [`docs/TEST-RESULTS.md`](../TEST-RESULTS.md) for the per-case record.
+
+## Phase 12 verification
+
+2026-11-11：新增数组地图入口无 Stack 前置回归；本批全量 271/271 通过。输入、步骤、预期、实际和耗时见 [数组用例记录](../ARRAY-TEST-CASES.md)，浏览器及在线模型证据见 [数组验收](../ARRAY-ACCEPTANCE.md)。
+
+Phase 13 verification (2026-11-12): 288/288 total cases pass. Linked List map availability and real Python repair are covered; [17-case register](../LINKED-LIST-TEST-CASES.md) records inputs and actual results.
+
+Phase 14 (2026-11-12): full 308/308 regression passed. New coverage verifies independent Queue map entry with later rooms locked and the real Python Harbor Dispatch sequence. Inputs, outcomes and timings are in [QUEUE-TEST-CASES.md](../QUEUE-TEST-CASES.md).
+
+Phase 15 (2026-11-12): 330/330 full regression passed. Both Python bridges preserve line and blank-line boundaries; real module exceptions recover cleanly; all three module Worker timeout retries reject stale responses; Queue peek hints are specific in both languages; lazy module entry restores heading focus. See [joint cases](../FOUR-MODULE-TEST-CASES.md) and [bounded browser acceptance](../FOUR-MODULE-ACCEPTANCE.md).

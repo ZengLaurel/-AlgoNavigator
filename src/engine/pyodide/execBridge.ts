@@ -18,7 +18,7 @@ export async function runStackCode(
   code: string,
 ): Promise<ExecResult> {
   let stdout = ''
-  pyodide.setStdout({ batched: (text) => (stdout += text) })
+  pyodide.setStdout({ batched: (text) => (stdout += text + '\n') })
 
   try {
     await pyodide.runPythonAsync(STACK_HARNESS)
