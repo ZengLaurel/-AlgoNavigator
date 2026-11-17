@@ -212,6 +212,7 @@ export function QueueObserve({ onComplete }: { onComplete: () => void }) {
         </p>
       )}
       <SnapshotPlayback
+        intervalMs={6400}
         frames={[
           queueCodeInitial,
           ...queueObservation.map((s) => s.event.after as QueueState),
@@ -220,10 +221,10 @@ export function QueueObserve({ onComplete }: { onComplete: () => void }) {
           'The harbor starts empty.',
           ...queueObservation.map((s) => s.caption),
         ]}
-        render={(state) => (
+        render={(state, index) => (
           <QueueView
             state={state}
-            event={frame > 0 ? queueObservation[frame - 1].event : undefined}
+            event={index > 0 ? queueObservation[index - 1].event : undefined}
           />
         )}
         onFrameChange={onFrame}
@@ -269,6 +270,10 @@ export function QueuePythonRoom({ onComplete }: { onComplete: () => void }) {
         doc: queueCodeStarter,
         extensions: [
           basicSetup,
+          EditorView.contentAttributes.of({
+            'aria-label': 'Queue Python program',
+            'aria-describedby': 'queue-editor-keyboard',
+          }),
           python(),
           keymap.of([...defaultKeymap, indentWithTab]),
           EditorView.updateListener.of((u) => {
@@ -345,6 +350,9 @@ export function QueuePythonRoom({ onComplete }: { onComplete: () => void }) {
         className="code-editor"
         aria-label="Queue Python editor"
       />
+      <p id="queue-editor-keyboard">
+        Tab indents code. Press Escape, then Tab to leave the editor.
+      </p>
       <div className="queue-buttons">
         <button disabled={busy || !runModule} onClick={() => void run()}>
           Run
@@ -385,6 +393,7 @@ export function QueuePythonRoom({ onComplete }: { onComplete: () => void }) {
           <summary>Replay my program operations</summary>
           <SnapshotPlayback
             key={result.requestId}
+            intervalMs={6400}
             frames={[
               queueCodeInitial,
               ...result.events.map((e) => e.after as QueueState),
@@ -395,7 +404,12 @@ export function QueuePythonRoom({ onComplete }: { onComplete: () => void }) {
                 (e) => `${e.operation}: ${JSON.stringify(e.args)}`,
               ),
             ]}
-            render={(s) => <QueueView state={s} />}
+            render={(s, index) => (
+              <QueueView
+                state={s}
+                event={index > 0 ? result.events[index - 1] : undefined}
+              />
+            )}
           />
         </details>
       )}

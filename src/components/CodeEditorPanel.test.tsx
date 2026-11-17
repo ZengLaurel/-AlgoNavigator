@@ -10,6 +10,7 @@ import type { WorkerRequest, WorkerResponse } from '../engine/pyodide/protocol'
 vi.mock('codemirror', () => ({ basicSetup: [] }))
 vi.mock('@codemirror/view', () => ({
   EditorView: class {
+    static contentAttributes = { of: () => [] }
     static updateListener = { of: () => [] }
     destroy() {}
   },

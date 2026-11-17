@@ -65,3 +65,7 @@ AI independence: prior Array/Linked List browser records include unavailable-ser
 - Retain Phase 7 visual sign-off and Phase 8 release gates. The [four-module pilot checklist](./PILOT.md) is updated but **no child pilot has been conducted**. Only proceed to Phase 9 after its prerequisites.
 
 Next actual work is these remaining Phase 15/8 checks on the intended environment, not an invented new feature phase. No remaining item is silently counted as passed.
+
+## Later follow-up — 2026-11-12
+
+[RESILIENCE-ACCEPTANCE.md](./RESILIENCE-ACCEPTANCE.md) supersedes this dated snapshot’s forced AI-outage/controlled Worker-crash gap: all four core games were completed from an empty independent origin with 503 AI responses and a real first-Worker failure per page. Four editor Escape-Tab exits were also checked. Current regression is 340/340; physical devices, full assistive-technology journeys and wider live dialogue review remain open.

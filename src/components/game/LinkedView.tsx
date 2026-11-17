@@ -1,3 +1,4 @@
+import { LinkedStory } from './StructureStory'
 import { useState, type FormEvent } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
@@ -25,56 +26,60 @@ export function LinkedView({
     event?.accepted && event.operation === 'visit' ? event.args.id : null
   return (
     <section className="linked-display" aria-label="Linked beacon references">
-      <p>
-        <strong>head → {state.head ?? 'None'}</strong>
-      </p>
-      <p aria-live="polite">
-        {error
-          ? `${error}: the path cannot terminate. Repair next or head; all nodes are still available.`
-          : `Path: ${[...order, 'None'].join(' → ')}`}
-      </p>
-      <p>
-        Nodes below stay in storage order. Follow their labelled arrows, not
-        their neighbours.
-      </p>
-      <div className="linked-nodes">
-        {state.nodes.map((n) => (
-          <motion.div
-            key={n.id}
-            className={`linked-node ${n.id === visited ? 'current' : ''}`}
-            animate={{ scale: !reduced && n.id === visited ? 1.04 : 1 }}
-            transition={{ duration: reduced ? 0 : 0.25 }}
-          >
-            <small>
-              Node ID: {n.id}
-              {n.id === state.head ? ' · HEAD' : ''}
-              {n.id === visited ? ' · CURRENT' : ''}
-            </small>
-            <strong>{n.value}</strong>
-            <motion.span
-              key={n.next}
-              initial={reduced ? false : { opacity: 0.2 }}
-              animate={{ opacity: 1 }}
+      <LinkedStory state={state} event={event} />
+      <details>
+        <summary>Explore the links (after this move)</summary>
+        <p>
+          <strong>head → {state.head ?? 'None'}</strong>
+        </p>
+        <p aria-live="polite">
+          {error
+            ? `${error}: the path cannot terminate. Repair next or head; all nodes are still available.`
+            : `Path: ${[...order, 'None'].join(' → ')}`}
+        </p>
+        <p>
+          Nodes below stay in storage order. Follow their labelled arrows, not
+          their neighbours.
+        </p>
+        <div className="linked-nodes">
+          {state.nodes.map((n) => (
+            <motion.div
+              key={n.id}
+              className={`linked-node ${n.id === visited ? 'current' : ''}`}
+              animate={{ scale: !reduced && n.id === visited ? 1.04 : 1 }}
+              transition={{ duration: reduced ? 0 : 0.25 }}
             >
-              next → {n.next ?? 'None'}
-            </motion.span>
-            <small>
-              {error
-                ? 'Path unresolved: repair the cycle'
-                : order.includes(n.id)
-                  ? 'On head path'
-                  : 'Off head path'}
-            </small>
-          </motion.div>
-        ))}
-      </div>
-      <p className="linked-event" aria-live="polite">
-        {event
-          ? event.accepted
-            ? `${event.operation} ${JSON.stringify(event.args)}${event.returned !== null ? ` returned ${event.returned}` : ''}`
-            : `Not applied: ${event.errorCode}. References unchanged.`
-          : 'Inspect node IDs, values and next references.'}
-      </p>
+              <small>
+                Node ID: {n.id}
+                {n.id === state.head ? ' · HEAD' : ''}
+                {n.id === visited ? ' · CURRENT' : ''}
+              </small>
+              <strong>{n.value}</strong>
+              <motion.span
+                key={n.next}
+                initial={reduced ? false : { opacity: 0.2 }}
+                animate={{ opacity: 1 }}
+              >
+                next → {n.next ?? 'None'}
+              </motion.span>
+              <small>
+                {error
+                  ? 'Path unresolved: repair the cycle'
+                  : order.includes(n.id)
+                    ? 'On head path'
+                    : 'Off head path'}
+              </small>
+            </motion.div>
+          ))}
+        </div>
+        <p className="linked-event" aria-live="polite">
+          {event
+            ? event.accepted
+              ? `${event.operation} ${JSON.stringify(event.args)}${event.returned !== null ? ` returned ${event.returned}` : ''}`
+              : `Not applied: ${event.errorCode}. References unchanged.`
+            : 'Inspect node IDs, values and next references.'}
+        </p>
+      </details>
     </section>
   )
 }

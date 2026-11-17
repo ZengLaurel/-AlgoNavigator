@@ -211,6 +211,7 @@ export function LinkedObserve({ onComplete }: { onComplete: () => void }) {
         </p>
       )}
       <SnapshotPlayback
+        intervalMs={6400}
         frames={[
           linkedCodeInitial,
           ...linkedObservation.map((s) => s.event.after as LinkedListState),
@@ -219,10 +220,10 @@ export function LinkedObserve({ onComplete }: { onComplete: () => void }) {
           'Head a points to b; x is detached.',
           ...linkedObservation.map((s) => s.caption),
         ]}
-        render={(state) => (
+        render={(state, index) => (
           <LinkedView
             state={state}
-            event={frame > 0 ? linkedObservation[frame - 1].event : undefined}
+            event={index > 0 ? linkedObservation[index - 1].event : undefined}
           />
         )}
         onFrameChange={onFrame}
@@ -269,6 +270,10 @@ export function LinkedPythonRoom({ onComplete }: { onComplete: () => void }) {
         doc: linkedCodeStarter,
         extensions: [
           basicSetup,
+          EditorView.contentAttributes.of({
+            'aria-label': 'Linked list Python program',
+            'aria-describedby': 'linked-editor-keyboard',
+          }),
           python(),
           keymap.of([...defaultKeymap, indentWithTab]),
           EditorView.updateListener.of((u) => {
@@ -355,6 +360,9 @@ export function LinkedPythonRoom({ onComplete }: { onComplete: () => void }) {
         className="code-editor"
         aria-label="Linked Python editor"
       />
+      <p id="linked-editor-keyboard">
+        Tab indents code. Press Escape, then Tab to leave the editor.
+      </p>
       <div className="linked-buttons">
         <button disabled={busy || !runModule} onClick={() => void run()}>
           Run
@@ -395,6 +403,7 @@ export function LinkedPythonRoom({ onComplete }: { onComplete: () => void }) {
           <summary>Replay my program operations</summary>
           <SnapshotPlayback
             key={result.requestId}
+            intervalMs={6400}
             frames={[
               linkedCodeInitial,
               ...result.events.map((e) => e.after as LinkedListState),
@@ -405,7 +414,12 @@ export function LinkedPythonRoom({ onComplete }: { onComplete: () => void }) {
                 (e) => `${e.operation}: ${JSON.stringify(e.args)}`,
               ),
             ]}
-            render={(s) => <LinkedView state={s} />}
+            render={(s, index) => (
+              <LinkedView
+                state={s}
+                event={index > 0 ? result.events[index - 1] : undefined}
+              />
+            )}
           />
         </details>
       )}

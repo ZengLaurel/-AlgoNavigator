@@ -9,11 +9,13 @@
 
 知识基础为仓库已有的 `hello-algo/`（《Hello 算法》）；本次对话中的
 “openAIgo”按该参考项目理解，不另行引入未经确认的知识来源。
-当前 Stack、数组、链表和队列核心功能均已实现，Phase 15 本地桌面联合检查与修复已通过；完整设备/辅助功能等验收仍待完成，详见 [FOUR-MODULE-ACCEPTANCE.md](./FOUR-MODULE-ACCEPTANCE.md)。队列的本地验证与未测项见 [QUEUE-ACCEPTANCE.md](./QUEUE-ACCEPTANCE.md)。链表有限本地验收及未测项见 [LINKED-LIST-ACCEPTANCE.md](./LINKED-LIST-ACCEPTANCE.md)。数组的有限本地验收
+当前 Stack、数组、链表和队列核心功能均已实现，Phase 15 本地桌面联合检查及强制 AI 中断/Worker 崩溃下四区核心通关已通过（[追加证据](./RESILIENCE-ACCEPTANCE.md)）；完整设备/辅助功能等验收仍待完成，详见 [FOUR-MODULE-ACCEPTANCE.md](./FOUR-MODULE-ACCEPTANCE.md)。队列的本地验证与未测项见 [QUEUE-ACCEPTANCE.md](./QUEUE-ACCEPTANCE.md)。链表有限本地验收及未测项见 [LINKED-LIST-ACCEPTANCE.md](./LINKED-LIST-ACCEPTANCE.md)。数组的有限本地验收
 及已知限制见 [ARRAY-ACCEPTANCE.md](./ARRAY-ACCEPTANCE.md)。
 本需求基线最初只更新文档；后续实现、测试与学生试用必须分别举证。
 SPECIFICATION.md、ROADMAP.md 已同步 Phase 10–15（Phase 15 部分完成）；其中历史 Stack-only
 范围不再限制新模块设计，也不能作为全部四板块已交付的证据。
+
+2026-11-12 动画细化需求已落实：三个新板块参照 Stack 的具象教学方式，用补给箱、石质信标与绳索、小船与码头展示真实规则，并将操作前/中/后和短句引导贯穿到实际任务。示意中间帧不参与判题；保留原有三关、Tutor 和教小拓门槛。实际结果及学习效果验证边界见 [STORY-ANIMATION-ACCEPTANCE.md](./STORY-ANIMATION-ACCEPTANCE.md)。
 
 ## Current shipped game scope — 2026-11-08
 

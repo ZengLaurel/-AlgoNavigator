@@ -30,6 +30,10 @@ export function CodeEditorPanel({
       doc: starterCode,
       extensions: [
         basicSetup,
+        EditorView.contentAttributes.of({
+          'aria-label': 'Stack Python program',
+          'aria-describedby': 'stack-editor-keyboard',
+        }),
         keymap.of([...defaultKeymap, indentWithTab]),
         python(),
         EditorView.updateListener.of((update) => {
@@ -93,6 +97,9 @@ export function CodeEditorPanel({
         ref={editorParentRef}
         aria-label="Python code editor"
       />
+      <p id="stack-editor-keyboard">
+        Tab indents code. Press Escape, then Tab to leave the editor.
+      </p>
       <p aria-live="polite">{statusMessage}</p>
       <button type="button" onClick={execute} disabled={busy}>
         Run

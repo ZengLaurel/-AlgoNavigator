@@ -1,3 +1,4 @@
+import { QueueStory } from './StructureStory'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useState, type FormEvent } from 'react'
 import type {
@@ -18,48 +19,52 @@ export function QueueView({
       className="queue-display"
       aria-label="Harbor waiting and departures"
     >
-      <h3>Waiting at the pier</h3>
-      <p>Service ← FRONT · arrivals join REAR ←</p>
-      <div className="queue-boats">
-        {state.waiting.length ? (
-          state.waiting.map((b, i) => (
-            <motion.div
-              layout={!reduced}
-              initial={reduced ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: reduced ? 0 : 0.25 }}
-              key={b.id}
-              className="queue-boat"
-            >
-              <small>
-                {i === 0 ? 'FRONT' : ''}
-                {i === 0 && i === state.waiting.length - 1 ? ' / ' : ''}
-                {i === state.waiting.length - 1 ? 'REAR' : ''}
-              </small>
-              <strong>{b.value}</strong>
-              <small>ID: {b.id}</small>
-            </motion.div>
-          ))
-        ) : (
-          <p>Empty queue · no front or rear</p>
-        )}
-      </div>
-      <h3>Departure history</h3>
-      <ol aria-label="Served boats">
-        {state.served.map((b) => (
-          <li key={b.id}>
-            {b.value} <small>({b.id})</small>
-          </li>
-        ))}
-      </ol>
-      {!state.served.length && <p>No boats served yet.</p>}
-      <p className="queue-event" aria-live="polite">
-        {event
-          ? event.accepted
-            ? `${event.operation}${event.returned !== null ? ` returned ${event.returned}` : ''}. ${event.operation === 'peek' ? 'Peek keeps waiting and departures unchanged.' : event.operation === 'enqueue' ? 'Joined at rear.' : 'Departed from front.'}`
-            : `Not applied: ${event.errorCode}. Waiting boats and departure history unchanged.`
-          : 'Enqueue at rear; dequeue at front. FIFO: First In, First Out.'}
-      </p>
+      <QueueStory state={state} event={event} />
+      <details>
+        <summary>Explore the waiting list (after this move)</summary>
+        <h3>Waiting at the pier</h3>
+        <p>Service ← FRONT · arrivals join REAR ←</p>
+        <div className="queue-boats">
+          {state.waiting.length ? (
+            state.waiting.map((b, i) => (
+              <motion.div
+                layout={!reduced}
+                initial={reduced ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduced ? 0 : 0.25 }}
+                key={b.id}
+                className="queue-boat"
+              >
+                <small>
+                  {i === 0 ? 'FRONT' : ''}
+                  {i === 0 && i === state.waiting.length - 1 ? ' / ' : ''}
+                  {i === state.waiting.length - 1 ? 'REAR' : ''}
+                </small>
+                <strong>{b.value}</strong>
+                <small>ID: {b.id}</small>
+              </motion.div>
+            ))
+          ) : (
+            <p>Empty queue · no front or rear</p>
+          )}
+        </div>
+        <h3>Departure history</h3>
+        <ol aria-label="Served boats">
+          {state.served.map((b) => (
+            <li key={b.id}>
+              {b.value} <small>({b.id})</small>
+            </li>
+          ))}
+        </ol>
+        {!state.served.length && <p>No boats served yet.</p>}
+        <p className="queue-event" aria-live="polite">
+          {event
+            ? event.accepted
+              ? `${event.operation}${event.returned !== null ? ` returned ${event.returned}` : ''}. ${event.operation === 'peek' ? 'Peek keeps waiting and departures unchanged.' : event.operation === 'enqueue' ? 'Joined at rear.' : 'Departed from front.'}`
+              : `Not applied: ${event.errorCode}. Waiting boats and departure history unchanged.`
+            : 'Enqueue at rear; dequeue at front. FIFO: First In, First Out.'}
+        </p>
+      </details>
     </section>
   )
 }

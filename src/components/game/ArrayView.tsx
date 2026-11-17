@@ -1,3 +1,4 @@
+import { ArrayStory } from './StructureStory'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useState, type FormEvent } from 'react'
 import type {
@@ -28,57 +29,61 @@ export function ArrayView({
       : []
   return (
     <section className="array-display" aria-label="Array storage">
-      <p>
-        <strong>Length: {state.items.length}</strong> · Capacity:{' '}
-        {state.capacity} · Spare positions:{' '}
-        {state.capacity - state.items.length}
-      </p>
-      <div
-        className="array-scroll"
-        tabIndex={0}
-        aria-label="Storage positions, scroll horizontally if needed"
-      >
-        <motion.div
-          key={`storage-${state.capacity}`}
-          className="array-slots"
-          initial={reduced ? false : { opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: reduced ? 0 : 0.25 }}
+      <ArrayStory state={state} event={event} />
+      <details>
+        <summary>Explore the numbers (after this move)</summary>
+        <p>
+          <strong>Length: {state.items.length}</strong> · Capacity:{' '}
+          {state.capacity} · Spare positions:{' '}
+          {state.capacity - state.items.length}
+        </p>
+        <div
+          className="array-scroll"
+          tabIndex={0}
+          aria-label="Storage positions, scroll horizontally if needed"
         >
-          {state.items.map((item, index) => (
-            <motion.div
-              layout={!reduced}
-              transition={{ duration: reduced ? 0 : 0.25 }}
-              className="array-slot used"
-              key={item.id}
-              data-item-id={item.id}
-            >
-              <span className="array-index">Index {index}</span>
-              <strong>{item.value}</strong>
-              <small>Used</small>
-            </motion.div>
-          ))}
-          {Array.from(
-            { length: state.capacity - state.items.length },
-            (_, i) => (
-              <div className="array-slot empty" key={`empty-${i}`}>
-                <span className="array-index">
-                  Index {state.items.length + i}
-                </span>
-                <strong>—</strong>
-                <small>Empty</small>
-              </div>
-            ),
-          )}
-        </motion.div>
-      </div>
-      <p className="array-event" aria-live="polite">
-        {event
-          ? event.accepted
-            ? `${event.operation}: ${event.returned === null ? 'state updated' : `returned ${JSON.stringify(event.returned)}`}. ${moved.length ? `Moved ${moved.join('; ')}.` : 'Existing positions kept their order.'}`
-            : `Operation not applied: ${event.errorCode}. Storage is unchanged.`
-          : 'The first item is at index 0. Empty positions are spare capacity.'}
-      </p>
+          <motion.div
+            key={`storage-${state.capacity}`}
+            className="array-slots"
+            initial={reduced ? false : { opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: reduced ? 0 : 0.25 }}
+          >
+            {state.items.map((item, index) => (
+              <motion.div
+                layout={!reduced}
+                transition={{ duration: reduced ? 0 : 0.25 }}
+                className="array-slot used"
+                key={item.id}
+                data-item-id={item.id}
+              >
+                <span className="array-index">Index {index}</span>
+                <strong>{item.value}</strong>
+                <small>Used</small>
+              </motion.div>
+            ))}
+            {Array.from(
+              { length: state.capacity - state.items.length },
+              (_, i) => (
+                <div className="array-slot empty" key={`empty-${i}`}>
+                  <span className="array-index">
+                    Index {state.items.length + i}
+                  </span>
+                  <strong>—</strong>
+                  <small>Empty</small>
+                </div>
+              ),
+            )}
+          </motion.div>
+        </div>
+        <p className="array-event" aria-live="polite">
+          {event
+            ? event.accepted
+              ? `${event.operation}: ${event.returned === null ? 'state updated' : `returned ${JSON.stringify(event.returned)}`}. ${moved.length ? `Moved ${moved.join('; ')}.` : 'Existing positions kept their order.'}`
+              : `Operation not applied: ${event.errorCode}. Storage is unchanged.`
+            : 'The first item is at index 0. Empty positions are spare capacity.'}
+        </p>
+      </details>
     </section>
   )
 }

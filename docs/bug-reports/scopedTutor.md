@@ -23,3 +23,5 @@ Last verified: 2026-11-11 — 2/2 passing in the full `npm run test:report` run 
 ## Detailed case register
 
 See [Phase 11 CHAT cases](../PHASE11-TEST-CASES.md#p11-chat-01) for stable case IDs, input, steps, expected outcomes and asserted actual results from the recorded 2026-11-11 20:17 run.
+
+Phase 15 follow-up (2026-11-12): three regression cases simulate uncorrelated 503 JSON for Array, Linked List and Queue. Expected/actual: module-specific unavailable fallback, no false lesson-switch message and no raw proxy text. Full regression 340/340; [case register](../RESILIENCE-TEST-CASES.md). Successful stale-response checks remain unchanged.

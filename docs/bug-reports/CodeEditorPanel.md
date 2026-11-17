@@ -19,3 +19,5 @@ A stalled Python request previously left the editor indefinitely busy, and initi
 ## Status
 
 Last verified: 2026-11-06 — 2/2 passing (`npm test`); see [generated results](../TEST-RESULTS.md).
+
+Phase 15 follow-up: Stack editor now has an accessible textbox name and described Escape-then-Tab instruction. The deterministic EditorView mock includes the contentAttributes facet; real CodeMirror is separately verified by EditorAccessibility.test.tsx and a browser focus check. Full 340/340 regression passed.

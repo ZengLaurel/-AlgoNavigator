@@ -75,3 +75,32 @@ describe('scoped tutor requests', () => {
     expect(reply?.reply).not.toContain('stack')
   })
 })
+
+it.each(['array', 'linked-list', 'queue'] as const)(
+  'treats an uncorrelated 503 as a %s outage rather than a lesson switch',
+  async (moduleId) => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ reply: 'proxy failure' }), {
+            status: 503,
+          }),
+      ),
+    )
+    try {
+      const reply = await new ScopedTutor().ask(
+        'help',
+        { ...context, moduleId, taskId: moduleId + '-code' },
+        [],
+      )
+      expect(reply?.ok).toBe(false)
+      expect(reply?.reply).toContain(moduleId)
+      expect(reply?.reply).toContain('unavailable')
+      expect(reply?.reply).not.toContain('lesson changed')
+      expect(reply?.reply).not.toContain('proxy failure')
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  },
+)

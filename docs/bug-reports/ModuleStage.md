@@ -25,3 +25,5 @@ Last verified: 2026-11-11 — 2/2 passing in the full `npm run test:report` run 
 See [Phase 11 SHELL cases](../PHASE11-TEST-CASES.md#p11-shell-01) for stable case IDs, input, steps, expected outcomes and asserted actual results from the recorded 2026-11-11 20:17 run.
 
 Phase 15 (2026-11-12): 330/330 full regression passed. Both Python bridges preserve line and blank-line boundaries; real module exceptions recover cleanly; all three module Worker timeout retries reject stale responses; Queue peek hints are specific in both languages; lazy module entry restores heading focus. See [joint cases](../FOUR-MODULE-TEST-CASES.md) and [bounded browser acceptance](../FOUR-MODULE-ACCEPTANCE.md).
+
+Animation refinement: SnapshotPlayback now passes the current frame index to its renderer and accepts a per-operation interval. New-module observation/program replays use 6400ms; the existing Stack/default 1200ms stays unchanged. Story tests include backwards/forwards event matching; the whole 352-case regression passed.

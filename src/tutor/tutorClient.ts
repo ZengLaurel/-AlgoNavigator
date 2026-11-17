@@ -63,6 +63,16 @@ export async function askTutor(
   ) {
     return { ok: false, reply: OFFLINE_REPLY }
   }
+  // A proxy/provider outage may omit correlation metadata. It is not a lesson switch.
+  // Only display reviewed server error text when it belongs to this exact request.
+  if (
+    !response.ok &&
+    context.moduleId &&
+    context.moduleId !== 'stack' &&
+    (payload as { requestId?: unknown }).requestId !== options?.requestId
+  ) {
+    return { ok: false, reply: OFFLINE_REPLY }
+  }
   if (
     context.moduleId &&
     context.moduleId !== 'stack' &&

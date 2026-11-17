@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:report": "node scripts/test-report.mjs",
     "assets:optimize": "node scripts/optimize-game-assets.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "acceptance:local": "node scripts/acceptance-server.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

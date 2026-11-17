@@ -212,6 +212,7 @@ export function ArrayObserve({ onComplete }: { onComplete: () => void }) {
         </p>
       )}
       <SnapshotPlayback
+        intervalMs={6400}
         frames={[
           arrayCodeInitial,
           ...arrayObservation.map((s) => s.event.after as ArrayState),
@@ -220,10 +221,10 @@ export function ArrayObserve({ onComplete }: { onComplete: () => void }) {
           'Starting with A, B, C and one spare position.',
           ...arrayObservation.map((s) => s.caption),
         ]}
-        render={(state) => (
+        render={(state, index) => (
           <ArrayView
             state={state}
-            event={frame > 0 ? arrayObservation[frame - 1].event : undefined}
+            event={index > 0 ? arrayObservation[index - 1].event : undefined}
           />
         )}
         onFrameChange={onFrame}
@@ -270,6 +271,10 @@ export function ArrayPythonRoom({ onComplete }: { onComplete: () => void }) {
         doc: arrayCodeStarter,
         extensions: [
           basicSetup,
+          EditorView.contentAttributes.of({
+            'aria-label': 'Array Python program',
+            'aria-describedby': 'array-editor-keyboard',
+          }),
           python(),
           keymap.of([...defaultKeymap, indentWithTab]),
           EditorView.updateListener.of((u) => {
@@ -349,6 +354,9 @@ export function ArrayPythonRoom({ onComplete }: { onComplete: () => void }) {
         className="code-editor"
         aria-label="Array Python editor"
       />
+      <p id="array-editor-keyboard">
+        Tab indents code. Press Escape, then Tab to leave the editor.
+      </p>
       <div className="array-buttons">
         <button disabled={busy || !runModule} onClick={() => void run()}>
           Run
@@ -389,6 +397,7 @@ export function ArrayPythonRoom({ onComplete }: { onComplete: () => void }) {
           <summary>Replay my program operations</summary>
           <SnapshotPlayback
             key={result.requestId}
+            intervalMs={6400}
             frames={[
               arrayCodeInitial,
               ...result.events.map((e) => e.after as ArrayState),
@@ -399,7 +408,12 @@ export function ArrayPythonRoom({ onComplete }: { onComplete: () => void }) {
                 (e) => `${e.operation}: ${JSON.stringify(e.args)}`,
               ),
             ]}
-            render={(s) => <ArrayView state={s} />}
+            render={(s, index) => (
+              <ArrayView
+                state={s}
+                event={index > 0 ? result.events[index - 1] : undefined}
+              />
+            )}
           />
         </details>
       )}

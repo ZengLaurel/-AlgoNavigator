@@ -54,11 +54,13 @@ export function SnapshotPlayback<State>({
   captions,
   render,
   onFrameChange,
+  intervalMs = BASE_INTERVAL_MS,
 }: {
   frames: State[]
   captions: string[]
-  render: (state: State) => React.ReactNode
+  render: (state: State, frameIndex: number) => React.ReactNode
   onFrameChange?: (frameIndex: number, isLastFrame: boolean) => void
+  intervalMs?: number
 }) {
   const [frameIndex, setFrameIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -76,14 +78,14 @@ export function SnapshotPlayback<State>({
     const timer = setTimeout(() => {
       setFrameIndex((index) => Math.min(index + 1, frames.length - 1))
       if (frameIndex + 1 >= frames.length - 1) setIsPlaying(false)
-    }, BASE_INTERVAL_MS / speed)
+    }, intervalMs / speed)
     return () => clearTimeout(timer)
-  }, [isPlaying, atEnd, speed, frames.length, frameIndex])
+  }, [isPlaying, atEnd, speed, frames.length, frameIndex, intervalMs])
 
   return (
     <div>
       {frames.length > 0 &&
-        render(frames[Math.min(frameIndex, frames.length - 1)])}
+        render(frames[Math.min(frameIndex, frames.length - 1)], frameIndex)}
       <p aria-live="polite">{captions[frameIndex]}</p>
       <div>
         <button
