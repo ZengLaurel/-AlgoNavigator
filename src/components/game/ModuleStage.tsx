@@ -41,7 +41,7 @@ function ModuleStageContent({
     <main className="game-root" ref={root}>
       <a href="#/">Back to the adventure map</a>
       <h1 tabIndex={-1}>{moduleCatalog[moduleId].title}</h1>
-      <nav aria-label="Learning stages">
+      <nav className="room-trail" aria-label="Learning stages">
         {(['Observe', 'Python', 'Apply', 'Teach Xiao Tuo'] as const).map(
           (label, index) => {
             const target = (index + 1) as 1 | 2 | 3 | 4

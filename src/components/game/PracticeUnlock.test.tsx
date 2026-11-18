@@ -28,14 +28,16 @@ describe('final-room practice unlock', () => {
     )
     const onComplete = vi.fn()
     const view = render(<GameStage onComplete={onComplete} />)
-    expect(
-      screen.queryByRole('button', { name: '04 · Teach Xiao Tuo' }),
-    ).toBeNull()
+    const teachingRoom = screen.getByRole<HTMLButtonElement>('button', {
+      name: '04 · Teach Xiao Tuo',
+    })
+    expect(teachingRoom.disabled).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: '03 · Forked Path' }))
     fireEvent.click(
       await screen.findByRole('button', { name: 'Reach final exit' }),
     )
     expect(onComplete).toHaveBeenCalledTimes(1)
+    expect(teachingRoom.disabled).toBe(false)
     expect(
       JSON.parse(localStorage.getItem(MODULE_PROGRESS_KEY)!).modules.stack
         .teachingUnlocked,
@@ -51,8 +53,10 @@ describe('final-room practice unlock', () => {
     view.unmount()
     render(<GameStage />)
     expect(
-      screen.getByRole('button', { name: '04 · Teach Xiao Tuo' }),
-    ).toBeTruthy()
+      screen.getByRole<HTMLButtonElement>('button', {
+        name: '04 · Teach Xiao Tuo',
+      }).disabled,
+    ).toBe(false)
   })
   it('allows existing players with the previously earned world-map gem to open practice', () => {
     localStorage.setItem(
@@ -61,7 +65,9 @@ describe('final-room practice unlock', () => {
     )
     render(<GameStage />)
     expect(
-      screen.getByRole('button', { name: '04 · Teach Xiao Tuo' }),
-    ).toBeTruthy()
+      screen.getByRole<HTMLButtonElement>('button', {
+        name: '04 · Teach Xiao Tuo',
+      }).disabled,
+    ).toBe(false)
   })
 })

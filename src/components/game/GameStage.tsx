@@ -68,40 +68,31 @@ export function GameStage({ onComplete }: { onComplete?: () => void }) {
         >
           01 · Trial of Stones
         </button>
-        {stairwayUnlocked ? (
-          <button
-            type="button"
-            aria-current={activeRoom === 'stairway' ? 'step' : undefined}
-            onClick={() => setActiveRoom('stairway')}
-          >
-            02 · Stairway Repair
-          </button>
-        ) : (
-          <span>02 · Stairway Repair · Coming next</span>
-        )}
-        {forkedUnlocked ? (
-          <button
-            type="button"
-            aria-current={activeRoom === 'forked' ? 'step' : undefined}
-            onClick={() => setActiveRoom('forked')}
-          >
-            03 · Forked Path
-          </button>
-        ) : (
-          <span>03 · Forked Path · Coming later</span>
-        )}
+        <button
+          type="button"
+          disabled={!stairwayUnlocked}
+          aria-current={activeRoom === 'stairway' ? 'step' : undefined}
+          onClick={() => setActiveRoom('stairway')}
+        >
+          02 · Stairway Repair
+        </button>
+        <button
+          type="button"
+          disabled={!forkedUnlocked}
+          aria-current={activeRoom === 'forked' ? 'step' : undefined}
+          onClick={() => setActiveRoom('forked')}
+        >
+          03 · Forked Path
+        </button>
+        <button
+          type="button"
+          disabled={!teaching.unlocked}
+          aria-current={activeRoom === 'practice' ? 'step' : undefined}
+          onClick={() => setActiveRoom('practice')}
+        >
+          04 · Teach Xiao Tuo
+        </button>
       </nav>
-      {teaching.unlocked && (
-        <nav className="room-trail" aria-label="Extra Stack practice">
-          <button
-            type="button"
-            aria-current={activeRoom === 'practice' ? 'step' : undefined}
-            onClick={() => setActiveRoom('practice')}
-          >
-            04 · Teach Xiao Tuo
-          </button>
-        </nav>
-      )}
       {teachingStorageFailed && (
         <p role="alert">
           Teaching progress is available this session, but this browser could

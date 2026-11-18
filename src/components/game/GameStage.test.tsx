@@ -51,8 +51,10 @@ describe('GameStage', () => {
   it('unlocks room three explicitly and preserves both unlocks after returning', async () => {
     render(<GameStage />)
     expect(
-      screen.queryByRole('button', { name: '03 · Forked Path' }),
-    ).toBeNull()
+      screen.getByRole<HTMLButtonElement>('button', {
+        name: '03 · Forked Path',
+      }).disabled,
+    ).toBe(true)
     completeTrial()
     fireEvent.click(
       screen.getByRole('button', { name: 'Continue to Stairway Repair →' }),
@@ -74,14 +76,28 @@ describe('GameStage', () => {
       await screen.findByRole('heading', { name: 'Forked Path' }),
     ).toBeTruthy()
   })
-  it('starts on Trial of Stones with Stairway Repair locked', () => {
+  it('starts with Trial of Stones as the only enabled room', () => {
     render(<GameStage />)
+    const trial = screen.getByRole<HTMLButtonElement>('button', {
+      name: '01 · Trial of Stones',
+    })
+    expect(trial.getAttribute('aria-current')).toBe('step')
+    expect(trial.disabled).toBe(false)
     expect(
-      screen
-        .getByRole('button', { name: '01 · Trial of Stones' })
-        .getAttribute('aria-current'),
-    ).toBe('step')
-    expect(screen.getByText('02 · Stairway Repair · Coming next')).toBeTruthy()
+      screen.getByRole<HTMLButtonElement>('button', {
+        name: '02 · Stairway Repair',
+      }).disabled,
+    ).toBe(true)
+    expect(
+      screen.getByRole<HTMLButtonElement>('button', {
+        name: '03 · Forked Path',
+      }).disabled,
+    ).toBe(true)
+    expect(
+      screen.getByRole<HTMLButtonElement>('button', {
+        name: '04 · Teach Xiao Tuo',
+      }).disabled,
+    ).toBe(true)
     expect(
       screen.getByRole('heading', { name: 'Trial of Stones' }),
     ).toBeTruthy()
