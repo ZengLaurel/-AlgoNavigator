@@ -388,33 +388,6 @@ h2 {
   color: #d7dfeb;
   margin-bottom: 28px;
 }
-.room-trail {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 22px;
-  padding: 16px 0;
-  border-block: 1px solid #61738a;
-  font-size: 0.8rem;
-  color: #c4cede;
-}
-.room-trail [aria-current] {
-  color: #f2c265;
-  font-weight: 700;
-}
-.room-trail button {
-  min-height: auto;
-  padding: 0;
-  background: none;
-  border: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.room-trail button:hover {
-  background: none;
-  color: #f2c265;
-}
 .trial-heading {
   display: flex;
   flex-wrap: wrap;
@@ -562,6 +535,24 @@ h2 {
 }
 .game-root button:disabled {
   opacity: 0.55;
+}
+.room-trail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+}
+.game-root .room-trail > button {
+  color: #132738;
+  background: #67cbd5;
+  margin: 6px 6px 6px 0;
+}
+.game-root .room-trail > button:hover:not(:disabled) {
+  background: #a5e7e3;
+}
+.game-root .room-trail > button:is([aria-current='step'], :focus-visible) {
+  outline: 3px solid #f2c265;
+  outline-offset: 3px;
 }
 .game-root select {
   margin-left: 8px;
